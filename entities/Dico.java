@@ -19,9 +19,9 @@ public class Dico {
     }
     
     /**
-     * Calcule les statistiques.
-     * @param dbh la connexion à la base de données
-     * @return le HashMap contenant les statistiques
+     * Calculate the statistics.
+     * @param dbh the connection to the database
+     * @return the HashMap containing the statistics
      */
     public static HashMap<String, int[]> calcStatistiques(DatabaseHelper dbh) {
         String query;
@@ -64,16 +64,15 @@ public class Dico {
     }
     
     /**
-     * L'algorithme qui sélectionne le mot à traduire.
-     * @param languageOfWordToTranslate la langue du mot à traduire
-     * @param dbh la connexion à la base de données
-     * @return l'objet complet dicotuple sélectionné
+     * The algorithm which selects the word to translate.
+     * @param languageOfWordToTranslate the language of the word to translate
+     * @param dbh the connection to the database
+     * @return the selected full dicotuple object
      */
     public static Dicotuple algoSelectWord(String languageOfWordToTranslate, DatabaseHelper dbh) {
         String query;
         Random random = new Random();
-        int randomNb, combinedIndice, nbResults;
-        int maxCombinedIndice = 0;
+        int randomNb, threshold, nbResults, combinedIndice, weightOfWordsInLearning;
         Cursor cursor;
         Calendar currentCalendar;
         long currentTimestamp, timestampDiff;
@@ -102,71 +101,11 @@ public class Dico {
         
         cursor = dbh.getReadableDatabase().rawQuery(query, null);
         
-        cursorScan:
         while (cursor.moveToNext()) {
             timestampDiff = currentTimestamp - cursor.getLong(2);
-            
-            switch (cursor.getInt(1)) {
-                case 0:
-                    if (timestampDiff > 5) {
-                        retour = Dicotuple.retrieveDicotupleFromDatabase(cursor.getInt(0), dbh);
-                        break cursorScan;
-                    }
-                    break;
-                case 1:
-                    if (timestampDiff > 20) {
-                        retour = Dicotuple.retrieveDicotupleFromDatabase(cursor.getInt(0), dbh);
-                        break cursorScan;
-                    }
-                    break;
-                case 2:
-                    if (timestampDiff > 60) {
-                        retour = Dicotuple.retrieveDicotupleFromDatabase(cursor.getInt(0), dbh);
-                        break cursorScan;
-                    }
-                    break;
-                case 3:
-                    if (timestampDiff > 240) {
-                        retour = Dicotuple.retrieveDicotupleFromDatabase(cursor.getInt(0), dbh);
-                        break cursorScan;
-                    }
-                    break;
-                case 4:
-                    if (timestampDiff > 900) {
-                        retour = Dicotuple.retrieveDicotupleFromDatabase(cursor.getInt(0), dbh);
-                        break cursorScan;
-                    }
-                    break;
-                case 5:
-                    if (timestampDiff > 3600) {
-                        retour = Dicotuple.retrieveDicotupleFromDatabase(cursor.getInt(0), dbh);
-                        break cursorScan;
-                    }
-                    break;
-                case 6:
-                    if (timestampDiff > 14400) {
-                        retour = Dicotuple.retrieveDicotupleFromDatabase(cursor.getInt(0), dbh);
-                        break cursorScan;
-                    }
-                    break;
-                case 7:
-                    if (timestampDiff > 43200) {
-                        retour = Dicotuple.retrieveDicotupleFromDatabase(cursor.getInt(0), dbh);
-                        break cursorScan;
-                    }
-                    break;
-                case 8:
-                    if (timestampDiff > 86400) {
-                        retour = Dicotuple.retrieveDicotupleFromDatabase(cursor.getInt(0), dbh);
-                        break cursorScan;
-                    }
-                    break;
-                case 9:
-                    if (timestampDiff > 172800) {
-                        retour = Dicotuple.retrieveDicotupleFromDatabase(cursor.getInt(0), dbh);
-                        break cursorScan;
-                    }
-                    break;
+            if (Word.wordInLearningIsEligible(cursor.getInt(1), timestampDiff)) {
+                retour = Dicotuple.retrieveDicotupleFromDatabase(cursor.getInt(0), dbh);
+                break;
             }
         }
         cursor.close();
@@ -178,14 +117,40 @@ public class Dico {
         
         // 2ème phase de l'algorithme :
         // si aucun mot éligible à la phase 1, on check si un mot "Appris" est éligible
-        randomNb = random.nextInt(11) + 11;
-        if (randomNb != 21) {
+        query =
+            "SELECT indice_" + languageOfWordToTranslate + "_secondary, COUNT(*) "
+            + "FROM dico "
+            + "WHERE type <> ";
+        
+        if (languageOfWordToTranslate.equals("english")) {
+            query += Constantes.TYPE_ONLY_FRENCH + " ";
+        } else {
+            query += Constantes.TYPE_ONLY_ENGLISH + " ";
+        }
+        
+        query +=
+            "AND mode_" + languageOfWordToTranslate + " = " + Constantes.MODE_LEARNING_IN_PROGRESS + " "
+            + "GROUP BY indice_" + languageOfWordToTranslate + "_secondary";
+        
+        cursor = dbh.getReadableDatabase().rawQuery(query, null);
+        weightOfWordsInLearning = 0;
+        while (cursor.moveToNext()) {
+            weightOfWordsInLearning += cursor.getInt(1) * (10 - cursor.getInt(0));
+        }
+        cursor.close();
+        
+        if (weightOfWordsInLearning > 100) {
+            weightOfWordsInLearning = 100;
+        }
+        threshold = random.nextInt(11 - (int)(weightOfWordsInLearning / 10)) + 11;
+        
+        if (threshold != 21) {
             // Construction de la query
             query =
                 "SELECT id_dicotuple, indice_" + languageOfWordToTranslate + "_primary, "
-                + "timestamp_last_answer_" + languageOfWordToTranslate
-                + " FROM dico"
-                + " WHERE type <> ";
+                + "timestamp_last_answer_" + languageOfWordToTranslate + " "
+                + "FROM dico "
+                + "WHERE type <> ";
             
             if (languageOfWordToTranslate.equals("english")) {
                 query += Constantes.TYPE_ONLY_FRENCH;
@@ -199,35 +164,15 @@ public class Dico {
             cursor = dbh.getReadableDatabase().rawQuery(query, null);
             
             while (cursor.moveToNext()) {
-                combinedIndice = Constantes.MAX_INDICE_PRIMARY + 1 - cursor.getInt(1);
                 timestampDiff = currentTimestamp - cursor.getLong(2);
-                if (timestampDiff <         172800) {
-                    
-                } else if (timestampDiff <  345600) {
-                    combinedIndice += 1;
-                } else if (timestampDiff <  604800) {
-                    combinedIndice += 2;
-                } else if (timestampDiff <  864000) {
-                    combinedIndice += 3;
-                } else if (timestampDiff < 1209600) {
-                    combinedIndice += 4;
-                } else if (timestampDiff < 1814400) {
-                    combinedIndice += 5;
-                } else if (timestampDiff < 2592000) {
-                    combinedIndice += 6;
-                } else if (timestampDiff < 3888000) {
-                    combinedIndice += 7;
-                } else if (timestampDiff < 5184000) {
-                    combinedIndice += 8;
-                } else if (timestampDiff < 7776000) {
-                    combinedIndice += 9;
-                } else {
-                    combinedIndice += 10;
-                }
+                combinedIndice = Word.calcCombinedIndice(cursor.getInt(1), timestampDiff);
                 
-                if ((combinedIndice >= randomNb) && ((retour == null) || (combinedIndice > maxCombinedIndice))) {
+                if (combinedIndice >= threshold) {
                     retour = Dicotuple.retrieveDicotupleFromDatabase(cursor.getInt(0), dbh);
-                    maxCombinedIndice = combinedIndice;
+                    threshold = combinedIndice + 1;
+                    if (threshold > 20) {
+                        break;
+                    }
                 }
             }
             cursor.close();

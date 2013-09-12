@@ -40,7 +40,7 @@ public class HomeActivity extends Activity {
         SharedPreferences sharedPreferences = this.getSharedPreferences("vincent.moulin.vocab", MODE_PRIVATE);
         Editor editor = sharedPreferences.edit();
         editor.putString("language_of_word_to_translate", "french");
-        editor.apply();
+        editor.commit();
         
         startActivity(new Intent(this, TrainingActivity.class));
     }
@@ -49,7 +49,7 @@ public class HomeActivity extends Activity {
         SharedPreferences sharedPreferences = this.getSharedPreferences("vincent.moulin.vocab", MODE_PRIVATE);
         Editor editor = sharedPreferences.edit();
         editor.putString("language_of_word_to_translate", "english");
-        editor.apply();
+        editor.commit();
         
         startActivity(new Intent(this, TrainingActivity.class));
     }

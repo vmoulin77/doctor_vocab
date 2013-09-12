@@ -1,5 +1,6 @@
 package vincent.moulin.vocab.entities;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import vincent.moulin.vocab.Constantes;
 import vincent.moulin.vocab.database.DatabaseHelper;
@@ -43,11 +44,11 @@ public class Dicotuple {
     }
     
     /**
-     * Gère la réponse de l'utilisateur.
-     * Effectue la mise à jour de la base de données uniquement (pas de l'objet).
-     * @param languageOfWordToTranslate la langue du mot à traduire
-     * @param answerIsOk true si la réponse est ok et false sinon
-     * @param dbh la connexion à la base de données
+     * Manage the answer of the user.
+     * Update the database only (not the object).
+     * @param languageOfWordToTranslate the language of the word to translate
+     * @param answerIsOk true if the answer is ok and false otherwise
+     * @param dbh the connection to the database
      */
     public void manageAnswer(String languageOfWordToTranslate, boolean answerIsOk, DatabaseHelper dbh) {
         String query;
@@ -136,10 +137,10 @@ public class Dicotuple {
     }
     
     /**
-     * Récupère de la base de données l'objet complet dicotuple dont l'id est idDicotuple.
-     * @param idDicotuple l'id du dicotuple qu'on veut récupérer
-     * @param dbh la connexion à la base de données
-     * @return l'objet complet dicotuple dont l'id est idDicotuple
+     * Retrieve from the database the full dicotuple object whose id is idDicotuple.
+     * @param idDicotuple the id of the dicotuple we want to retrieve
+     * @param dbh the connection to the database
+     * @return the full dicotuple object whose id is idDicotuple
      */
     public static Dicotuple retrieveDicotupleFromDatabase(int idDicotuple, DatabaseHelper dbh) {
         String query;
@@ -191,6 +192,39 @@ public class Dicotuple {
         cursor.close();
         
         return retour;
+    }
+    
+    /**
+     * Update the current dicotuple in the database.
+     * @param dbh the connection to the database
+     * @return the number of rows affected
+     */
+    public int updateDicotupleInDatabase(DatabaseHelper dbh) {
+        ContentValues contentValues = new ContentValues();
+        
+        contentValues.put("type", this.type);
+        contentValues.put("word_english", this.wordEnglish.getContent());
+        contentValues.put("word_french", this.wordFrench.getContent());
+        contentValues.put("mode_english", this.wordEnglish.getMode());
+        contentValues.put("mode_french", this.wordFrench.getMode());
+        if(this.wordEnglish.isAccelerated()) {
+            contentValues.put("is_accelerated_english", 1);
+        } else {
+            contentValues.put("is_accelerated_english", 0);
+        }
+        if(this.wordFrench.isAccelerated()) {
+            contentValues.put("is_accelerated_french", 1);
+        } else {
+            contentValues.put("is_accelerated_french", 0);
+        }
+        contentValues.put("indice_english_primary", this.wordEnglish.getIndicePrimary());
+        contentValues.put("indice_english_secondary", this.wordEnglish.getIndiceSecondary());
+        contentValues.put("indice_french_primary", this.wordFrench.getIndicePrimary());
+        contentValues.put("indice_french_secondary", this.wordFrench.getIndiceSecondary());
+        contentValues.put("timestamp_last_answer_english", this.wordEnglish.getTimestampLastAnswer());
+        contentValues.put("timestamp_last_answer_french", this.wordFrench.getTimestampLastAnswer());
+        
+        return dbh.getWritableDatabase().update("dico", contentValues, "id_dicotuple = ?", new String[]{String.valueOf(this.idDicotuple)});
     }
 
 }
