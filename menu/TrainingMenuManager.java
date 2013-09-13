@@ -97,7 +97,7 @@ public class TrainingMenuManager {
                     
                     if ((nbOfWordsInLearningAndEligible == 0) && (nbOfWordsKnownAndPotentiallyEligible == 0)) {
                         doctorVocabAdviceContent = "<b>IT'S ALL GOOD !</b><br /><br />";
-                        doctorVocabAdviceContent += "Concerning the already studied words, the current state of your base doesn't need that you work.";
+                        doctorVocabAdviceContent += "Concerning the words that have already been studied, the current state of your base doesn't require work.";
                     } else {
                         doctorVocabAdviceContent = "<b>IT'S TIME TO WORK !</b><br /><br />";
                         
