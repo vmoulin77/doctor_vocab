@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    style="@style/template">
+    <TextView 
+        android:id="@+id/training_header"
+        android:text="@string/training_header_content"
+        android:height="30sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="5dp"
+        style="@style/header_text" />
+    <RelativeLayout 
+        android:id="@+id/translation_direction_and_solution"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/training_header"
+        android:layout_marginBottom="10dp">
+        <TextView 
+            android:id="@+id/translation_direction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            style="@style/small_text" />
+        <ImageButton 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:src="@drawable/question_mark"
+            android:contentDescription="@string/solution_button_content_description"
+            android:onClick="showTraduction" />
+    </RelativeLayout>
+    <TextView 
+        android:id="@+id/word_to_translate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/translation_direction_and_solution"
+        style="@style/medium_text" />
+    <ImageButton 
+        android:id="@+id/nok_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/red_thumb"
+        android:contentDescription="@string/nok_button_content_description"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginRight="2dp"
+        android:onClick="processNok" />
+    <ImageButton 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/green_thumb"
+        android:contentDescription="@string/ok_button_content_description"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@id/nok_button"
+        android:onClick="processOk" />
+    <ImageButton 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/stat"
+        android:contentDescription="@string/stat_button_content_description"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:onClick="statAccess" />
+</RelativeLayout>

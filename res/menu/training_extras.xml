@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item
+        android:id="@+id/advice_option"
+        android:orderInCategory="1"
+        android:showAsAction="never"
+        android:title="@string/advice_option_title" />
+    <item
+        android:id="@+id/cancellation_option"
+        android:orderInCategory="2"
+        android:showAsAction="never"
+        android:title="@string/cancellation_option_title" />
+</menu>

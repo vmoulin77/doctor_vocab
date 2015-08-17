@@ -1,0 +1,15 @@
+<?xml version ="1.0" encoding="utf-8" ?>
+<table>
+    <frequency>
+        <id>0</id>
+        <name>daily</name>
+    </frequency>
+    <frequency>
+        <id>1</id>
+        <name>weekly</name>
+    </frequency>
+    <frequency>
+        <id>2</id>
+        <name>monthly</name>
+    </frequency>
+</table>

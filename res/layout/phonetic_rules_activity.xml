@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    style="@style/template">
+    <RelativeLayout 
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        <TableLayout 
+            android:id="@+id/phonetic_rules_table"
+            android:layout_centerHorizontal="true"
+            style="@style/phonetic_rules_table">
+            <TableRow>
+                <TextView 
+                    style="@style/phonetic_rules_table_top_data" />
+                <TextView 
+                    android:textStyle="bold"
+                    style="@style/phonetic_rules_table_top_data"
+                    android:text="FRA" />
+                <TextView 
+                    android:textStyle="bold"
+                    style="@style/phonetic_rules_table_right_top_data"
+                    android:text="ENG" />
+            </TableRow>
+            <TableRow>
+                <TextView 
+                    style="@style/phonetic_rules_table_even_data"
+                    android:text="[ € ]" />
+                <TextView 
+                    style="@style/phonetic_rules_table_even_data"
+                    android:text="je" />
+                <TextView 
+                    style="@style/phonetic_rules_table_right_even_data"
+                    android:text="term" />
+            </TableRow>
+            <TableRow>
+                <TextView 
+                    style="@style/phonetic_rules_table_odd_data"
+                    android:text="[ è ]" />
+                <TextView 
+                    style="@style/phonetic_rules_table_odd_data"
+                    android:text="être" />
+                <TextView 
+                    style="@style/phonetic_rules_table_right_odd_data"
+                    android:text="let" />
+            </TableRow>
+            <TableRow>
+                <TextView 
+                    style="@style/phonetic_rules_table_even_data"
+                    android:text="[ a ]" />
+                <TextView 
+                    style="@style/phonetic_rules_table_even_data"
+                    android:text="parc" />
+                <TextView 
+                    style="@style/phonetic_rules_table_right_even_data"
+                    android:text="card" />
+            </TableRow>
+            <TableRow>
+                <TextView 
+                    style="@style/phonetic_rules_table_odd_data"
+                    android:text="[ ã ]" />
+                <TextView 
+                    style="@style/phonetic_rules_table_odd_data" />
+                <TextView 
+                    style="@style/phonetic_rules_table_right_odd_data"
+                    android:text="land" />
+            </TableRow>
+            <TableRow>
+                <TextView 
+                    style="@style/phonetic_rules_table_even_data"
+                    android:text="[ i ]" />
+                <TextView 
+                    style="@style/phonetic_rules_table_even_data"
+                    android:text="dire" />
+                <TextView 
+                    style="@style/phonetic_rules_table_right_even_data"
+                    android:text="big" />
+            </TableRow>
+            <TableRow>
+                <TextView 
+                    style="@style/phonetic_rules_table_odd_data"
+                    android:text="[ o ]" />
+                <TextView 
+                    style="@style/phonetic_rules_table_odd_data"
+                    android:text="mot" />
+                <TextView 
+                    style="@style/phonetic_rules_table_right_odd_data"
+                    android:text="code" />
+            </TableRow>
+            <TableRow>
+                <TextView 
+                    style="@style/phonetic_rules_table_even_data"
+                    android:text="[ õ ]" />
+                <TextView 
+                    style="@style/phonetic_rules_table_even_data"
+                    android:text="molle" />
+                <TextView 
+                    style="@style/phonetic_rules_table_right_even_data"
+                    android:text="lock" />
+            </TableRow>
+            <TableRow>
+                <TextView 
+                    style="@style/phonetic_rules_table_odd_data"
+                    android:text="[ j ]" />
+                <TextView 
+                    style="@style/phonetic_rules_table_odd_data"
+                    android:text="jardin" />
+                <TextView 
+                    style="@style/phonetic_rules_table_right_odd_data"
+                    android:text="usual" />
+            </TableRow>
+            <TableRow>
+                <TextView 
+                    style="@style/phonetic_rules_table_even_data"
+                    android:text="[ g ]" />
+                <TextView 
+                    style="@style/phonetic_rules_table_even_data"
+                    android:text="garder" />
+                <TextView 
+                    style="@style/phonetic_rules_table_right_even_data"
+                    android:text="garden" />
+            </TableRow>
+            <TableRow>
+                <TextView 
+                    style="@style/phonetic_rules_table_odd_data"
+                    android:text="[ w ]" />
+                <TextView 
+                    style="@style/phonetic_rules_table_odd_data"
+                    android:text="ouest" />
+                <TextView 
+                    style="@style/phonetic_rules_table_right_odd_data"
+                    android:text="twin" />
+            </TableRow>
+            <TableRow>
+                <TextView 
+                    style="@style/phonetic_rules_table_even_data"
+                    android:text="[ h ]" />
+                <TextView 
+                    style="@style/phonetic_rules_table_even_data" />
+                <TextView 
+                    style="@style/phonetic_rules_table_right_even_data"
+                    android:text="house" />
+            </TableRow>
+            <TableRow>
+                <TextView 
+                    style="@style/phonetic_rules_table_odd_data"
+                    android:text="[ y ]" />
+                <TextView 
+                    style="@style/phonetic_rules_table_odd_data"
+                    android:text="paille" />
+                <TextView 
+                    style="@style/phonetic_rules_table_right_odd_data"
+                    android:text="layer" />
+            </TableRow>
+            <TableRow>
+                <TextView 
+                    style="@style/phonetic_rules_table_even_data"
+                    android:text="[ TH ]" />
+                <TextView 
+                    style="@style/phonetic_rules_table_even_data" />
+                <TextView 
+                    style="@style/phonetic_rules_table_right_even_data"
+                    android:text="this" />
+            </TableRow>
+            <TableRow>
+                <TextView 
+                    style="@style/phonetic_rules_table_odd_data"
+                    android:text="[ CH ]" />
+                <TextView 
+                    style="@style/phonetic_rules_table_odd_data"
+                    android:text="chemin" />
+                <TextView 
+                    style="@style/phonetic_rules_table_right_odd_data"
+                    android:text="ship" />
+            </TableRow>
+            <TableRow>
+                <TextView 
+                    style="@style/phonetic_rules_table_bottom_even_data"
+                    android:text="[ OU ]" />
+                <TextView 
+                    style="@style/phonetic_rules_table_bottom_even_data"
+                    android:text="ours" />
+                <TextView 
+                    style="@style/phonetic_rules_table_bottom_even_data"
+                    android:text="book"
+                    android:layout_marginRight="1dp" />
+            </TableRow>
+        </TableLayout>
+        <TextView 
+            android:id="@+id/phonetic_rules_text1_id"
+            android:layout_below="@id/phonetic_rules_table"
+            style="@style/phonetic_rules_text"
+            android:text="@string/phonetic_rules_text1_content" />
+        <TextView 
+            android:id="@+id/phonetic_rules_text2_id"
+            android:layout_below="@id/phonetic_rules_text1_id"
+            style="@style/phonetic_rules_text"
+            android:text="@string/phonetic_rules_text2_content" />
+        <TextView 
+            android:id="@+id/phonetic_rules_text3_id"
+            android:layout_below="@id/phonetic_rules_text2_id"
+            style="@style/phonetic_rules_text"
+            android:text="@string/phonetic_rules_text3_content" />
+    </RelativeLayout>
+</ScrollView>

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    style="@style/template">
+    <LinearLayout 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerInParent="true">
+        <TableLayout 
+            style="@style/stat_table">
+            <TableRow 
+                style="@style/stat_table_top_row">
+                <TextView 
+                    style="@style/stat_table_top_row_data"
+                    android:text="@string/stat_sum_label_content" />
+                <TextView 
+                    style="@style/stat_table_top_row_data"
+                    android:text="@string/stat_daily_delta_label_content" />
+                <TextView 
+                    style="@style/stat_table_top_row_data"
+                    android:text="@string/stat_weekly_delta_label_content" />
+                <TextView 
+                    style="@style/stat_table_top_row_data"
+                    android:text="@string/stat_monthly_delta_label_content" />
+            </TableRow>
+            <TableRow 
+                style="@style/stat_table_row">
+                <TextView 
+                    android:id="@+id/stat_initial_data"
+                    style="@style/stat_table_even_row_data" />
+                <TextView 
+                    android:id="@+id/initial_daily_delta_data"
+                    style="@style/stat_table_even_row_data" />
+                <TextView 
+                    android:id="@+id/initial_weekly_delta_data"
+                    style="@style/stat_table_even_row_data" />
+                <TextView 
+                    android:id="@+id/initial_monthly_delta_data"
+                    style="@style/stat_table_even_row_data" />
+            </TableRow>
+            <TableRow 
+                style="@style/stat_table_row">
+                <TextView 
+                    android:id="@+id/stat_learning_data"
+                    style="@style/stat_table_odd_row_data" />
+                <TextView 
+                    android:id="@+id/learning_daily_delta_data"
+                    style="@style/stat_table_odd_row_data" />
+                <TextView 
+                    android:id="@+id/learning_weekly_delta_data"
+                    style="@style/stat_table_odd_row_data" />
+                <TextView 
+                    android:id="@+id/learning_monthly_delta_data"
+                    style="@style/stat_table_odd_row_data" />
+            </TableRow>
+            <TableRow 
+                style="@style/stat_table_row">
+                <TextView 
+                    android:id="@+id/stat_known_data"
+                    style="@style/stat_table_even_row_data" />
+                <TextView 
+                    android:id="@+id/known_daily_delta_data"
+                    style="@style/stat_table_even_row_data" />
+                <TextView 
+                    android:id="@+id/known_weekly_delta_data"
+                    style="@style/stat_table_even_row_data" />
+                <TextView 
+                    android:id="@+id/known_monthly_delta_data"
+                    style="@style/stat_table_even_row_data" />
+            </TableRow>
+            <TableRow 
+                style="@style/stat_table_bottom_row">
+                <TextView 
+                    android:id="@+id/stat_total_data"
+                    style="@style/stat_table_bottom_row_data" />
+                <TextView 
+                    style="@style/stat_table_bottom_row_data" />
+                <TextView 
+                    style="@style/stat_table_bottom_row_data" />
+                <TextView 
+                    style="@style/stat_table_bottom_row_data" />
+            </TableRow>
+        </TableLayout>
+        
+        <TextView 
+            style="@style/caption_label"
+            android:text="@string/caption_label_content" />
+        <TableLayout 
+            style="@style/caption_table">
+            <TableRow>
+                <TextView 
+                    style="@style/caption_table_data"
+                    android:text="@string/stat_sum_label_content" />
+                <TextView 
+                    style="@style/caption_table_def"
+                    android:text="@string/caption_sum_def_content" />
+            </TableRow>
+            <TableRow>
+                <TextView 
+                    style="@style/caption_table_data"
+                    android:text="@string/stat_daily_delta_label_content" />
+                <TextView 
+                    style="@style/caption_table_def"
+                    android:text="@string/caption_daily_delta_def_content" />
+            </TableRow>
+            <TableRow>
+                <TextView 
+                    style="@style/caption_table_data"
+                    android:text="@string/stat_weekly_delta_label_content" />
+                <TextView 
+                    style="@style/caption_table_def"
+                    android:text="@string/caption_weekly_delta_def_content" />
+            </TableRow>
+            <TableRow>
+                <TextView 
+                    style="@style/caption_table_data"
+                    android:text="@string/stat_monthly_delta_label_content" />
+                <TextView 
+                    style="@style/caption_table_def"
+                    android:text="@string/caption_monthly_delta_def_content" />
+            </TableRow>
+            <TableRow>
+                <TextView 
+                    style="@style/caption_table_data"
+                    android:text="@string/caption_basic_label_content" />
+                <TextView 
+                    style="@style/caption_table_def"
+                    android:text="@string/caption_initial_def_content" />
+            </TableRow>
+            <TableRow>
+                <TextView 
+                    android:id="@+id/caption_learning_label"
+                    style="@style/caption_table_data"
+                    android:text="@string/caption_basic_label_content" />
+                <TextView 
+                    style="@style/caption_table_def"
+                    android:text="@string/caption_learning_def_content" />
+            </TableRow>
+            <TableRow>
+                <TextView 
+                    android:id="@+id/caption_known_label"
+                    style="@style/caption_table_data"
+                    android:text="@string/caption_basic_label_content" />
+                <TextView 
+                    style="@style/caption_table_def"
+                    android:text="@string/caption_known_def_content" />
+            </TableRow>
+        </TableLayout>
+    </LinearLayout>
+</RelativeLayout>

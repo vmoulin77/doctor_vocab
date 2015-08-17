@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Doctor Vocab</string>
+    
+    <string name="phonetic_rules_option_title">Phonetic rules</string>
+    <string name="about_app_option_title">About Doctor Vocab</string>
+    <string name="cancellation_option_title">Cancel last action</string>
+    <string name="advice_option_title">Doctor Vocab\'s advice</string>
+    
+    <string name="training_activity_title">Training</string>
+    <string name="stat_activity_title">Statistiques</string>
+    <string name="phonetic_rules_activity_title">Règles phonétiques</string>
+    
+    <string name="initialization_error_msg">An error occurred while initializing the database.\nPlease try reinstalling Doctor Vocab.</string>
+    <string name="about_app_content">Doctor Vocab has been developed by:\nVincent MOULIN\nPHP &amp; ANDROID Developer\ndoctor.vocab@gmail.com\n\nCopyright 2013, 2015 Vincent MOULIN\n\nDoctor Vocab is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.</string>
+    <string name="phonetic_rules_text1_content">Les symboles [ \' ] et [ , ] indiquent respectivement un accent primaire et un accent secondaire sur la syllabe suivante.</string>
+    <string name="phonetic_rules_text2_content">Le symbole [ : ] indique un allongement de la lettre précédente.</string>
+    <string name="phonetic_rules_text3_content">La lettre r écrite en taille réduite signifie qu\'elle n\'est presque pas prononcée.</string>
+    <string name="home_text1_content">L\'application Doctor Vocab est basé sur l\'autocorrection : pour chaque mot proposé, vous cliquez sur le pouce vert si vous connaissez la traduction ou sur le pouce rouge dans le cas contraire.</string>
+    <string name="home_text2_content">Lorsque vous cliquez sur le pouce rouge, le mot passe dans le statut \"En cours d\'apprentissage\" et sera considéré comme \"Appris\" à la fin du processus de mémorisation.\nLa couleur du titre \"DOCTOR VOCAB\" correspond au statut du mot proposé.\nLorsqu\'un mot devient \"Appris\" au terme du processus de mémorisation, un popup \"GOOD JOB !\" s\'affiche.</string>
+    <string name="home_text3_content">Le mot proposé est sélectionné suivant un algorithme basé sur le système SRS (Spaced Repetition System).\nAfin d\'optimiser la mémorisation, l\'algorithme définit s\'il est plus pertinent de proposer un mot en cours d\'apprentissage, un mot appris qui n\'a pas été vu récemment ou un nouveau mot.</string>
+    <string name="home_text4_content">L\'icône \"Point d\'interrogation\" vous permet de visualiser la traduction du mot proposé.\nEn cliquant sur l\'icône en bas à droite, vous accédez à vos statistiques qui vous permettent de suivre la progression de votre apprentissage.\nLes règles phonétiques sont expliquées dans \"Menu -&gt; Phonetic rules\".</string>
+    <string name="home_start_fr_to_en_content">START\nFRA -> ENG</string>
+    <string name="home_start_en_to_fr_content">START\nENG -> FRA</string>
+    <string name="training_header_content">DOCTOR VOCAB</string>
+    <string name="translation_direction_fr_to_en">Traduire en anglais :</string>
+    <string name="translation_direction_en_to_fr">Traduire en français :</string>
+    <string name="congratulation_toast_content">GOOD JOB !</string>
+    <string name="cancellation_toast_content">Action cancelled</string>
+    <string name="solution_button_content_description">SOLUTION</string>
+    <string name="nok_button_content_description">A REVOIR</string>
+    <string name="ok_button_content_description">OK</string>
+    <string name="stat_button_content_description">STATISTIQUES</string>
+    <string name="stat_sum_label_content">&#8721;</string>
+    <string name="stat_daily_delta_label_content">&#916;D</string>
+    <string name="stat_weekly_delta_label_content">&#916;W</string>
+    <string name="stat_monthly_delta_label_content">&#916;M</string>
+    <string name="caption_label_content"><u>Légende</u></string>
+    <string name="caption_sum_def_content">Somme des mots</string>
+    <string name="caption_daily_delta_def_content">Variation du jour</string>
+    <string name="caption_weekly_delta_def_content">Variation de la semaine</string>
+    <string name="caption_monthly_delta_def_content">Variation du mois</string>
+    <string name="caption_basic_label_content">---</string>
+    <string name="caption_known_def_content">Mots appris</string>
+    <string name="caption_learning_def_content">Mots en cours\nd\'apprentissage</string>
+    <string name="caption_initial_def_content">Mots jamais étudiés</string>
+    <string name="closure_button_content">OK</string>
+</resources>

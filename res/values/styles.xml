@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--
+        Base application theme, dependent on API level. This theme is replaced
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+    -->
+    <style name="AppBaseTheme" parent="android:Theme.Light">
+        <!--
+            Theme customizations available in newer API levels can go in
+            res/values-vXX/styles.xml, while customizations related to
+            backward-compatibility can go here.
+        -->
+    </style>
+
+    <!-- Application theme -->
+    <style name="AppTheme" parent="AppBaseTheme">
+        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+    </style>
+    
+    <!-- Main template -->
+    <style name="template">
+        <item name="android:background">@color/light_grey</item>
+        <item name="android:padding">5dp</item>
+    </style>
+    <!-- ********************************************************* -->
+    
+    <!-- Text styles -->
+    <style name="small_text">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">17sp</item>
+    </style>
+    
+    <style name="medium_text">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">21sp</item>
+    </style>
+    
+    <style name="header_text" parent="medium_text">
+        <item name="android:textStyle">bold</item>
+    </style>
+    <!-- ********************************************************* -->
+    
+    <!-- activity_home.xml -->
+    <style name="home_text" parent="small_text">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">@dimen/paragraph_vertical_spacing</item>
+    </style>
+    <!-- ********************************************************* -->
+    
+    <!-- activity_training.xml -->
+    <!-- ********************************************************* -->
+    
+    <!-- activity_stat.xml -->
+    <!-- Stat section -->
+    <style name="stat_table">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@color/black</item>
+        <item name="android:layout_marginBottom">15dp</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+    </style>
+    
+    <style name="stat_table_row">
+        <item name="android:layout_marginLeft">1dp</item>
+        <item name="android:layout_marginRight">1dp</item>
+    </style>
+    
+    <style name="stat_table_top_row" parent="stat_table_row">
+        <item name="android:layout_marginTop">1dp</item>
+    </style>
+    
+    <style name="stat_table_bottom_row" parent="stat_table_row">
+        <item name="android:layout_marginBottom">1dp</item>
+    </style>
+    
+    <style name="stat_table_row_data" parent="small_text">
+        <item name="android:layout_margin">1dp</item>
+        <item name="android:paddingTop">2dp</item>
+        <item name="android:paddingBottom">2dp</item>
+        <item name="android:paddingLeft">6dp</item>
+        <item name="android:paddingRight">6dp</item>
+        <item name="android:gravity">right</item>
+    </style>
+    
+    <style name="stat_table_top_row_data" parent="stat_table_row_data">
+        <item name="android:background">@color/dark_grey</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    
+    <style name="stat_table_even_row_data" parent="stat_table_row_data">
+        <item name="android:background">@color/pale_grey</item>
+    </style>
+    
+    <style name="stat_table_odd_row_data" parent="stat_table_row_data">
+        <item name="android:background">@color/grey</item>
+    </style>
+    
+    <style name="stat_table_bottom_row_data" parent="stat_table_odd_row_data">
+        <item name="android:layout_marginBottom">1dp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <!-- END: Stat section -->
+    
+    <!-- Caption section -->
+    <style name="caption_label" parent="small_text">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    
+    <style name="caption_table">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+    
+    <style name="caption_table_data" parent="small_text">
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_marginRight">10dp</item>
+    </style>
+    
+    <style name="caption_table_def" parent="small_text">
+    </style>
+    <!-- END: Caption section -->
+    <!-- ********************************************************* -->
+    
+    <!-- activity_phonetic_rules.xml -->
+    <style name="phonetic_rules_table">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@color/black</item>
+        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:layout_marginBottom">12dp</item>
+    </style>
+    
+    <style name="phonetic_rules_table_data" parent="small_text">
+        <item name="android:layout_marginLeft">1dp</item>
+        <item name="android:layout_marginTop">1dp</item>
+        <item name="android:paddingTop">2dp</item>
+        <item name="android:paddingBottom">2dp</item>
+        <item name="android:paddingLeft">5dp</item>
+        <item name="android:paddingRight">5dp</item>
+        <item name="android:gravity">center_horizontal</item>
+    </style>
+    
+    <style name="phonetic_rules_table_top_data" parent="phonetic_rules_table_data">
+        <item name="android:background">@color/dark_grey</item>
+    </style>
+    
+    <style name="phonetic_rules_table_right_top_data" parent="phonetic_rules_table_top_data">
+        <item name="android:layout_marginRight">1dp</item>
+    </style>
+    
+    <style name="phonetic_rules_table_even_data" parent="phonetic_rules_table_data">
+        <item name="android:background">@color/pale_grey</item>
+    </style>
+    
+    <style name="phonetic_rules_table_right_even_data" parent="phonetic_rules_table_even_data">
+        <item name="android:layout_marginRight">1dp</item>
+    </style>
+    
+    <style name="phonetic_rules_table_bottom_even_data" parent="phonetic_rules_table_even_data">
+        <item name="android:layout_marginBottom">1dp</item>
+    </style>
+    
+    <style name="phonetic_rules_table_odd_data" parent="phonetic_rules_table_data">
+        <item name="android:background">@color/grey</item>
+    </style>
+    
+    <style name="phonetic_rules_table_right_odd_data" parent="phonetic_rules_table_odd_data">
+        <item name="android:layout_marginRight">1dp</item>
+    </style>
+    
+    <style name="phonetic_rules_table_bottom_odd_data" parent="phonetic_rules_table_odd_data">
+        <item name="android:layout_marginBottom">1dp</item>
+    </style>
+    
+    <style name="phonetic_rules_text" parent="small_text">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">@dimen/paragraph_vertical_spacing</item>
+    </style>
+    <!-- ********************************************************* -->
+</resources>
