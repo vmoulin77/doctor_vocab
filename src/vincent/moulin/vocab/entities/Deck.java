@@ -16,23 +16,24 @@ import java.util.Random;
 import android.database.Cursor;
 import vincent.moulin.vocab.MyApplication;
 import vincent.moulin.vocab.constants.Constants;
+import vincent.moulin.vocab.constants.ConstantsHM;
 import vincent.moulin.vocab.helpers.DatabaseHelper;
 import vincent.moulin.vocab.utilities.TimestampNow;
 
 /**
- * The Dictionary class represents a dictionary.
+ * The Deck class represents a set of cards.
  * 
  * @author Vincent MOULIN
  */
-public class Dictionary
+public class Deck
 {
-    private Dicotuple dicotuples[];
+    private Card cards[];
 
-    public Dicotuple[] getDicotuples() {
-        return dicotuples;
+    public Card[] getCards() {
+        return cards;
     }
-    public void setDicotuples(Dicotuple[] dicotuples) {
-        this.dicotuples = dicotuples;
+    public void setCards(Card[] cards) {
+        this.cards = cards;
     }
     
     /**
@@ -49,7 +50,7 @@ public class Dictionary
         query = "SELECT "
               +     "id_status_" + langName + ", "
               +     "COUNT(*) "
-              + "FROM dicotuple "
+              + "FROM card "
               + "WHERE is_active_" + langName + " = 1 "
               + "GROUP BY id_status_" + langName;
         
@@ -66,9 +67,9 @@ public class Dictionary
     /**
      * The algorithm which selects the word to translate.
      * @param startingLangName the starting language name
-     * @return the selected Dicotuple object
+     * @return the selected Card object
      */
-    public static Dicotuple algoSelectWord(String startingLangName) {
+    public static Card algoSelectWord(String startingLangName) {
         // Common variables
         DatabaseHelper dbh = DatabaseHelper.getInstance(MyApplication.getContext());
         String query;
@@ -76,7 +77,7 @@ public class Dictionary
         Random random = new Random();
         int nbInitialWords;
         long rawTimestampNow = TimestampNow.getInstance().getValue(Constants.TIMESTAMP_RAW_VALUE);
-        Dicotuple retour = null;
+        Card retour = null;
         
         // Variables for the phase 1
         int p1_secondaryIndice = 0;
@@ -98,9 +99,9 @@ public class Dictionary
                 +     "id, "
                 +     "secondary_indice_" + startingLangName + ", "
                 +     "timestamp_last_answer_" + startingLangName + " "
-                + "FROM dicotuple "
+                + "FROM card "
                 + "WHERE is_active_" + startingLangName + " = 1 "
-                + "AND id_status_" + startingLangName + " = " + Constants.STATUSES.getId("learning") + " "
+                + "AND id_status_" + startingLangName + " = " + ConstantsHM.STATUSES.getId("learning") + " "
                 + "ORDER BY secondary_indice_" + startingLangName + ", timestamp_last_answer_" + startingLangName;
           
         cursor = dbh.getReadableDatabase().rawQuery(query, null);
@@ -123,7 +124,7 @@ public class Dictionary
         cursor.close();
         
         if ( ! p1_eligibleIds.isEmpty()) {
-            return Dicotuple.getById(p1_eligibleIds.get(random.nextInt(p1_eligibleIds.size())));
+            return Card.getById(p1_eligibleIds.get(random.nextInt(p1_eligibleIds.size())));
         }
         //END: 1st phase of the algorithm -------------------------------------
 
@@ -133,9 +134,9 @@ public class Dictionary
         //
         // We set the threshold "p2_threshold"
         query = "SELECT COUNT(*) "
-              + "FROM dicotuple "
+              + "FROM card "
               + "WHERE is_active_" + startingLangName + " = 1 "
-              + "AND id_status_" + startingLangName + " = " + Constants.STATUSES.getId("initial");
+              + "AND id_status_" + startingLangName + " = " + ConstantsHM.STATUSES.getId("initial");
 
         cursor = dbh.getReadableDatabase().rawQuery(query, null);
         cursor.moveToFirst();
@@ -144,11 +145,11 @@ public class Dictionary
 
         if (nbInitialWords == 0) {
             // We set p2_threshold to the maximum of a combined indice
-            p2_threshold = Constants.MAX_COMBINED_INDICE;
+            p2_threshold = Word.MAX_COMBINED_INDICE;
         } else if (random.nextInt(10) == 0) {
             // We set p2_threshold to the maximum of a combined indice of an eligible word
             // The goal is to guarantee that all the eligible known words will be reviewed within a reasonable time
-            p2_threshold = Constants.MAX_COMBINED_INDICE_ELIGIBLE_WORD;
+            p2_threshold = Word.MAX_COMBINED_INDICE_ELIGIBLE_WORD;
         } else {
             // The higher the weight of words in learning is, the higher the probability to select a known word (ie with the "known" status) is
             // The lower the weight of words in learning is, the higher the probability to select a new word (ie with the "initial" status) is
@@ -156,9 +157,9 @@ public class Dictionary
             query = "SELECT "
                   +     "secondary_indice_" + startingLangName + ", "
                   +     "COUNT(*) "
-                  + "FROM dicotuple "
+                  + "FROM card "
                   + "WHERE is_active_" + startingLangName + " = 1 "
-                  + "AND id_status_" + startingLangName + " = " + Constants.STATUSES.getId("learning") + " "
+                  + "AND id_status_" + startingLangName + " = " + ConstantsHM.STATUSES.getId("learning") + " "
                   + "GROUP BY secondary_indice_" + startingLangName;
     
             cursor = dbh.getReadableDatabase().rawQuery(query, null);
@@ -190,9 +191,9 @@ public class Dictionary
                   +     "id, "
                   +     "primary_indice_" + startingLangName + ", "
                   +     "timestamp_last_answer_" + startingLangName + " "
-                  + "FROM dicotuple "
+                  + "FROM card "
                   + "WHERE is_active_" + startingLangName + " = 1 "
-                  + "AND id_status_" + startingLangName + " = " + Constants.STATUSES.getId("known");
+                  + "AND id_status_" + startingLangName + " = " + ConstantsHM.STATUSES.getId("known");
               
             cursor = dbh.getReadableDatabase().rawQuery(query, null);
               
@@ -211,27 +212,27 @@ public class Dictionary
             cursor.close();
             
             if ( ! p2_eligibleIds.isEmpty()) {
-                return Dicotuple.getById(p2_eligibleIds.get(random.nextInt(p2_eligibleIds.size())));
+                return Card.getById(p2_eligibleIds.get(random.nextInt(p2_eligibleIds.size())));
             }
         }
         //END: 2nd phase of the algorithm -------------------------------------
 
         // 3rd phase of the algorithm :
         // If no eligible Word at phase 2 or phase 2 has been skipped
-        // and if there is at least one Word with status "initial" left in the base,
+        // and if there is at least one Word with status "initial" left in the Deck,
         // we randomly select one of them
         if (nbInitialWords > 0) {
             p3_randomPosition = random.nextInt(nbInitialWords);
 
             query = "SELECT id "
-                  + "FROM dicotuple "
+                  + "FROM card "
                   + "WHERE is_active_" + startingLangName + " = 1 "
-                  + "AND id_status_" + startingLangName + " = " + Constants.STATUSES.getId("initial") + " "
+                  + "AND id_status_" + startingLangName + " = " + ConstantsHM.STATUSES.getId("initial") + " "
                   + "LIMIT " + p3_randomPosition + ", 1";
 
             cursor = dbh.getReadableDatabase().rawQuery(query, null);
             cursor.moveToFirst();
-            retour = Dicotuple.getById(cursor.getInt(0));
+            retour = Card.getById(cursor.getInt(0));
             cursor.close();
 
             return retour;
@@ -241,11 +242,11 @@ public class Dictionary
         // 4th phase of the algorithm :
         // If no eligible Word at phase 3, we select the oldest studied Word (which necessarily has the status "learning")
         query = "SELECT id "
-              + "FROM dicotuple "
+              + "FROM card "
               + "WHERE is_active_" + startingLangName + " = 1 "
               + "AND timestamp_last_answer_" + startingLangName + " = ("
               +     "SELECT MIN(timestamp_last_answer_" + startingLangName + ") "
-              +     "FROM dicotuple "
+              +     "FROM card "
               +     "WHERE is_active_" + startingLangName + " = 1"
               + ")";
 
@@ -253,7 +254,7 @@ public class Dictionary
 
         if (cursor.getCount() > 0) {
             cursor.moveToPosition(random.nextInt(cursor.getCount()));
-            retour = Dicotuple.getById(cursor.getInt(0));
+            retour = Card.getById(cursor.getInt(0));
         }
 
         cursor.close();

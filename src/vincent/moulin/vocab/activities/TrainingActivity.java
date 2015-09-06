@@ -24,9 +24,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.text.Html;
 import vincent.moulin.vocab.R;
-import vincent.moulin.vocab.constants.Constants;
-import vincent.moulin.vocab.entities.Dictionary;
-import vincent.moulin.vocab.entities.Dicotuple;
+import vincent.moulin.vocab.constants.ConstantsHM;
+import vincent.moulin.vocab.entities.Deck;
+import vincent.moulin.vocab.entities.Card;
 import vincent.moulin.vocab.entities.Pack;
 import vincent.moulin.vocab.entities.StatSnap;
 import vincent.moulin.vocab.utilities.TimestampNow;
@@ -40,23 +40,23 @@ import vincent.moulin.vocab.menus.TrainingMenuManager;
  */
 public class TrainingActivity extends Activity
 {
-    private Dicotuple currentDicotuple, prevDicotupleBeforeAnswering = null;
+    private Card currentCard, prevCardBeforeAnswering = null;
     private Pack prevPackBeforeAnswering = null;
     private String startingLangName;
     private boolean cancellationOptionIsEnabled = false;
 
-    public Dicotuple getCurrentDicotuple() {
-        return currentDicotuple;
+    public Card getCurrentCard() {
+        return currentCard;
     }
-    public void setCurrentDicotuple(Dicotuple currentDicotuple) {
-        this.currentDicotuple = currentDicotuple;
+    public void setCurrentCard(Card currentCard) {
+        this.currentCard = currentCard;
     }
 
-    public Dicotuple getPrevDicotupleBeforeAnswering() {
-        return prevDicotupleBeforeAnswering;
+    public Card getPrevCardBeforeAnswering() {
+        return prevCardBeforeAnswering;
     }
-    public void setPrevDicotupleBeforeAnswering(Dicotuple prevDicotupleBeforeAnswering) {
-        this.prevDicotupleBeforeAnswering = prevDicotupleBeforeAnswering;
+    public void setPrevCardBeforeAnswering(Card prevCardBeforeAnswering) {
+        this.prevCardBeforeAnswering = prevCardBeforeAnswering;
     }
     
     public Pack getPrevPackBeforeAnswering() {
@@ -100,7 +100,7 @@ public class TrainingActivity extends Activity
             textView.setText(R.string.translation_direction_fr_to_en);
         }
         
-        this.currentDicotuple = Dictionary.algoSelectWord(this.startingLangName);
+        this.currentCard = Deck.algoSelectWord(this.startingLangName);
         this.displayWord();
     }
     
@@ -108,7 +108,7 @@ public class TrainingActivity extends Activity
     public void onPause() {
         super.onPause();
         
-        this.prevDicotupleBeforeAnswering = null;
+        this.prevCardBeforeAnswering = null;
         this.prevPackBeforeAnswering = null;
         this.cancellationOptionIsEnabled = false;
     }
@@ -134,7 +134,7 @@ public class TrainingActivity extends Activity
     
     public void displayWord() {
         TextView textView;
-        Word wordToTranslate = this.currentDicotuple.getWordByLangName(this.startingLangName);
+        Word wordToTranslate = this.currentCard.getWordByLangName(this.startingLangName);
         
         textView = (TextView) findViewById(R.id.training_header);
         textView.setTextColor(Color.parseColor(wordToTranslate.getStatus().getColor()));
@@ -157,16 +157,16 @@ public class TrainingActivity extends Activity
         this.prevPackBeforeAnswering = null;
 
         if (answerIsOk) {
-            Word wordToTranslate = this.currentDicotuple.getWordByLangName(this.startingLangName);
+            Word wordToTranslate = this.currentCard.getWordByLangName(this.startingLangName);
 
             if (wordToTranslate.getStatus().getName().equals("learning")) {
-                if (wordToTranslate.getSecondaryIndice() == Constants.MAX_SECONDARY_INDICE) {
+                if (wordToTranslate.getSecondaryIndice() == Word.MAX_SECONDARY_INDICE) {
                     Toast
                         .makeText(this, R.string.congratulation_toast_content, Toast.LENGTH_SHORT)
                         .show();
                 } else {
                     this.prevPackBeforeAnswering = Pack.getByIdLangAndIndice(
-                        Constants.LANGUAGES.getId(this.startingLangName),
+                        ConstantsHM.LANGUAGES.getId(this.startingLangName),
                         wordToTranslate.getSecondaryIndice() + 1
                     );
                 }
@@ -174,16 +174,16 @@ public class TrainingActivity extends Activity
         }
 
         try {
-            this.prevDicotupleBeforeAnswering = (Dicotuple) this.currentDicotuple.clone();
+            this.prevCardBeforeAnswering = (Card) this.currentCard.clone();
         } catch (CloneNotSupportedException e) {
-            this.prevDicotupleBeforeAnswering = null;
+            this.prevCardBeforeAnswering = null;
             this.prevPackBeforeAnswering = null;
             this.cancellationOptionIsEnabled = false;
         }
 
-        this.currentDicotuple.manageAnswer(this.startingLangName, answerIsOk);
+        this.currentCard.manageAnswer(this.startingLangName, answerIsOk);
 
-        this.currentDicotuple = Dictionary.algoSelectWord(this.startingLangName);
+        this.currentCard = Deck.algoSelectWord(this.startingLangName);
         this.displayWord();
     }
     
@@ -199,9 +199,9 @@ public class TrainingActivity extends Activity
         Word solution;
         
         if (this.startingLangName.equals("english")) {
-            solution = this.currentDicotuple.getWordFrench();
+            solution = this.currentCard.getWordFrench();
         } else {
-            solution = this.currentDicotuple.getWordEnglish();
+            solution = this.currentCard.getWordEnglish();
         }
 
         new AlertDialog.Builder(this)

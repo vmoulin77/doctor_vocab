@@ -19,17 +19,19 @@ import vincent.moulin.vocab.helpers.DatabaseHelper;
 import vincent.moulin.vocab.utilities.TimestampNow;
 
 /**
- * The Dicotuple class represents a row of a dictionary.
+ * The Card class represents a word.
+ * One side of the card represents the English form and the other side represents the French form.
+ * Some additional information attached to the card is mainly used in order to implement the Spaced Repetition System.
  * 
  * @author Vincent MOULIN
  */
-public class Dicotuple implements Cloneable
+public class Card implements Cloneable
 {
     private int id;
     private WordEnglish wordEnglish;
     private WordFrench wordFrench;
     
-    public Dicotuple(int id, WordEnglish wordEnglish, WordFrench wordFrench) {
+    public Card(int id, WordEnglish wordEnglish, WordFrench wordFrench) {
         this.id = id;
         this.wordEnglish = wordEnglish;
         this.wordFrench = wordFrench;
@@ -56,8 +58,8 @@ public class Dicotuple implements Cloneable
         this.wordFrench = wordFrench;
     }
     
-    public Dicotuple clone() throws CloneNotSupportedException {
-        Dicotuple retour = (Dicotuple) super.clone();
+    public Card clone() throws CloneNotSupportedException {
+        Card retour = (Card) super.clone();
 
         retour.wordEnglish = (WordEnglish) this.wordEnglish.clone();
         retour.wordFrench = (WordFrench) this.wordFrench.clone();
@@ -66,7 +68,7 @@ public class Dicotuple implements Cloneable
     }
     
     /**
-     * Get the Word object of the current Dicotuple according to the given language name "langName".
+     * Get the Word object of the current Card according to the given language name "langName".
      * @param langName the language name of the returned Word object
      * @return the Word object
      */
@@ -80,7 +82,7 @@ public class Dicotuple implements Cloneable
     
     /**
      * Manage the answer of the user.
-     * Update the current Dicotuple object and the database.
+     * Update the current Card object and the database.
      * @param startingLangName the starting language name
      * @param answerIsOk true if the answer is ok and false otherwise
      */
@@ -102,9 +104,9 @@ public class Dicotuple implements Cloneable
             }
         } else if (wordToTranslate.getStatus().getName().equals("known")) {
             if (answerIsOk) {
-                if (wordToTranslate.getPrimaryIndice() != Constants.MAX_PRIMARY_INDICE) {
+                if (wordToTranslate.getPrimaryIndice() != Word.MAX_PRIMARY_INDICE) {
                     if (wordToTranslate.isAccelerated()) {
-                        wordToTranslate.setPrimaryIndice(Constants.MAX_PRIMARY_INDICE);
+                        wordToTranslate.setPrimaryIndice(Word.MAX_PRIMARY_INDICE);
                     } else {
                         wordToTranslate.setPrimaryIndice(wordToTranslate.getPrimaryIndice() + 1);
                     }
@@ -122,7 +124,7 @@ public class Dicotuple implements Cloneable
             }
         } else {
             if (answerIsOk) {
-                if (wordToTranslate.getSecondaryIndice() == Constants.MAX_SECONDARY_INDICE) {
+                if (wordToTranslate.getSecondaryIndice() == Word.MAX_SECONDARY_INDICE) {
                     wordToTranslate.setStatus("known");
                     wordToTranslate.setSecondaryIndice(1);
                 } else {
@@ -158,19 +160,19 @@ public class Dicotuple implements Cloneable
         }
         //--------------------------------------------------------------------
 
-        this.updateDicotupleInDatabase();
+        this.updateCardInDatabase();
     }
     
     /**
-     * Get from the database the Dicotuple object whose id is "id".
-     * @param id the id of the Dicotuple we want to get
-     * @return the Dicotuple object whose id is "id"
+     * Get from the database the Card object whose id is "id".
+     * @param id the id of the Card we want to get
+     * @return the Card object whose id is "id"
      */
-    public static Dicotuple getById(int id) {
+    public static Card getById(int id) {
         DatabaseHelper dbh = DatabaseHelper.getInstance(MyApplication.getContext());
         String query;
         Cursor cursor;
-        Dicotuple retour;
+        Card retour;
         
         query = "SELECT "
               +     "word_english, " //0
@@ -187,7 +189,7 @@ public class Dicotuple implements Cloneable
               +     "secondary_indice_french, " //11
               +     "timestamp_last_answer_english, " //12
               +     "timestamp_last_answer_french " //13
-              + "FROM dicotuple "
+              + "FROM card "
               + "WHERE id = " + id;
         
         cursor = dbh.getReadableDatabase().rawQuery(query, null);
@@ -197,7 +199,7 @@ public class Dicotuple implements Cloneable
         } else {
             cursor.moveToFirst();
             
-            retour = new Dicotuple(
+            retour = new Card(
                 id,
                 new WordEnglish(
                     cursor.getString(0),
@@ -226,10 +228,10 @@ public class Dicotuple implements Cloneable
     }
     
     /**
-     * Update the current Dicotuple in the database.
+     * Update the current Card in the database.
      * @return the number of rows affected
      */
-    public int updateDicotupleInDatabase() {
+    public int updateCardInDatabase() {
         DatabaseHelper dbh = DatabaseHelper.getInstance(MyApplication.getContext());
         ContentValues contentValues = new ContentValues();
         
@@ -264,6 +266,6 @@ public class Dicotuple implements Cloneable
         contentValues.put("timestamp_last_answer_english", this.wordEnglish.getTimestampLastAnswer());
         contentValues.put("timestamp_last_answer_french", this.wordFrench.getTimestampLastAnswer());
         
-        return dbh.getWritableDatabase().update("dicotuple", contentValues, "id = ?", new String[]{String.valueOf(this.id)});
+        return dbh.getWritableDatabase().update("card", contentValues, "id = ?", new String[]{String.valueOf(this.id)});
     }
 }

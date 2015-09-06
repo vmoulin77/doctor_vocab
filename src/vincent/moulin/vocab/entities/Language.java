@@ -13,7 +13,7 @@ package vincent.moulin.vocab.entities;
 
 import android.database.Cursor;
 import vincent.moulin.vocab.MyApplication;
-import vincent.moulin.vocab.constants.Constants;
+import vincent.moulin.vocab.constants.ConstantsHM;
 import vincent.moulin.vocab.helpers.DatabaseHelper;
 import vincent.moulin.vocab.utilities.EnumDataItem;
 
@@ -62,6 +62,6 @@ public final class Language extends EnumDataItem
     }
     
     public static Language getByName(String name) {
-        return getById(Constants.LANGUAGES.getId(name));
+        return getById(ConstantsHM.LANGUAGES.getId(name));
     }
 }

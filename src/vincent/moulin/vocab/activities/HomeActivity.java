@@ -20,7 +20,7 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import vincent.moulin.vocab.R;
-import vincent.moulin.vocab.entities.Dicotuple;
+import vincent.moulin.vocab.entities.Card;
 import vincent.moulin.vocab.menus.DefaultMenuManager;
 
 /**
@@ -33,8 +33,8 @@ public class HomeActivity extends Activity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // Pour forcer l'initialisation de la base de données sur la page d'accueil
-        Dicotuple.getById(0);
+        // Trigger the initialization of the database
+        Card.getById(0);
         //-----------------------------------------------------
         
         super.onCreate(savedInstanceState);

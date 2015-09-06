@@ -20,6 +20,7 @@ import android.database.Cursor;
 import vincent.moulin.vocab.R;
 import vincent.moulin.vocab.MyApplication;
 import vincent.moulin.vocab.constants.Constants;
+import vincent.moulin.vocab.constants.ConstantsHM;
 import vincent.moulin.vocab.activities.TrainingActivity;
 import vincent.moulin.vocab.utilities.TimestampNow;
 import vincent.moulin.vocab.entities.Word;
@@ -56,9 +57,9 @@ public class TrainingMenuManager
                     query = "SELECT "
                           +     "secondary_indice_" + startingLangName + ", "
                           +     "timestamp_last_answer_" + startingLangName + " "
-                          + "FROM dicotuple "
+                          + "FROM card "
                           + "WHERE is_active_" + startingLangName + " = 1 "
-                          + "AND id_status_" + startingLangName + " = " + Constants.STATUSES.getId("learning");
+                          + "AND id_status_" + startingLangName + " = " + ConstantsHM.STATUSES.getId("learning");
                     
                     cursor = dbh.getReadableDatabase().rawQuery(query, null);
                     while (cursor.moveToNext()) {
@@ -74,9 +75,9 @@ public class TrainingMenuManager
                     query = "SELECT "
                           +     "primary_indice_" + startingLangName + ", "
                           +     "timestamp_last_answer_" + startingLangName + " "
-                          + "FROM dicotuple "
+                          + "FROM card "
                           + "WHERE is_active_" + startingLangName + " = 1 "
-                          + "AND id_status_" + startingLangName + " = " + Constants.STATUSES.getId("known");
+                          + "AND id_status_" + startingLangName + " = " + ConstantsHM.STATUSES.getId("known");
                         
                     cursor = dbh.getReadableDatabase().rawQuery(query, null);
                     while (cursor.moveToNext()) {
@@ -125,14 +126,14 @@ public class TrainingMenuManager
                     return true;
                     
                 case R.id.cancellation_option:
-                    trainingActivity.getPrevDicotupleBeforeAnswering().updateDicotupleInDatabase();
+                    trainingActivity.getPrevCardBeforeAnswering().updateCardInDatabase();
                     if (trainingActivity.getPrevPackBeforeAnswering() != null) {
                         trainingActivity.getPrevPackBeforeAnswering().updatePackInDatabase();
                     }
                     
-                    trainingActivity.setCurrentDicotuple(trainingActivity.getPrevDicotupleBeforeAnswering());
+                    trainingActivity.setCurrentCard(trainingActivity.getPrevCardBeforeAnswering());
                     
-                    trainingActivity.setPrevDicotupleBeforeAnswering(null);
+                    trainingActivity.setPrevCardBeforeAnswering(null);
                     trainingActivity.setPrevPackBeforeAnswering(null);
                     trainingActivity.setCancellationOptionIsEnabled(false);
                     

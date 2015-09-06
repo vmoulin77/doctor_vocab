@@ -15,6 +15,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import vincent.moulin.vocab.MyApplication;
 import vincent.moulin.vocab.constants.Constants;
+import vincent.moulin.vocab.constants.ConstantsHM;
 import vincent.moulin.vocab.helpers.DatabaseHelper;
 import vincent.moulin.vocab.helpers.TimeHelper;
 import vincent.moulin.vocab.utilities.TimestampNow;
@@ -135,7 +136,7 @@ public class StatSnap
               +     "id_status, " //1
               +     "nb_words " //2
               + "FROM stat_snap "
-              + "WHERE id_language = " + Constants.LANGUAGES.getId(langName);
+              + "WHERE id_language = " + ConstantsHM.LANGUAGES.getId(langName);
         
         cursor = dbh.getReadableDatabase().rawQuery(query, null);
         
@@ -176,12 +177,12 @@ public class StatSnap
             idStatSnap      = cursor.getInt(0);
             idFrequency     = cursor.getInt(1);
             idStatus        = cursor.getInt(2);
-            langName        = Constants.LANGUAGES.getName(cursor.getInt(3));
+            langName        = ConstantsHM.LANGUAGES.getName(cursor.getInt(3));
             validityPeriod  = cursor.getLong(4);
             
-            if (idFrequency == Constants.FREQUENCIES.getId("daily")) {
+            if (idFrequency == ConstantsHM.FREQUENCIES.getId("daily")) {
                 currentPeriod = daystamp;
-            } else if (idFrequency == Constants.FREQUENCIES.getId("weekly")) {
+            } else if (idFrequency == ConstantsHM.FREQUENCIES.getId("weekly")) {
                 currentPeriod = weekstamp;
             } else {
                 currentPeriod = monthstamp;
@@ -189,7 +190,7 @@ public class StatSnap
             
             if (validityPeriod != currentPeriod) {
                 query2 = "SELECT COUNT(*) "
-                       + "FROM dicotuple "
+                       + "FROM card "
                        + "WHERE is_active_" + langName + " = 1 "
                        + "AND id_status_" + langName + " = " + idStatus;
                 cursor2 = dbh.getReadableDatabase().rawQuery(query2, null);

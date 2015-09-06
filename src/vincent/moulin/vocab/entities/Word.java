@@ -24,6 +24,11 @@ import vincent.moulin.vocab.utilities.TimestampNow;
  */
 public abstract class Word implements Cloneable
 {
+    public static final int MAX_PRIMARY_INDICE = 10;
+    public static final int MAX_SECONDARY_INDICE = 10;
+    public static final int MAX_COMBINED_INDICE = 20;
+    public static final int MAX_COMBINED_INDICE_ELIGIBLE_WORD = 10;
+    
     private String content;
     private boolean isActive;
     private Status status;
@@ -176,7 +181,7 @@ public abstract class Word implements Cloneable
      * @return true if the considered known Word is eligible and false otherwise
      */
     public static boolean knownWordIsEligible(int primaryIndice, long timestampDiff) {
-        if (calcCombinedIndice(primaryIndice, timestampDiff) <= Constants.MAX_COMBINED_INDICE_ELIGIBLE_WORD) {
+        if (calcCombinedIndice(primaryIndice, timestampDiff) <= MAX_COMBINED_INDICE_ELIGIBLE_WORD) {
             return true;
         } else {
             return false;

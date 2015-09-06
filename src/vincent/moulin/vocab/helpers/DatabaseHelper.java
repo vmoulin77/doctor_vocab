@@ -21,7 +21,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.database.sqlite.SQLiteOpenHelper;
 import vincent.moulin.vocab.R;
-import vincent.moulin.vocab.constants.Constants;
+import vincent.moulin.vocab.constants.ConstantsHM;
+import vincent.moulin.vocab.entities.Word;
 
 /**
  * The DatabaseHelper class
@@ -33,7 +34,7 @@ public final class DatabaseHelper extends SQLiteOpenHelper
     private static DatabaseHelper instance = null;
     
     private static final String DATABASE_NAME = "doctor_vocab";
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
     
     private static final String CREATE_TABLE_LANGUAGE =
         "CREATE TABLE language ("
@@ -54,8 +55,8 @@ public final class DatabaseHelper extends SQLiteOpenHelper
         +     "name TEXT"
         + ")";
     
-    private static final String CREATE_TABLE_DICOTUPLE =
-        "CREATE TABLE dicotuple ("
+    private static final String CREATE_TABLE_CARD =
+        "CREATE TABLE card ("
         +     "id INTEGER PRIMARY KEY,"
         +     "word_english TEXT,"
         +     "word_french TEXT,"
@@ -130,7 +131,7 @@ public final class DatabaseHelper extends SQLiteOpenHelper
         db.execSQL(CREATE_TABLE_LANGUAGE);
         db.execSQL(CREATE_TABLE_STATUS);
         db.execSQL(CREATE_TABLE_FREQUENCY);
-        db.execSQL(CREATE_TABLE_DICOTUPLE);
+        db.execSQL(CREATE_TABLE_CARD);
         db.execSQL(CREATE_TABLE_PACK);
         db.execSQL(CREATE_TABLE_STAT_SNAP);
         
@@ -252,11 +253,11 @@ public final class DatabaseHelper extends SQLiteOpenHelper
         }
         //END: Filling the "frequency" table
         
-        // Filling the "dicotuple" table
+        // Filling the "card" table
         try {
-            XmlPullParser xpp = this.context.getResources().getXml(R.xml.db_dicotuple);
+            XmlPullParser xpp = this.context.getResources().getXml(R.xml.db_card);
             
-            query = "INSERT INTO dicotuple ("
+            query = "INSERT INTO card ("
                   +     "id,"
                   +     "word_english,"
                   +     "word_french,"
@@ -278,8 +279,8 @@ public final class DatabaseHelper extends SQLiteOpenHelper
                   +     "?,"
                   +     "?,"
                   +     "?,"
-                  +     Constants.STATUSES.getId("initial") + ","
-                  +     Constants.STATUSES.getId("initial") + ","
+                  +     ConstantsHM.STATUSES.getId("initial") + ","
+                  +     ConstantsHM.STATUSES.getId("initial") + ","
                   +     "1,"
                   +     "1,"
                   +     "1,"
@@ -307,7 +308,7 @@ public final class DatabaseHelper extends SQLiteOpenHelper
                 }
                 
                 if ((xpp.getEventType() == XmlPullParser.END_TAG)
-                    && (xpp.getName().equals("dt"))
+                    && (xpp.getName().equals("card"))
                 ) {
                     sqliteStatement.executeInsert();
                 }
@@ -320,12 +321,12 @@ public final class DatabaseHelper extends SQLiteOpenHelper
         } catch (Exception e) {
             this.displayInitializationErrorMsg();
         }
-        //END: Filling the "dicotuple" table
+        //END: Filling the "card" table
 
         // Filling the "pack" table
-        for (Map.Entry<String, Integer> languageEntry : Constants.LANGUAGES.entrySet()) {
-            for (int i = 2; i <= Constants.MAX_SECONDARY_INDICE; i++) {
-                idPack = (languageEntry.getValue() * Constants.MAX_SECONDARY_INDICE) + i - 1 - languageEntry.getValue();
+        for (Map.Entry<String, Integer> languageEntry : ConstantsHM.LANGUAGES.entrySet()) {
+            for (int i = 2; i <= Word.MAX_SECONDARY_INDICE; i++) {
+                idPack = (languageEntry.getValue() * Word.MAX_SECONDARY_INDICE) + i - 1 - languageEntry.getValue();
                 
                 contentValues = new ContentValues();
                 contentValues.put("id", idPack);
@@ -339,9 +340,9 @@ public final class DatabaseHelper extends SQLiteOpenHelper
         //END: Filling the "pack" table
         
         // Filling the "stat_snap" table
-        for (Map.Entry<String, Integer> frequencyEntry : Constants.FREQUENCIES.entrySet()) {
-            for (Map.Entry<String, Integer> statusEntry : Constants.STATUSES.entrySet()) {
-                for (Map.Entry<String, Integer> languageEntry : Constants.LANGUAGES.entrySet()) {
+        for (Map.Entry<String, Integer> frequencyEntry : ConstantsHM.FREQUENCIES.entrySet()) {
+            for (Map.Entry<String, Integer> statusEntry : ConstantsHM.STATUSES.entrySet()) {
+                for (Map.Entry<String, Integer> languageEntry : ConstantsHM.LANGUAGES.entrySet()) {
                     contentValues = new ContentValues();
                     contentValues.put("id", idStatSnap);
                     contentValues.put("id_frequency", frequencyEntry.getValue());
@@ -365,114 +366,42 @@ public final class DatabaseHelper extends SQLiteOpenHelper
         int cursorPosition;
         ContentValues contentValues;
         
-        if ((oldVersion == 2) && (newVersion == 3)) {
-            String[] reusedIds = {"60", "78", "89", "90", "102", "111", "134", "138"};
-            String[][] userdata = new String[7050 - reusedIds.length][11];
-            String[][] idsMatching = new String[5478][2];
-            int idsMatchingCounter = 0;
+        if (oldVersion == 2) {
+            db.execSQL("DROP TABLE IF EXISTS dico;");
+            onCreate(db);
+        } else if (oldVersion == 3) {
+            String[][] userdata = new String[5476][11];
             
-            // Retrieve the matching of the ids
-            try {
-                XmlPullParser xpp = this.context.getResources().getXml(R.xml.upgrade_version_3_0_0);
-
-                while (xpp.getEventType() != XmlPullParser.END_DOCUMENT) {
-                    if (xpp.getEventType() == XmlPullParser.START_TAG) {
-                        if (xpp.getName().equals("old_id")) {
-                            idsMatching[idsMatchingCounter][0] = xpp.nextText();
-                        } else if (xpp.getName().equals("new_id")) {
-                            idsMatching[idsMatchingCounter][1] = xpp.nextText();
-                        }
-                    }
-                    
-                    if ((xpp.getEventType() == XmlPullParser.END_TAG)
-                        && (xpp.getName().equals("dt"))
-                    ) {
-                        idsMatchingCounter++;
-                    }
-                    
-                    xpp.next();
-                }
-                
-                xpp = null;
-            } catch (Exception e) {
-                this.displayInitializationErrorMsg();
-            }
-            //END: Retrieve the matching of the ids
-
             // Save the user data
             query = "SELECT "
-                  +     "id_dicotuple, " //0
-                  +     "mode_english, " //1
-                  +     "mode_french, " //2
+                  +     "id, " //0
+                  +     "id_status_english, " //1
+                  +     "id_status_french, " //2
                   +     "is_accelerated_english, " //3
                   +     "is_accelerated_french, " //4
-                  +     "indice_english_primary, " //5
-                  +     "indice_english_secondary, " //6
-                  +     "indice_french_primary, " //7
-                  +     "indice_french_secondary, " //8
+                  +     "primary_indice_english, " //5
+                  +     "primary_indice_french, " //6
+                  +     "secondary_indice_english, " //7
+                  +     "secondary_indice_french, " //8
                   +     "timestamp_last_answer_english, " //9
                   +     "timestamp_last_answer_french " //10
-                  + "FROM dico "
-                  + "WHERE id_dicotuple NOT IN (";
-            
-            for (String reusedId : reusedIds) {
-                query += reusedId + ",";
-            }
-            query = query.substring(0, query.length() - 1);
-                  
-            query += ") "
-                  +  "AND (timestamp_last_answer_english <> 0 OR timestamp_last_answer_french <> 0)";
+                  + "FROM dicotuple "
+                  + "WHERE timestamp_last_answer_english <> 0 "
+                  + "OR timestamp_last_answer_french <> 0";
             
             cursor = db.rawQuery(query, null);
             
             while (cursor.moveToNext()) {
                 cursorPosition = cursor.getPosition();
                 for (int i = 0; i <= 10; i++) {
-                    if (i == 0) {
-                        for (String[] idsMatchingItem : idsMatching) {
-                            if (cursor.getString(0).equals(idsMatchingItem[0])) {
-                                userdata[cursorPosition][0] = idsMatchingItem[1];
-                                break;
-                            }
-                        }
-                        
-                        if (userdata[cursorPosition][0] == null) {
-                            break;
-                        }
-                    } else if ((i == 1) || (i == 2)) {
-                        // As the values of "learning" and "known" in the Constants.STATUSES have been exchanged,
-                        // the "mode_english" and "mode_french" fields must be modified accordingly.
-                        switch (cursor.getInt(i)) {
-                            case 1:
-                                userdata[cursorPosition][i] = "2";
-                                break;
-                                
-                            case 2:
-                                userdata[cursorPosition][i] = "1";
-                                break;
-                                
-                            default:
-                                userdata[cursorPosition][i] = "0";
-                                break;
-                        }
-                    } else if ((i == 5) || (i == 7)) {
-                        if (cursor.getInt(i) == 0) {
-                            userdata[cursorPosition][i] = "1";
-                        } else {
-                            userdata[cursorPosition][i] = cursor.getString(i);
-                        }
-                    } else if ((i == 6) || (i == 8)) {
-                        userdata[cursorPosition][i] = String.valueOf(cursor.getInt(i) + 1);
-                    } else {
-                        userdata[cursorPosition][i] = cursor.getString(i);
-                    }
+                    userdata[cursorPosition][i] = cursor.getString(i);
                 }
             }
             cursor.close();
             //END: Save the user data
             
             // Recreate the database
-            db.execSQL("DROP TABLE IF EXISTS dico;");
+            db.execSQL("DROP TABLE IF EXISTS dicotuple;");
             onCreate(db);
             //END: Recreate the database
             
@@ -486,13 +415,13 @@ public final class DatabaseHelper extends SQLiteOpenHelper
                     contentValues.put("is_accelerated_english",         userdataItem[3]);
                     contentValues.put("is_accelerated_french",          userdataItem[4]);
                     contentValues.put("primary_indice_english",         userdataItem[5]);
-                    contentValues.put("secondary_indice_english",       userdataItem[6]);
-                    contentValues.put("primary_indice_french",          userdataItem[7]);
+                    contentValues.put("primary_indice_french",          userdataItem[6]);
+                    contentValues.put("secondary_indice_english",       userdataItem[7]);
                     contentValues.put("secondary_indice_french",        userdataItem[8]);
                     contentValues.put("timestamp_last_answer_english",  userdataItem[9]);
                     contentValues.put("timestamp_last_answer_french",   userdataItem[10]);
                     
-                    db.update("dicotuple", contentValues, "id = ?", new String[]{userdataItem[0]});
+                    db.update("card", contentValues, "id = ?", new String[]{userdataItem[0]});
                 }
             }
             //END: Inject the user data in the database

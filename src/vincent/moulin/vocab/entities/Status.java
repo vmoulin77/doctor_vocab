@@ -13,7 +13,7 @@ package vincent.moulin.vocab.entities;
 
 import android.database.Cursor;
 import vincent.moulin.vocab.MyApplication;
-import vincent.moulin.vocab.constants.Constants;
+import vincent.moulin.vocab.constants.ConstantsHM;
 import vincent.moulin.vocab.helpers.DatabaseHelper;
 import vincent.moulin.vocab.utilities.EnumDataItem;
 
@@ -77,6 +77,6 @@ public final class Status extends EnumDataItem implements Cloneable
     }
     
     public static Status getByName(String name) {
-        return getById(Constants.STATUSES.getId(name));
+        return getById(ConstantsHM.STATUSES.getId(name));
     }
 }

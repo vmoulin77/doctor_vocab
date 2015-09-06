@@ -19,7 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 import vincent.moulin.vocab.R;
-import vincent.moulin.vocab.entities.Dictionary;
+import vincent.moulin.vocab.entities.Deck;
 import vincent.moulin.vocab.entities.Frequency;
 import vincent.moulin.vocab.entities.StatSnap;
 import vincent.moulin.vocab.entities.Status;
@@ -69,7 +69,7 @@ public class StatActivity extends Activity
         setContentView(R.layout.stat_activity);
         
         // The statistics part
-        statistics = Dictionary.calcStatForLangName(this.startingLangName);
+        statistics = Deck.calcStatForLangName(this.startingLangName);
         
         textView = (TextView) findViewById(R.id.stat_initial_data);
         textView.setText(Integer.toString(statistics[initialStatus.getId()]));
