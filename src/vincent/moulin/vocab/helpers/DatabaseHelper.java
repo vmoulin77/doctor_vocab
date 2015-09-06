@@ -365,6 +365,7 @@ public final class DatabaseHelper extends SQLiteOpenHelper
         Cursor cursor;
         int cursorPosition;
         ContentValues contentValues;
+        SQLiteStatement sqliteStatement;
         
         if (oldVersion == 2) {
             db.execSQL("DROP TABLE IF EXISTS dico;");
@@ -400,10 +401,77 @@ public final class DatabaseHelper extends SQLiteOpenHelper
             cursor.close();
             //END: Save the user data
             
-            // Recreate the database
             db.execSQL("DROP TABLE IF EXISTS dicotuple;");
-            onCreate(db);
-            //END: Recreate the database
+            db.execSQL(CREATE_TABLE_CARD);
+            // Filling the "card" table
+            try {
+                XmlPullParser xpp = this.context.getResources().getXml(R.xml.db_card);
+                
+                query = "INSERT INTO card ("
+                      +     "id,"
+                      +     "word_english,"
+                      +     "word_french,"
+                      +     "is_active_english,"
+                      +     "is_active_french,"
+                      +     "id_status_english,"
+                      +     "id_status_french,"
+                      +     "is_accelerated_english,"
+                      +     "is_accelerated_french,"
+                      +     "primary_indice_english,"
+                      +     "primary_indice_french,"
+                      +     "secondary_indice_english,"
+                      +     "secondary_indice_french,"
+                      +     "timestamp_last_answer_english,"
+                      +     "timestamp_last_answer_french"
+                      + ") VALUES ("
+                      +     "?,"
+                      +     "?,"
+                      +     "?,"
+                      +     "?,"
+                      +     "?,"
+                      +     ConstantsHM.STATUSES.getId("initial") + ","
+                      +     ConstantsHM.STATUSES.getId("initial") + ","
+                      +     "1,"
+                      +     "1,"
+                      +     "1,"
+                      +     "1,"
+                      +     "1,"
+                      +     "1,"
+                      +     "0,"
+                      +     "0"
+                      + ")";
+                sqliteStatement = db.compileStatement(query);
+                
+                while (xpp.getEventType() != XmlPullParser.END_DOCUMENT) {
+                    if (xpp.getEventType() == XmlPullParser.START_TAG) {
+                        if (xpp.getName().equals("e1")) {
+                            sqliteStatement.bindString(1, xpp.nextText());
+                        } else if (xpp.getName().equals("e2")) {
+                            sqliteStatement.bindString(2, xpp.nextText());
+                        } else if (xpp.getName().equals("e3")) {
+                            sqliteStatement.bindString(3, xpp.nextText());
+                        } else if (xpp.getName().equals("e4")) {
+                            sqliteStatement.bindString(4, xpp.nextText());
+                        } else if (xpp.getName().equals("e5")) {
+                            sqliteStatement.bindString(5, xpp.nextText());
+                        }
+                    }
+                    
+                    if ((xpp.getEventType() == XmlPullParser.END_TAG)
+                        && (xpp.getName().equals("card"))
+                    ) {
+                        sqliteStatement.executeInsert();
+                    }
+                    
+                    xpp.next();
+                }
+                
+                sqliteStatement.close();
+                xpp = null;
+            } catch (Exception e) {
+                this.displayInitializationErrorMsg();
+            }
+            //END: Filling the "card" table
             
             // Inject the user data in the database
             for (String[] userdataItem : userdata) {
