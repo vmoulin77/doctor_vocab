@@ -11,8 +11,6 @@
 
 package vincent.moulin.vocab.entities;
 
-import vincent.moulin.vocab.constants.ConstantsHM;
-
 /**
  * The WordEnglish class represents an English word.
  * 
@@ -43,14 +41,7 @@ public class WordEnglish extends Word
     /**
      * {@inheritDoc}
      */
-    public boolean belongsToPack() {
-        return super.belongsToPackWithIdLang(ConstantsHM.LANGUAGES.getId("english"));
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public Pack retrievePack() {
-        return super.retrievePackWithIdLang(ConstantsHM.LANGUAGES.getId("english"));
+    public Language getLanguage() {
+        return new Language("english");
     }
 }

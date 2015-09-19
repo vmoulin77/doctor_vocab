@@ -27,6 +27,14 @@ public final class Frequency extends EnumDataItem
     public Frequency(int id, String name) {
         super(id, name);
     }
+    
+    public Frequency(int id) {
+        super(id, ConstantsHM.FREQUENCIES.getName(id));
+    }
+    
+    public Frequency(String name) {
+        super(ConstantsHM.FREQUENCIES.getId(name), name);
+    }
 
     /**
      * Get from the database the Frequency object whose id is "id".

@@ -11,8 +11,6 @@
 
 package vincent.moulin.vocab.entities;
 
-import vincent.moulin.vocab.constants.ConstantsHM;
-
 /**
  * The WordFrench class represents a French word.
  * 
@@ -43,14 +41,7 @@ public class WordFrench extends Word
     /**
      * {@inheritDoc}
      */
-    public boolean belongsToPack() {
-        return super.belongsToPackWithIdLang(ConstantsHM.LANGUAGES.getId("french"));
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public Pack retrievePack() {
-        return super.retrievePackWithIdLang(ConstantsHM.LANGUAGES.getId("french"));
+    public Language getLanguage() {
+        return new Language("french");
     }
 }

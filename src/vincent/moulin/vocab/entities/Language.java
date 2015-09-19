@@ -27,6 +27,14 @@ public final class Language extends EnumDataItem
     public Language(int id, String name) {
         super(id, name);
     }
+    
+    public Language(int id) {
+        super(id, ConstantsHM.LANGUAGES.getName(id));
+    }
+    
+    public Language(String name) {
+        super(ConstantsHM.LANGUAGES.getId(name), name);
+    }
 
     /**
      * Get from the database the Language object whose id is "id".

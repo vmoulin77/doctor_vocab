@@ -119,6 +119,12 @@ public abstract class Word implements Cloneable
     }
     
     /**
+     * Get the Language object corresponding to the current Word.
+     * @return the Language object corresponding to the current Word
+     */
+    public abstract Language getLanguage();
+    
+    /**
      * Test the eligibility of the considered Word in learning.
      * @param secondaryIndice the secondary indice of the considered Word
      * @param timestampDiff the number of elapsed seconds since the last time the considered Word has been studied
@@ -192,29 +198,15 @@ public abstract class Word implements Cloneable
      * Retrieve the Pack object linked to the current Word.
      * @return the Pack object linked to the current Word
      */
-    public abstract Pack retrievePack();
-    
-    /**
-     * Retrieve the Pack object linked to the current Word whose language id is "idLanguage".
-     * @param idLanguage the language id of the current Word
-     * @return the Pack object linked to the current Word
-     */
-    protected Pack retrievePackWithIdLang(int idLanguage) {
-        return Pack.getByIdLangAndIndice(idLanguage, this.secondaryIndice);
+    public Pack retrievePack() {
+        return Pack.getByIdLangAndIndice(this.getLanguage().getId(), this.secondaryIndice);
     }
-    
+
     /**
      * Test if the current Word belongs to the corresponding Pack.
      * @return true if the current Word belongs to the corresponding Pack and false otherwise
      */
-    public abstract boolean belongsToPack();
-    
-    /**
-     * Test if the current Word (whose language id is "idLanguage") belongs to the corresponding Pack.
-     * @param idLanguage the language id of the current Word
-     * @return true if the current Word (whose language id is "idLanguage") belongs to the corresponding Pack and false otherwise
-     */
-    protected boolean belongsToPackWithIdLang(int idLanguage) {
+    public boolean belongsToPack() {
         DatabaseHelper dbh = DatabaseHelper.getInstance(MyApplication.getContext());
         String query;
         Cursor cursor;
@@ -245,7 +237,7 @@ public abstract class Word implements Cloneable
         
         query = "SELECT timestamp_pack, timestamp_last_answer "
               + "FROM pack "
-              + "WHERE id_language = " + idLanguage + " "
+              + "WHERE id_language = " + this.getLanguage().getId() + " "
               + "AND indice = " + this.secondaryIndice;
         
         cursor = dbh.getReadableDatabase().rawQuery(query, null);
