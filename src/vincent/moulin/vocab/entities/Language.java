@@ -11,11 +11,7 @@
 
 package vincent.moulin.vocab.entities;
 
-import android.database.Cursor;
-import vincent.moulin.vocab.MyApplication;
-import vincent.moulin.vocab.constants.ConstantsHM;
-import vincent.moulin.vocab.helpers.DatabaseHelper;
-import vincent.moulin.vocab.utilities.EnumDataItem;
+import vincent.moulin.vocab.libraries.enumdata.EnumDataItem;
 
 /**
  * The Language class represents a language.
@@ -24,52 +20,29 @@ import vincent.moulin.vocab.utilities.EnumDataItem;
  */
 public final class Language extends EnumDataItem
 {
+    private static String tableName = "language";
+    
     public Language(int id, String name) {
         super(id, name);
     }
     
-    public Language(int id) {
-        super(id, ConstantsHM.LANGUAGES.getName(id));
-    }
-    
-    public Language(String name) {
-        super(ConstantsHM.LANGUAGES.getId(name), name);
-    }
-
-    /**
-     * Get from the database the Language object whose id is "id".
-     * @param id the id of the Language we want to get
-     * @return the Language object whose id is "id"
-     */
     public static Language getById(int id) {
-        DatabaseHelper dbh = DatabaseHelper.getInstance(MyApplication.getContext());
-        String query;
-        Cursor cursor;
-        Language retour;
-        
-        query = "SELECT name "
-              + "FROM language "
-              + "WHERE id = " + id;
-        
-        cursor = dbh.getReadableDatabase().rawQuery(query, null);
-        
-        if (cursor.getCount() == 0) {
-            retour = null;
-        } else {
-            cursor.moveToFirst();
-            
-            retour = new Language(
-                id,
-                cursor.getString(0)
-            );
-        }
-
-        cursor.close();
-
-        return retour;
+        return (Language) enumDataLoader.getById(tableName, fields, id);
     }
     
     public static Language getByName(String name) {
-        return getById(ConstantsHM.LANGUAGES.getId(name));
+        return (Language) enumDataLoader.getByName(tableName, fields, name);
+    }
+    
+    public static Language[] all() {
+        return (Language[]) enumDataLoader.getAll(tableName, fields);
+    }
+
+    public static int getIdOf(String name) {
+        return getByName(name).getId();
+    }
+    
+    public static String getNameOf(int id) {
+        return getById(id).getName();
     }
 }

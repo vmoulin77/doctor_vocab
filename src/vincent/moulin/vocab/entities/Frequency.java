@@ -11,11 +11,7 @@
 
 package vincent.moulin.vocab.entities;
 
-import android.database.Cursor;
-import vincent.moulin.vocab.MyApplication;
-import vincent.moulin.vocab.constants.ConstantsHM;
-import vincent.moulin.vocab.helpers.DatabaseHelper;
-import vincent.moulin.vocab.utilities.EnumDataItem;
+import vincent.moulin.vocab.libraries.enumdata.EnumDataItem;
 
 /**
  * The Frequency class represents a frequency.
@@ -24,52 +20,29 @@ import vincent.moulin.vocab.utilities.EnumDataItem;
  */
 public final class Frequency extends EnumDataItem
 {
+    private static String tableName = "frequency";
+    
     public Frequency(int id, String name) {
         super(id, name);
     }
     
-    public Frequency(int id) {
-        super(id, ConstantsHM.FREQUENCIES.getName(id));
-    }
-    
-    public Frequency(String name) {
-        super(ConstantsHM.FREQUENCIES.getId(name), name);
-    }
-
-    /**
-     * Get from the database the Frequency object whose id is "id".
-     * @param id the id of the Frequency we want to get
-     * @return the Frequency object whose id is "id"
-     */
     public static Frequency getById(int id) {
-        DatabaseHelper dbh = DatabaseHelper.getInstance(MyApplication.getContext());
-        String query;
-        Cursor cursor;
-        Frequency retour;
-        
-        query = "SELECT name "
-              + "FROM frequency "
-              + "WHERE id = " + id;
-        
-        cursor = dbh.getReadableDatabase().rawQuery(query, null);
-        
-        if (cursor.getCount() == 0) {
-            retour = null;
-        } else {
-            cursor.moveToFirst();
-            
-            retour = new Frequency(
-                id,
-                cursor.getString(0)
-            );
-        }
-
-        cursor.close();
-
-        return retour;
+        return (Frequency) enumDataLoader.getById(tableName, fields, id);
     }
     
     public static Frequency getByName(String name) {
-        return getById(ConstantsHM.FREQUENCIES.getId(name));
+        return (Frequency) enumDataLoader.getByName(tableName, fields, name);
+    }
+    
+    public static Frequency[] all() {
+        return (Frequency[]) enumDataLoader.getAll(tableName, fields);
+    }
+
+    public static int getIdOf(String name) {
+        return getByName(name).getId();
+    }
+    
+    public static String getNameOf(int id) {
+        return getById(id).getName();
     }
 }

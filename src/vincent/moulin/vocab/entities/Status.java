@@ -11,11 +11,7 @@
 
 package vincent.moulin.vocab.entities;
 
-import android.database.Cursor;
-import vincent.moulin.vocab.MyApplication;
-import vincent.moulin.vocab.constants.ConstantsHM;
-import vincent.moulin.vocab.helpers.DatabaseHelper;
-import vincent.moulin.vocab.utilities.EnumDataItem;
+import vincent.moulin.vocab.libraries.enumdata.EnumDataItem;
 
 /**
  * The Status class represents a word status.
@@ -24,6 +20,9 @@ import vincent.moulin.vocab.utilities.EnumDataItem;
  */
 public final class Status extends EnumDataItem implements Cloneable
 {
+    private static String tableName = "status";
+    private static String[] fields = {"id", "name", "color"};
+    
     private String color;
     
     public Status(int id, String name, String color) {
@@ -42,41 +41,31 @@ public final class Status extends EnumDataItem implements Cloneable
         return (Status) super.clone();
     }
     
-    /**
-     * Get from the database the Status object whose id is "id".
-     * @param id the id of the Status we want to get
-     * @return the Status object whose id is "id"
-     */
     public static Status getById(int id) {
-        DatabaseHelper dbh = DatabaseHelper.getInstance(MyApplication.getContext());
-        String query;
-        Cursor cursor;
-        Status retour;
-        
-        query = "SELECT name, color "
-              + "FROM status "
-              + "WHERE id = " + id;
-        
-        cursor = dbh.getReadableDatabase().rawQuery(query, null);
-        
-        if (cursor.getCount() == 0) {
-            retour = null;
-        } else {
-            cursor.moveToFirst();
-            
-            retour = new Status(
-                id,
-                cursor.getString(0),
-                cursor.getString(1)
-            );
-        }
-
-        cursor.close();
-
-        return retour;
+        return (Status) enumDataLoader.getById(tableName, fields, id);
     }
     
     public static Status getByName(String name) {
-        return getById(ConstantsHM.STATUSES.getId(name));
+        return (Status) enumDataLoader.getByName(tableName, fields, name);
+    }
+    
+    public static Status[] all() {
+        return (Status[]) enumDataLoader.getAll(tableName, fields);
+    }
+
+    public static int getIdOf(String name) {
+        return getByName(name).getId();
+    }
+    
+    public static String getNameOf(int id) {
+        return getById(id).getName();
+    }
+    
+    public static String getColorOf(String name) {
+        return getByName(name).getColor();
+    }
+    
+    public static String getColorOf(int id) {
+        return getById(id).getColor();
     }
 }

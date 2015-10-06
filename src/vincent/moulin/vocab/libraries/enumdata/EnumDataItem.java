@@ -9,7 +9,7 @@
  * (at your option) any later version.
  */
 
-package vincent.moulin.vocab.utilities;
+package vincent.moulin.vocab.libraries.enumdata;
 
 /**
  * The EnumDataItem class represents an item of a set of enumerated data.
@@ -18,6 +18,10 @@ package vincent.moulin.vocab.utilities;
  */
 public abstract class EnumDataItem
 {
+    protected static EnumDataLoader enumDataLoader = EnumDataLoader.getInstance();
+    
+    protected static String[] fields = {"id", "name"};
+    
     private int id;
     private String name;
     

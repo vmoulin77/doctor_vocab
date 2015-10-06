@@ -11,18 +11,18 @@
 
 package vincent.moulin.vocab.helpers;
 
-import java.util.Map;
+import java.util.HashMap;
+
 import org.xmlpull.v1.XmlPullParser;
+
+import vincent.moulin.vocab.R;
+import vincent.moulin.vocab.entities.Word;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteStatement;
 import android.database.sqlite.SQLiteOpenHelper;
-import vincent.moulin.vocab.R;
-import vincent.moulin.vocab.constants.ConstantsHM;
-import vincent.moulin.vocab.entities.Word;
+import android.database.sqlite.SQLiteStatement;
 
 /**
  * The DatabaseHelper class
@@ -124,9 +124,13 @@ public final class DatabaseHelper extends SQLiteOpenHelper
     @Override
     public void onCreate(SQLiteDatabase db) {
         ContentValues contentValues = new ContentValues();
-        int idPack, idStatSnap = 1;
-        String query;
+        int idPack = 1, idStatSnap = 1;
+        String query, id = "", name = "";
         SQLiteStatement sqliteStatement;
+        HashMap<String, String>
+            languages    = new HashMap<String, String>(),
+            statuses     = new HashMap<String, String>(),
+            frequencies  = new HashMap<String, String>();
         
         db.execSQL(CREATE_TABLE_LANGUAGE);
         db.execSQL(CREATE_TABLE_STATUS);
@@ -151,9 +155,11 @@ public final class DatabaseHelper extends SQLiteOpenHelper
             while (xpp.getEventType() != XmlPullParser.END_DOCUMENT) {
                 if (xpp.getEventType() == XmlPullParser.START_TAG) {
                     if (xpp.getName().equals("id")) {
-                        sqliteStatement.bindString(1, xpp.nextText());
+                        id = xpp.nextText();
+                        sqliteStatement.bindString(1, id);
                     } else if (xpp.getName().equals("name")) {
-                        sqliteStatement.bindString(2, xpp.nextText());
+                        name = xpp.nextText();
+                        sqliteStatement.bindString(2, name);
                     }
                 }
                 
@@ -161,6 +167,7 @@ public final class DatabaseHelper extends SQLiteOpenHelper
                     && (xpp.getName().equals("language"))
                 ) {
                     sqliteStatement.executeInsert();
+                    languages.put(name, id);
                 }
                 
                 xpp.next();
@@ -191,9 +198,11 @@ public final class DatabaseHelper extends SQLiteOpenHelper
             while (xpp.getEventType() != XmlPullParser.END_DOCUMENT) {
                 if (xpp.getEventType() == XmlPullParser.START_TAG) {
                     if (xpp.getName().equals("id")) {
-                        sqliteStatement.bindString(1, xpp.nextText());
+                        id = xpp.nextText();
+                        sqliteStatement.bindString(1, id);
                     } else if (xpp.getName().equals("name")) {
-                        sqliteStatement.bindString(2, xpp.nextText());
+                        name = xpp.nextText();
+                        sqliteStatement.bindString(2, name);
                     } else if (xpp.getName().equals("color")) {
                         sqliteStatement.bindString(3, xpp.nextText());
                     }
@@ -203,6 +212,7 @@ public final class DatabaseHelper extends SQLiteOpenHelper
                     && (xpp.getName().equals("status"))
                 ) {
                     sqliteStatement.executeInsert();
+                    statuses.put(name, id);
                 }
                 
                 xpp.next();
@@ -231,9 +241,11 @@ public final class DatabaseHelper extends SQLiteOpenHelper
             while (xpp.getEventType() != XmlPullParser.END_DOCUMENT) {
                 if (xpp.getEventType() == XmlPullParser.START_TAG) {
                     if (xpp.getName().equals("id")) {
-                        sqliteStatement.bindString(1, xpp.nextText());
+                        id = xpp.nextText();
+                        sqliteStatement.bindString(1, id);
                     } else if (xpp.getName().equals("name")) {
-                        sqliteStatement.bindString(2, xpp.nextText());
+                        name = xpp.nextText();
+                        sqliteStatement.bindString(2, name);
                     }
                 }
                 
@@ -241,6 +253,7 @@ public final class DatabaseHelper extends SQLiteOpenHelper
                     && (xpp.getName().equals("frequency"))
                 ) {
                     sqliteStatement.executeInsert();
+                    frequencies.put(name, id);
                 }
                 
                 xpp.next();
@@ -279,8 +292,8 @@ public final class DatabaseHelper extends SQLiteOpenHelper
                   +     "?,"
                   +     "?,"
                   +     "?,"
-                  +     ConstantsHM.STATUSES.getId("initial") + ","
-                  +     ConstantsHM.STATUSES.getId("initial") + ","
+                  +     statuses.get("initial") + ","
+                  +     statuses.get("initial") + ","
                   +     "1,"
                   +     "1,"
                   +     "1,"
@@ -290,6 +303,7 @@ public final class DatabaseHelper extends SQLiteOpenHelper
                   +     "0,"
                   +     "0"
                   + ")";
+            
             sqliteStatement = db.compileStatement(query);
             
             while (xpp.getEventType() != XmlPullParser.END_DOCUMENT) {
@@ -324,30 +338,30 @@ public final class DatabaseHelper extends SQLiteOpenHelper
         //END: Filling the "card" table
 
         // Filling the "pack" table
-        for (Map.Entry<String, Integer> languageEntry : ConstantsHM.LANGUAGES.entrySet()) {
+        for (String idLanguage : languages.values()) {
             for (int i = 2; i <= Word.MAX_SECONDARY_INDICE; i++) {
-                idPack = (languageEntry.getValue() * Word.MAX_SECONDARY_INDICE) + i - 1 - languageEntry.getValue();
-                
                 contentValues = new ContentValues();
                 contentValues.put("id", idPack);
-                contentValues.put("id_language", languageEntry.getValue());
+                contentValues.put("id_language", idLanguage);
                 contentValues.put("indice", i);
                 contentValues.put("timestamp_pack", 0);
                 contentValues.put("timestamp_last_answer", 0);
                 db.insert("pack", null, contentValues);
+                
+                idPack++;
             }
         }
         //END: Filling the "pack" table
         
         // Filling the "stat_snap" table
-        for (Map.Entry<String, Integer> frequencyEntry : ConstantsHM.FREQUENCIES.entrySet()) {
-            for (Map.Entry<String, Integer> statusEntry : ConstantsHM.STATUSES.entrySet()) {
-                for (Map.Entry<String, Integer> languageEntry : ConstantsHM.LANGUAGES.entrySet()) {
+        for (String idFrequency : frequencies.values()) {
+            for (String idStatus : statuses.values()) {
+                for (String idLanguage : languages.values()) {
                     contentValues = new ContentValues();
                     contentValues.put("id", idStatSnap);
-                    contentValues.put("id_frequency", frequencyEntry.getValue());
-                    contentValues.put("id_status", statusEntry.getValue());
-                    contentValues.put("id_language", languageEntry.getValue());
+                    contentValues.put("id_frequency", idFrequency);
+                    contentValues.put("id_status", idStatus);
+                    contentValues.put("id_language", idLanguage);
                     contentValues.put("validity_period", 0);
                     contentValues.put("nb_words", 0);
                     db.insert("stat_snap", null, contentValues);
@@ -361,138 +375,20 @@ public final class DatabaseHelper extends SQLiteOpenHelper
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        String query;
-        Cursor cursor;
-        int cursorPosition;
-        ContentValues contentValues;
-        SQLiteStatement sqliteStatement;
-        
-        if (oldVersion == 2) {
+        if (oldVersion <= 3) {
             db.execSQL("DROP TABLE IF EXISTS dico;");
-            onCreate(db);
-        } else if (oldVersion == 3) {
-            String[][] userdata = new String[5476][11];
             
-            // Save the user data
-            query = "SELECT "
-                  +     "id, " //0
-                  +     "id_status_english, " //1
-                  +     "id_status_french, " //2
-                  +     "is_accelerated_english, " //3
-                  +     "is_accelerated_french, " //4
-                  +     "primary_indice_english, " //5
-                  +     "primary_indice_french, " //6
-                  +     "secondary_indice_english, " //7
-                  +     "secondary_indice_french, " //8
-                  +     "timestamp_last_answer_english, " //9
-                  +     "timestamp_last_answer_french " //10
-                  + "FROM dicotuple "
-                  + "WHERE timestamp_last_answer_english <> 0 "
-                  + "OR timestamp_last_answer_french <> 0";
-            
-            cursor = db.rawQuery(query, null);
-            
-            while (cursor.moveToNext()) {
-                cursorPosition = cursor.getPosition();
-                for (int i = 0; i <= 10; i++) {
-                    userdata[cursorPosition][i] = cursor.getString(i);
-                }
-            }
-            cursor.close();
-            //END: Save the user data
-            
+            db.execSQL("DROP TABLE IF EXISTS stat_snap;");
+            db.execSQL("DROP TABLE IF EXISTS pack;");
             db.execSQL("DROP TABLE IF EXISTS dicotuple;");
-            db.execSQL(CREATE_TABLE_CARD);
-            // Filling the "card" table
-            try {
-                XmlPullParser xpp = this.context.getResources().getXml(R.xml.db_card);
-                
-                query = "INSERT INTO card ("
-                      +     "id,"
-                      +     "word_english,"
-                      +     "word_french,"
-                      +     "is_active_english,"
-                      +     "is_active_french,"
-                      +     "id_status_english,"
-                      +     "id_status_french,"
-                      +     "is_accelerated_english,"
-                      +     "is_accelerated_french,"
-                      +     "primary_indice_english,"
-                      +     "primary_indice_french,"
-                      +     "secondary_indice_english,"
-                      +     "secondary_indice_french,"
-                      +     "timestamp_last_answer_english,"
-                      +     "timestamp_last_answer_french"
-                      + ") VALUES ("
-                      +     "?,"
-                      +     "?,"
-                      +     "?,"
-                      +     "?,"
-                      +     "?,"
-                      +     ConstantsHM.STATUSES.getId("initial") + ","
-                      +     ConstantsHM.STATUSES.getId("initial") + ","
-                      +     "1,"
-                      +     "1,"
-                      +     "1,"
-                      +     "1,"
-                      +     "1,"
-                      +     "1,"
-                      +     "0,"
-                      +     "0"
-                      + ")";
-                sqliteStatement = db.compileStatement(query);
-                
-                while (xpp.getEventType() != XmlPullParser.END_DOCUMENT) {
-                    if (xpp.getEventType() == XmlPullParser.START_TAG) {
-                        if (xpp.getName().equals("e1")) {
-                            sqliteStatement.bindString(1, xpp.nextText());
-                        } else if (xpp.getName().equals("e2")) {
-                            sqliteStatement.bindString(2, xpp.nextText());
-                        } else if (xpp.getName().equals("e3")) {
-                            sqliteStatement.bindString(3, xpp.nextText());
-                        } else if (xpp.getName().equals("e4")) {
-                            sqliteStatement.bindString(4, xpp.nextText());
-                        } else if (xpp.getName().equals("e5")) {
-                            sqliteStatement.bindString(5, xpp.nextText());
-                        }
-                    }
-                    
-                    if ((xpp.getEventType() == XmlPullParser.END_TAG)
-                        && (xpp.getName().equals("card"))
-                    ) {
-                        sqliteStatement.executeInsert();
-                    }
-                    
-                    xpp.next();
-                }
-                
-                sqliteStatement.close();
-                xpp = null;
-            } catch (Exception e) {
-                this.displayInitializationErrorMsg();
-            }
-            //END: Filling the "card" table
+            db.execSQL("DROP TABLE IF EXISTS card;");
+            db.execSQL("DROP TABLE IF EXISTS frequency;");
+            db.execSQL("DROP TABLE IF EXISTS status;");
+            db.execSQL("DROP TABLE IF EXISTS language;");
             
-            // Inject the user data in the database
-            for (String[] userdataItem : userdata) {
-                if (userdataItem[0] != null) {
-                    contentValues = new ContentValues();
-                    
-                    contentValues.put("id_status_english",              userdataItem[1]);
-                    contentValues.put("id_status_french",               userdataItem[2]);
-                    contentValues.put("is_accelerated_english",         userdataItem[3]);
-                    contentValues.put("is_accelerated_french",          userdataItem[4]);
-                    contentValues.put("primary_indice_english",         userdataItem[5]);
-                    contentValues.put("primary_indice_french",          userdataItem[6]);
-                    contentValues.put("secondary_indice_english",       userdataItem[7]);
-                    contentValues.put("secondary_indice_french",        userdataItem[8]);
-                    contentValues.put("timestamp_last_answer_english",  userdataItem[9]);
-                    contentValues.put("timestamp_last_answer_french",   userdataItem[10]);
-                    
-                    db.update("card", contentValues, "id = ?", new String[]{userdataItem[0]});
-                }
-            }
-            //END: Inject the user data in the database
+            onCreate(db);
+        } else if (oldVersion == 4) {
+            
         }
     }
 }

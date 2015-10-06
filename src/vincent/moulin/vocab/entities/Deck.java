@@ -13,12 +13,12 @@ package vincent.moulin.vocab.entities;
 
 import java.util.ArrayList;
 import java.util.Random;
-import android.database.Cursor;
+
 import vincent.moulin.vocab.MyApplication;
 import vincent.moulin.vocab.constants.Constants;
-import vincent.moulin.vocab.constants.ConstantsHM;
 import vincent.moulin.vocab.helpers.DatabaseHelper;
 import vincent.moulin.vocab.utilities.TimestampNow;
+import android.database.Cursor;
 
 /**
  * The Deck class represents a set of cards.
@@ -101,7 +101,7 @@ public class Deck
                 +     "timestamp_last_answer_" + startingLangName + " "
                 + "FROM card "
                 + "WHERE is_active_" + startingLangName + " = 1 "
-                + "AND id_status_" + startingLangName + " = " + ConstantsHM.STATUSES.getId("learning") + " "
+                + "AND id_status_" + startingLangName + " = " + Status.getIdOf("learning") + " "
                 + "ORDER BY secondary_indice_" + startingLangName + ", timestamp_last_answer_" + startingLangName;
           
         cursor = dbh.getReadableDatabase().rawQuery(query, null);
@@ -136,7 +136,7 @@ public class Deck
         query = "SELECT COUNT(*) "
               + "FROM card "
               + "WHERE is_active_" + startingLangName + " = 1 "
-              + "AND id_status_" + startingLangName + " = " + ConstantsHM.STATUSES.getId("initial");
+              + "AND id_status_" + startingLangName + " = " + Status.getIdOf("initial");
 
         cursor = dbh.getReadableDatabase().rawQuery(query, null);
         cursor.moveToFirst();
@@ -159,7 +159,7 @@ public class Deck
                   +     "COUNT(*) "
                   + "FROM card "
                   + "WHERE is_active_" + startingLangName + " = 1 "
-                  + "AND id_status_" + startingLangName + " = " + ConstantsHM.STATUSES.getId("learning") + " "
+                  + "AND id_status_" + startingLangName + " = " + Status.getIdOf("learning") + " "
                   + "GROUP BY secondary_indice_" + startingLangName;
     
             cursor = dbh.getReadableDatabase().rawQuery(query, null);
@@ -193,7 +193,7 @@ public class Deck
                   +     "timestamp_last_answer_" + startingLangName + " "
                   + "FROM card "
                   + "WHERE is_active_" + startingLangName + " = 1 "
-                  + "AND id_status_" + startingLangName + " = " + ConstantsHM.STATUSES.getId("known");
+                  + "AND id_status_" + startingLangName + " = " + Status.getIdOf("known");
               
             cursor = dbh.getReadableDatabase().rawQuery(query, null);
               
@@ -227,7 +227,7 @@ public class Deck
             query = "SELECT id "
                   + "FROM card "
                   + "WHERE is_active_" + startingLangName + " = 1 "
-                  + "AND id_status_" + startingLangName + " = " + ConstantsHM.STATUSES.getId("initial") + " "
+                  + "AND id_status_" + startingLangName + " = " + Status.getIdOf("initial") + " "
                   + "LIMIT " + p3_randomPosition + ", 1";
 
             cursor = dbh.getReadableDatabase().rawQuery(query, null);

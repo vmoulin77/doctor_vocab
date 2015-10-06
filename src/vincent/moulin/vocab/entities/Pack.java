@@ -11,10 +11,10 @@
 
 package vincent.moulin.vocab.entities;
 
-import android.content.ContentValues;
-import android.database.Cursor;
 import vincent.moulin.vocab.MyApplication;
 import vincent.moulin.vocab.helpers.DatabaseHelper;
+import android.content.ContentValues;
+import android.database.Cursor;
 
 /**
  * The Pack class represents a pack of words.

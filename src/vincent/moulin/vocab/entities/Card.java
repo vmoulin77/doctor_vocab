@@ -11,12 +11,12 @@
 
 package vincent.moulin.vocab.entities;
 
-import android.content.ContentValues;
-import android.database.Cursor;
 import vincent.moulin.vocab.MyApplication;
 import vincent.moulin.vocab.constants.Constants;
 import vincent.moulin.vocab.helpers.DatabaseHelper;
 import vincent.moulin.vocab.utilities.TimestampNow;
+import android.content.ContentValues;
+import android.database.Cursor;
 
 /**
  * The Card class represents a word.

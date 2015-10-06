@@ -11,17 +11,17 @@
 
 package vincent.moulin.vocab.activities;
 
-import android.os.Bundle;
+import vincent.moulin.vocab.R;
+import vincent.moulin.vocab.entities.Card;
+import vincent.moulin.vocab.menus.DefaultMenuManager;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.view.View;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import vincent.moulin.vocab.R;
-import vincent.moulin.vocab.entities.Card;
-import vincent.moulin.vocab.menus.DefaultMenuManager;
+import android.view.View;
 
 /**
  * The HomeActivity class

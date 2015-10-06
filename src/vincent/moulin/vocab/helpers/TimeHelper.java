@@ -12,6 +12,7 @@
 package vincent.moulin.vocab.helpers;
 
 import java.util.Calendar;
+
 import vincent.moulin.vocab.constants.Constants;
 
 /**

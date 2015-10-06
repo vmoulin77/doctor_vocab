@@ -11,12 +11,12 @@
 
 package vincent.moulin.vocab.activities;
 
-import android.os.Bundle;
-import android.app.Activity;
-import android.view.Menu;
-import android.view.MenuItem;
 import vincent.moulin.vocab.R;
 import vincent.moulin.vocab.menus.DefaultMenuManager;
+import android.app.Activity;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 
 /**
  * The PhoneticRulesActivity class

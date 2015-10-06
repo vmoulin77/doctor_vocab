@@ -11,27 +11,27 @@
 
 package vincent.moulin.vocab.activities;
 
-import android.os.Bundle;
+import vincent.moulin.vocab.R;
+import vincent.moulin.vocab.entities.Card;
+import vincent.moulin.vocab.entities.Deck;
+import vincent.moulin.vocab.entities.Language;
+import vincent.moulin.vocab.entities.Pack;
+import vincent.moulin.vocab.entities.StatSnap;
+import vincent.moulin.vocab.entities.Word;
+import vincent.moulin.vocab.menus.TrainingMenuManager;
+import vincent.moulin.vocab.utilities.TimestampNow;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Bundle;
+import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.text.Html;
-import vincent.moulin.vocab.R;
-import vincent.moulin.vocab.constants.ConstantsHM;
-import vincent.moulin.vocab.entities.Deck;
-import vincent.moulin.vocab.entities.Card;
-import vincent.moulin.vocab.entities.Pack;
-import vincent.moulin.vocab.entities.StatSnap;
-import vincent.moulin.vocab.utilities.TimestampNow;
-import vincent.moulin.vocab.entities.Word;
-import vincent.moulin.vocab.menus.TrainingMenuManager;
 
 /**
  * The TrainingActivity class
@@ -166,7 +166,7 @@ public class TrainingActivity extends Activity
                         .show();
                 } else {
                     this.prevPackBeforeAnswering = Pack.getByIdLangAndIndice(
-                        ConstantsHM.LANGUAGES.getId(this.startingLangName),
+                        Language.getIdOf(this.startingLangName),
                         wordToTranslate.getSecondaryIndice() + 1
                     );
                 }

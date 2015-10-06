@@ -11,20 +11,20 @@
 
 package vincent.moulin.vocab.activities;
 
-import android.os.Bundle;
-import android.app.Activity;
-import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.TextView;
 import vincent.moulin.vocab.R;
 import vincent.moulin.vocab.entities.Deck;
 import vincent.moulin.vocab.entities.Frequency;
 import vincent.moulin.vocab.entities.StatSnap;
 import vincent.moulin.vocab.entities.Status;
-import vincent.moulin.vocab.utilities.TimestampNow;
 import vincent.moulin.vocab.menus.DefaultMenuManager;
+import vincent.moulin.vocab.utilities.TimestampNow;
+import android.app.Activity;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.TextView;
 
 /**
  * The StatActivity class
@@ -49,15 +49,9 @@ public class StatActivity extends Activity
         int[] statistics;
         int[][] statSnaps;
         TextView textView;
-        Status initialStatus   = Status.getByName("initial"),
-               learningStatus  = Status.getByName("learning"),
-               knownStatus     = Status.getByName("known");
-        int initialStatusColor   = Color.parseColor(initialStatus.getColor()),
-            learningStatusColor  = Color.parseColor(learningStatus.getColor()),
-            knownStatusColor     = Color.parseColor(knownStatus.getColor());
-        Frequency dailyFrequency    = Frequency.getByName("daily"),
-                  weeklyFrequency   = Frequency.getByName("weekly"),
-                  monthlyFrequency  = Frequency.getByName("monthly");
+        int initialStatusColor   = Color.parseColor(Status.getColorOf("initial")),
+            learningStatusColor  = Color.parseColor(Status.getColorOf("learning")),
+            knownStatusColor     = Color.parseColor(Status.getColorOf("known"));
         
         SharedPreferences sharedPreferences = this.getSharedPreferences("vincent.moulin.vocab", MODE_PRIVATE);
         
@@ -72,23 +66,23 @@ public class StatActivity extends Activity
         statistics = Deck.calcStatForLangName(this.startingLangName);
         
         textView = (TextView) findViewById(R.id.stat_initial_data);
-        textView.setText(Integer.toString(statistics[initialStatus.getId()]));
+        textView.setText(String.valueOf(statistics[Status.getIdOf("initial")]));
         textView.setTextColor(initialStatusColor);
         
         textView = (TextView) findViewById(R.id.stat_learning_data);
-        textView.setText(Integer.toString(statistics[learningStatus.getId()]));
+        textView.setText(String.valueOf(statistics[Status.getIdOf("learning")]));
         textView.setTextColor(learningStatusColor);
         
         textView = (TextView) findViewById(R.id.stat_known_data);
-        textView.setText(Integer.toString(statistics[knownStatus.getId()]));
+        textView.setText(String.valueOf(statistics[Status.getIdOf("known")]));
         textView.setTextColor(knownStatusColor);
         
         textView = (TextView) findViewById(R.id.stat_total_data);
         textView.setText(
-            Integer.toString(
-                statistics[initialStatus.getId()]
-                + statistics[learningStatus.getId()]
-                + statistics[knownStatus.getId()]
+            String.valueOf(
+                statistics[Status.getIdOf("initial")]
+                + statistics[Status.getIdOf("learning")]
+                + statistics[Status.getIdOf("known")]
             )
         );
         //END: The statistics part
@@ -97,33 +91,33 @@ public class StatActivity extends Activity
         statSnaps = StatSnap.getAllStatSnapsForLangName(this.startingLangName);
         
         textView = (TextView) findViewById(R.id.initial_daily_delta_data);
-        textView.setText(convertDeltaToString(statistics[initialStatus.getId()] - statSnaps[dailyFrequency.getId()][initialStatus.getId()]));
+        textView.setText(convertDeltaToString(statistics[Status.getIdOf("initial")] - statSnaps[Frequency.getIdOf("daily")][Status.getIdOf("initial")]));
         textView.setTextColor(initialStatusColor);
         textView = (TextView) findViewById(R.id.learning_daily_delta_data);
-        textView.setText(convertDeltaToString(statistics[learningStatus.getId()] - statSnaps[dailyFrequency.getId()][learningStatus.getId()]));
+        textView.setText(convertDeltaToString(statistics[Status.getIdOf("learning")] - statSnaps[Frequency.getIdOf("daily")][Status.getIdOf("learning")]));
         textView.setTextColor(learningStatusColor);
         textView = (TextView) findViewById(R.id.known_daily_delta_data);
-        textView.setText(convertDeltaToString(statistics[knownStatus.getId()] - statSnaps[dailyFrequency.getId()][knownStatus.getId()]));
+        textView.setText(convertDeltaToString(statistics[Status.getIdOf("known")] - statSnaps[Frequency.getIdOf("daily")][Status.getIdOf("known")]));
         textView.setTextColor(knownStatusColor);
         
         textView = (TextView) findViewById(R.id.initial_weekly_delta_data);
-        textView.setText(convertDeltaToString(statistics[initialStatus.getId()] - statSnaps[weeklyFrequency.getId()][initialStatus.getId()]));
+        textView.setText(convertDeltaToString(statistics[Status.getIdOf("initial")] - statSnaps[Frequency.getIdOf("weekly")][Status.getIdOf("initial")]));
         textView.setTextColor(initialStatusColor);
         textView = (TextView) findViewById(R.id.learning_weekly_delta_data);
-        textView.setText(convertDeltaToString(statistics[learningStatus.getId()] - statSnaps[weeklyFrequency.getId()][learningStatus.getId()]));
+        textView.setText(convertDeltaToString(statistics[Status.getIdOf("learning")] - statSnaps[Frequency.getIdOf("weekly")][Status.getIdOf("learning")]));
         textView.setTextColor(learningStatusColor);
         textView = (TextView) findViewById(R.id.known_weekly_delta_data);
-        textView.setText(convertDeltaToString(statistics[knownStatus.getId()] - statSnaps[weeklyFrequency.getId()][knownStatus.getId()]));
+        textView.setText(convertDeltaToString(statistics[Status.getIdOf("known")] - statSnaps[Frequency.getIdOf("weekly")][Status.getIdOf("known")]));
         textView.setTextColor(knownStatusColor);
         
         textView = (TextView) findViewById(R.id.initial_monthly_delta_data);
-        textView.setText(convertDeltaToString(statistics[initialStatus.getId()] - statSnaps[monthlyFrequency.getId()][initialStatus.getId()]));
+        textView.setText(convertDeltaToString(statistics[Status.getIdOf("initial")] - statSnaps[Frequency.getIdOf("monthly")][Status.getIdOf("initial")]));
         textView.setTextColor(initialStatusColor);
         textView = (TextView) findViewById(R.id.learning_monthly_delta_data);
-        textView.setText(convertDeltaToString(statistics[learningStatus.getId()] - statSnaps[monthlyFrequency.getId()][learningStatus.getId()]));
+        textView.setText(convertDeltaToString(statistics[Status.getIdOf("learning")] - statSnaps[Frequency.getIdOf("monthly")][Status.getIdOf("learning")]));
         textView.setTextColor(learningStatusColor);
         textView = (TextView) findViewById(R.id.known_monthly_delta_data);
-        textView.setText(convertDeltaToString(statistics[knownStatus.getId()] - statSnaps[monthlyFrequency.getId()][knownStatus.getId()]));
+        textView.setText(convertDeltaToString(statistics[Status.getIdOf("known")] - statSnaps[Frequency.getIdOf("monthly")][Status.getIdOf("known")]));
         textView.setTextColor(knownStatusColor);
         //END: The statSnaps part
         
@@ -160,6 +154,6 @@ public class StatActivity extends Activity
             sign = "+";
         }
         
-        return sign + Integer.toString(delta);
+        return sign + String.valueOf(delta);
     }
 }

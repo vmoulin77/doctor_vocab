@@ -11,20 +11,20 @@
 
 package vincent.moulin.vocab.menus;
 
+import vincent.moulin.vocab.MyApplication;
+import vincent.moulin.vocab.R;
+import vincent.moulin.vocab.activities.TrainingActivity;
+import vincent.moulin.vocab.constants.Constants;
+import vincent.moulin.vocab.entities.Status;
+import vincent.moulin.vocab.entities.Word;
+import vincent.moulin.vocab.helpers.DatabaseHelper;
+import vincent.moulin.vocab.utilities.TimestampNow;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.database.Cursor;
 import android.text.Html;
 import android.view.MenuItem;
 import android.widget.Toast;
-import android.database.Cursor;
-import vincent.moulin.vocab.R;
-import vincent.moulin.vocab.MyApplication;
-import vincent.moulin.vocab.constants.Constants;
-import vincent.moulin.vocab.constants.ConstantsHM;
-import vincent.moulin.vocab.activities.TrainingActivity;
-import vincent.moulin.vocab.utilities.TimestampNow;
-import vincent.moulin.vocab.entities.Word;
-import vincent.moulin.vocab.helpers.DatabaseHelper;
 
 /**
  * The TrainingMenuManager class
@@ -59,7 +59,7 @@ public class TrainingMenuManager
                           +     "timestamp_last_answer_" + startingLangName + " "
                           + "FROM card "
                           + "WHERE is_active_" + startingLangName + " = 1 "
-                          + "AND id_status_" + startingLangName + " = " + ConstantsHM.STATUSES.getId("learning");
+                          + "AND id_status_" + startingLangName + " = " + Status.getIdOf("learning");
                     
                     cursor = dbh.getReadableDatabase().rawQuery(query, null);
                     while (cursor.moveToNext()) {
@@ -77,7 +77,7 @@ public class TrainingMenuManager
                           +     "timestamp_last_answer_" + startingLangName + " "
                           + "FROM card "
                           + "WHERE is_active_" + startingLangName + " = 1 "
-                          + "AND id_status_" + startingLangName + " = " + ConstantsHM.STATUSES.getId("known");
+                          + "AND id_status_" + startingLangName + " = " + Status.getIdOf("known");
                         
                     cursor = dbh.getReadableDatabase().rawQuery(query, null);
                     while (cursor.moveToNext()) {
@@ -95,7 +95,7 @@ public class TrainingMenuManager
                     } else {
                         adviceContent = "<b>IT'S TIME TO WORK !</b><br /><br />";
                         
-                        adviceContent += "<b>" + Integer.toString(nbEligibleLearningWords) + "</b> ";
+                        adviceContent += "<b>" + String.valueOf(nbEligibleLearningWords) + "</b> ";
                         if (nbEligibleLearningWords <= 1) {
                             grammar = singular;
                         } else {
@@ -107,7 +107,7 @@ public class TrainingMenuManager
                         
                         adviceContent += "<br /><br />";
                         
-                        adviceContent += "<b>" + Integer.toString(nbEligibleKnownWords) + "</b> ";
+                        adviceContent += "<b>" + String.valueOf(nbEligibleKnownWords) + "</b> ";
                         if (nbEligibleKnownWords <= 1) {
                             grammar = singular;
                         } else {

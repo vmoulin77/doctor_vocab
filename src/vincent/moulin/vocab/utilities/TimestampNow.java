@@ -12,6 +12,7 @@
 package vincent.moulin.vocab.utilities;
 
 import java.util.Calendar;
+
 import vincent.moulin.vocab.constants.Constants;
 
 /**
@@ -27,9 +28,9 @@ public final class TimestampNow
 {
     private static TimestampNow instance = null;
     
-    private static long value;
-    private static int zoneOffset;
-    private static int dstOffset;
+    private long value;
+    private int zoneOffset;
+    private int dstOffset;
     
     private TimestampNow() {
         reinitialize();
@@ -53,11 +54,11 @@ public final class TimestampNow
         
         switch (timestampValueType) {
             case Constants.TIMESTAMP_RAW_VALUE:
-                retour = value;
+                retour = this.value;
                 break;
 
             case Constants.TIMESTAMP_OFFSETTED_VALUE:
-                retour = value + zoneOffset + dstOffset;
+                retour = this.value + this.zoneOffset + this.dstOffset;
                 break;
 
             default:
@@ -73,8 +74,8 @@ public final class TimestampNow
     public void reinitialize() {
         Calendar calendar = Calendar.getInstance();
         
-        value       = calendar.getTimeInMillis() / 1000;
-        zoneOffset  = calendar.get(Calendar.ZONE_OFFSET) / 1000;
-        dstOffset   = calendar.get(Calendar.DST_OFFSET) / 1000;
+        this.value       = calendar.getTimeInMillis() / 1000;
+        this.zoneOffset  = calendar.get(Calendar.ZONE_OFFSET) / 1000;
+        this.dstOffset   = calendar.get(Calendar.DST_OFFSET) / 1000;
     }
 }

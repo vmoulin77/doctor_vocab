@@ -11,14 +11,13 @@
 
 package vincent.moulin.vocab.entities;
 
-import android.content.ContentValues;
-import android.database.Cursor;
 import vincent.moulin.vocab.MyApplication;
 import vincent.moulin.vocab.constants.Constants;
-import vincent.moulin.vocab.constants.ConstantsHM;
 import vincent.moulin.vocab.helpers.DatabaseHelper;
 import vincent.moulin.vocab.helpers.TimeHelper;
 import vincent.moulin.vocab.utilities.TimestampNow;
+import android.content.ContentValues;
+import android.database.Cursor;
 
 /**
  * The StatSnap class represents a snapshot of one statistic.
@@ -136,7 +135,7 @@ public class StatSnap
               +     "id_status, " //1
               +     "nb_words " //2
               + "FROM stat_snap "
-              + "WHERE id_language = " + ConstantsHM.LANGUAGES.getId(langName);
+              + "WHERE id_language = " + Language.getIdOf(langName);
         
         cursor = dbh.getReadableDatabase().rawQuery(query, null);
         
@@ -177,12 +176,12 @@ public class StatSnap
             idStatSnap      = cursor.getInt(0);
             idFrequency     = cursor.getInt(1);
             idStatus        = cursor.getInt(2);
-            langName        = ConstantsHM.LANGUAGES.getName(cursor.getInt(3));
+            langName        = Language.getNameOf(cursor.getInt(3));
             validityPeriod  = cursor.getLong(4);
             
-            if (idFrequency == ConstantsHM.FREQUENCIES.getId("daily")) {
+            if (idFrequency == Frequency.getIdOf("daily")) {
                 currentPeriod = daystamp;
-            } else if (idFrequency == ConstantsHM.FREQUENCIES.getId("weekly")) {
+            } else if (idFrequency == Frequency.getIdOf("weekly")) {
                 currentPeriod = weekstamp;
             } else {
                 currentPeriod = monthstamp;

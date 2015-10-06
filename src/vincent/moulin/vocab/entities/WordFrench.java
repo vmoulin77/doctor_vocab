@@ -42,6 +42,6 @@ public class WordFrench extends Word
      * {@inheritDoc}
      */
     public Language getLanguage() {
-        return new Language("french");
+        return Language.getByName("french");
     }
 }
