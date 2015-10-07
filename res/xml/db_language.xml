@@ -1,11 +1,11 @@
 <?xml version ="1.0" encoding="utf-8" ?>
 <table>
     <language>
-        <id>0</id>
+        <id>1</id>
         <name>english</name>
     </language>
     <language>
-        <id>1</id>
+        <id>2</id>
         <name>french</name>
     </language>
 </table>

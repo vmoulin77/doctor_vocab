@@ -22,6 +22,8 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.SparseArray;
+import android.util.SparseIntArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -46,8 +48,8 @@ public class StatActivity extends Activity
     protected void onCreate(Bundle savedInstanceState) {
         TimestampNow.getInstance().reinitialize();
         
-        int[] statistics;
-        int[][] statSnaps;
+        SparseIntArray statistics;
+        SparseArray<SparseIntArray> statSnaps;
         TextView textView;
         int initialStatusColor   = Color.parseColor(Status.getColorOf("initial")),
             learningStatusColor  = Color.parseColor(Status.getColorOf("learning")),
@@ -66,23 +68,23 @@ public class StatActivity extends Activity
         statistics = Deck.calcStatForLangName(this.startingLangName);
         
         textView = (TextView) findViewById(R.id.stat_initial_data);
-        textView.setText(String.valueOf(statistics[Status.getIdOf("initial")]));
+        textView.setText(String.valueOf(statistics.get(Status.getIdOf("initial"))));
         textView.setTextColor(initialStatusColor);
         
         textView = (TextView) findViewById(R.id.stat_learning_data);
-        textView.setText(String.valueOf(statistics[Status.getIdOf("learning")]));
+        textView.setText(String.valueOf(statistics.get(Status.getIdOf("learning"))));
         textView.setTextColor(learningStatusColor);
         
         textView = (TextView) findViewById(R.id.stat_known_data);
-        textView.setText(String.valueOf(statistics[Status.getIdOf("known")]));
+        textView.setText(String.valueOf(statistics.get(Status.getIdOf("known"))));
         textView.setTextColor(knownStatusColor);
         
         textView = (TextView) findViewById(R.id.stat_total_data);
         textView.setText(
             String.valueOf(
-                statistics[Status.getIdOf("initial")]
-                + statistics[Status.getIdOf("learning")]
-                + statistics[Status.getIdOf("known")]
+                statistics.get(Status.getIdOf("initial"))
+                + statistics.get(Status.getIdOf("learning"))
+                + statistics.get(Status.getIdOf("known"))
             )
         );
         //END: The statistics part
@@ -91,33 +93,33 @@ public class StatActivity extends Activity
         statSnaps = StatSnap.getAllStatSnapsForLangName(this.startingLangName);
         
         textView = (TextView) findViewById(R.id.initial_daily_delta_data);
-        textView.setText(convertDeltaToString(statistics[Status.getIdOf("initial")] - statSnaps[Frequency.getIdOf("daily")][Status.getIdOf("initial")]));
+        textView.setText(convertDeltaToString(statistics.get(Status.getIdOf("initial")) - statSnaps.get(Frequency.getIdOf("daily")).get(Status.getIdOf("initial"))));
         textView.setTextColor(initialStatusColor);
         textView = (TextView) findViewById(R.id.learning_daily_delta_data);
-        textView.setText(convertDeltaToString(statistics[Status.getIdOf("learning")] - statSnaps[Frequency.getIdOf("daily")][Status.getIdOf("learning")]));
+        textView.setText(convertDeltaToString(statistics.get(Status.getIdOf("learning")) - statSnaps.get(Frequency.getIdOf("daily")).get(Status.getIdOf("learning"))));
         textView.setTextColor(learningStatusColor);
         textView = (TextView) findViewById(R.id.known_daily_delta_data);
-        textView.setText(convertDeltaToString(statistics[Status.getIdOf("known")] - statSnaps[Frequency.getIdOf("daily")][Status.getIdOf("known")]));
+        textView.setText(convertDeltaToString(statistics.get(Status.getIdOf("known")) - statSnaps.get(Frequency.getIdOf("daily")).get(Status.getIdOf("known"))));
         textView.setTextColor(knownStatusColor);
         
         textView = (TextView) findViewById(R.id.initial_weekly_delta_data);
-        textView.setText(convertDeltaToString(statistics[Status.getIdOf("initial")] - statSnaps[Frequency.getIdOf("weekly")][Status.getIdOf("initial")]));
+        textView.setText(convertDeltaToString(statistics.get(Status.getIdOf("initial")) - statSnaps.get(Frequency.getIdOf("weekly")).get(Status.getIdOf("initial"))));
         textView.setTextColor(initialStatusColor);
         textView = (TextView) findViewById(R.id.learning_weekly_delta_data);
-        textView.setText(convertDeltaToString(statistics[Status.getIdOf("learning")] - statSnaps[Frequency.getIdOf("weekly")][Status.getIdOf("learning")]));
+        textView.setText(convertDeltaToString(statistics.get(Status.getIdOf("learning")) - statSnaps.get(Frequency.getIdOf("weekly")).get(Status.getIdOf("learning"))));
         textView.setTextColor(learningStatusColor);
         textView = (TextView) findViewById(R.id.known_weekly_delta_data);
-        textView.setText(convertDeltaToString(statistics[Status.getIdOf("known")] - statSnaps[Frequency.getIdOf("weekly")][Status.getIdOf("known")]));
+        textView.setText(convertDeltaToString(statistics.get(Status.getIdOf("known")) - statSnaps.get(Frequency.getIdOf("weekly")).get(Status.getIdOf("known"))));
         textView.setTextColor(knownStatusColor);
         
         textView = (TextView) findViewById(R.id.initial_monthly_delta_data);
-        textView.setText(convertDeltaToString(statistics[Status.getIdOf("initial")] - statSnaps[Frequency.getIdOf("monthly")][Status.getIdOf("initial")]));
+        textView.setText(convertDeltaToString(statistics.get(Status.getIdOf("initial")) - statSnaps.get(Frequency.getIdOf("monthly")).get(Status.getIdOf("initial"))));
         textView.setTextColor(initialStatusColor);
         textView = (TextView) findViewById(R.id.learning_monthly_delta_data);
-        textView.setText(convertDeltaToString(statistics[Status.getIdOf("learning")] - statSnaps[Frequency.getIdOf("monthly")][Status.getIdOf("learning")]));
+        textView.setText(convertDeltaToString(statistics.get(Status.getIdOf("learning")) - statSnaps.get(Frequency.getIdOf("monthly")).get(Status.getIdOf("learning"))));
         textView.setTextColor(learningStatusColor);
         textView = (TextView) findViewById(R.id.known_monthly_delta_data);
-        textView.setText(convertDeltaToString(statistics[Status.getIdOf("known")] - statSnaps[Frequency.getIdOf("monthly")][Status.getIdOf("known")]));
+        textView.setText(convertDeltaToString(statistics.get(Status.getIdOf("known")) - statSnaps.get(Frequency.getIdOf("monthly")).get(Status.getIdOf("known"))));
         textView.setTextColor(knownStatusColor);
         //END: The statSnaps part
         

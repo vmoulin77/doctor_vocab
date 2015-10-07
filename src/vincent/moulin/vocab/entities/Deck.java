@@ -19,6 +19,7 @@ import vincent.moulin.vocab.constants.Constants;
 import vincent.moulin.vocab.helpers.DatabaseHelper;
 import vincent.moulin.vocab.utilities.TimestampNow;
 import android.database.Cursor;
+import android.util.SparseIntArray;
 
 /**
  * The Deck class represents a set of cards.
@@ -41,11 +42,11 @@ public class Deck
      * @param langName the language name for which the statistics are calculated
      * @return the statistics
      */
-    public static int[] calcStatForLangName(String langName) {
+    public static SparseIntArray calcStatForLangName(String langName) {
         DatabaseHelper dbh = DatabaseHelper.getInstance(MyApplication.getContext());
         String query;
         Cursor cursor;
-        int[] retour = new int[3];
+        SparseIntArray retour = new SparseIntArray();
         
         query = "SELECT "
               +     "id_status_" + langName + ", "
@@ -57,7 +58,7 @@ public class Deck
         cursor = dbh.getReadableDatabase().rawQuery(query, null);
         
         while (cursor.moveToNext()) {
-            retour[cursor.getInt(0)] = cursor.getInt(1);
+            retour.put(cursor.getInt(0), cursor.getInt(1));
         }
         cursor.close();
 
@@ -81,7 +82,7 @@ public class Deck
         
         // Variables for the phase 1
         int p1_secondaryIndice = 0;
-        long p1_timestampDiff, p1_timestampLastAnswer = 0;
+        long p1_timestampLastAnswer = 0;
         ArrayList<Integer> p1_eligibleIds = new ArrayList<Integer>();
         
         // Variables for the phase 2
@@ -114,8 +115,7 @@ public class Deck
                 break;
             }
             
-            p1_timestampDiff = rawTimestampNow - cursor.getLong(2);
-            if (Word.learningWordIsEligible(cursor.getInt(1), p1_timestampDiff)) {
+            if (Word.learningWordIsEligible(cursor.getInt(1), rawTimestampNow - cursor.getLong(2))) {
                 p1_eligibleIds.add(cursor.getInt(0));
                 p1_secondaryIndice = cursor.getInt(1);
                 p1_timestampLastAnswer = cursor.getLong(2);

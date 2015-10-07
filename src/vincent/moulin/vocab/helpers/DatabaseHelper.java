@@ -34,7 +34,7 @@ public final class DatabaseHelper extends SQLiteOpenHelper
     private static DatabaseHelper instance = null;
     
     private static final String DATABASE_NAME = "doctor_vocab";
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
     
     private static final String CREATE_TABLE_LANGUAGE =
         "CREATE TABLE language ("
@@ -377,7 +377,6 @@ public final class DatabaseHelper extends SQLiteOpenHelper
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (oldVersion <= 3) {
             db.execSQL("DROP TABLE IF EXISTS dico;");
-            
             db.execSQL("DROP TABLE IF EXISTS stat_snap;");
             db.execSQL("DROP TABLE IF EXISTS pack;");
             db.execSQL("DROP TABLE IF EXISTS dicotuple;");
@@ -388,7 +387,62 @@ public final class DatabaseHelper extends SQLiteOpenHelper
             
             onCreate(db);
         } else if (oldVersion == 4) {
+            String query;
+            ContentValues contentValues;
             
+            contentValues = new ContentValues();
+            contentValues.put("id", 2);
+            contentValues.put("name", "french");
+            db.insert("language", null, contentValues);
+            contentValues = new ContentValues();
+            contentValues.put("name", "english");
+            db.update("language", contentValues, "id = 1", null);
+            
+            contentValues = new ContentValues();
+            contentValues.put("id", 3);
+            contentValues.put("name", "monthly");
+            db.insert("frequency", null, contentValues);
+            contentValues = new ContentValues();
+            contentValues.put("name", "weekly");
+            db.update("frequency", contentValues, "id = 2", null);
+            contentValues = new ContentValues();
+            contentValues.put("name", "daily");
+            db.update("frequency", contentValues, "id = 1", null);
+            
+            contentValues = new ContentValues();
+            contentValues.put("id", 3);
+            contentValues.put("name", "known");
+            contentValues.put("color", "#006D00");
+            db.insert("status", null, contentValues);
+            contentValues = new ContentValues();
+            contentValues.put("name", "learning");
+            contentValues.put("color", "#B40000");
+            db.update("status", contentValues, "id = 2", null);
+            contentValues = new ContentValues();
+            contentValues.put("name", "initial");
+            contentValues.put("color", "#000000");
+            db.update("status", contentValues, "id = 1", null);
+            
+            query = "UPDATE card SET id_status_english = id_status_english + 1";
+            db.execSQL(query);
+            query = "UPDATE card SET id_status_french = id_status_french + 1";
+            db.execSQL(query);
+            
+            query = "UPDATE pack SET id_language = id_language + 1";
+            db.execSQL(query);
+            
+            query = "UPDATE stat_snap SET id_frequency = id_frequency + 1";
+            db.execSQL(query);
+            query = "UPDATE stat_snap SET id_status = id_status + 1";
+            db.execSQL(query);
+            query = "UPDATE stat_snap SET id_language = id_language + 1";
+            db.execSQL(query);
+            
+            db.delete("language", "id = 0", null);
+            
+            db.delete("frequency", "id = 0", null);
+            
+            db.delete("status", "id = 0", null);
         }
     }
 }

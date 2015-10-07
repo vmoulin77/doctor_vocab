@@ -1,17 +1,17 @@
 <?xml version ="1.0" encoding="utf-8" ?>
 <table>
     <status>
-        <id>0</id>
+        <id>1</id>
         <name>initial</name>
         <color>#000000</color>
     </status>
     <status>
-        <id>1</id>
+        <id>2</id>
         <name>learning</name>
         <color>#B40000</color>
     </status>
     <status>
-        <id>2</id>
+        <id>3</id>
         <name>known</name>
         <color>#006D00</color>
     </status>

@@ -18,6 +18,8 @@ import vincent.moulin.vocab.helpers.TimeHelper;
 import vincent.moulin.vocab.utilities.TimestampNow;
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.util.SparseArray;
+import android.util.SparseIntArray;
 
 /**
  * The StatSnap class represents a snapshot of one statistic.
@@ -124,11 +126,12 @@ public class StatSnap
      * @param langName the language name for which the StatSnaps are got
      * @return the StatSnaps
      */
-    public static int[][] getAllStatSnapsForLangName(String langName) {
+    public static SparseArray<SparseIntArray> getAllStatSnapsForLangName(String langName) {
         DatabaseHelper dbh = DatabaseHelper.getInstance(MyApplication.getContext());
         String query;
         Cursor cursor;
-        int[][] retour = new int[3][3];
+        SparseIntArray retourPart = new SparseIntArray();
+        SparseArray<SparseIntArray> retour = new SparseArray<SparseIntArray>();
         
         query = "SELECT "
               +     "id_frequency, " //0
@@ -140,7 +143,9 @@ public class StatSnap
         cursor = dbh.getReadableDatabase().rawQuery(query, null);
         
         while (cursor.moveToNext()) {
-            retour[cursor.getInt(0)][cursor.getInt(1)] = cursor.getInt(2);
+            retourPart.put(cursor.getInt(1), cursor.getInt(2));
+            
+            retour.put(cursor.getInt(0), retourPart);
         }
         cursor.close();
 
