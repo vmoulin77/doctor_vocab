@@ -29,6 +29,7 @@ public class Pack
     private int indice;
     private long timestampPack;
     private long timestampLastAnswer;
+    private Card[] cards;
     
     public Pack(int id, Language language, int indice, long timestampPack, long timestampLastAnswer) {
         this.id = id;
@@ -77,6 +78,13 @@ public class Pack
     }
     public void setTimestampLastAnswer(long timestampLastAnswer) {
         this.timestampLastAnswer = timestampLastAnswer;
+    }
+    
+    public Card[] getCards() {
+        return cards;
+    }
+    public void setCards(Card[] cards) {
+        this.cards = cards;
     }
     
     /**
