@@ -29,6 +29,7 @@ public class Pack
     private int indice;
     private long timestampPack;
     private long timestampLastAnswer;
+    
     private Card[] cards;
     
     public Pack(int id, Language language, int indice, long timestampPack, long timestampLastAnswer) {

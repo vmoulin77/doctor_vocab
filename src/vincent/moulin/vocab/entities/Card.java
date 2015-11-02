@@ -105,7 +105,7 @@ public class Card implements Cloneable
         } else if (wordToTranslate.getStatus().getName().equals("known")) {
             if (answerIsOk) {
                 if (wordToTranslate.getPrimaryIndice() != Word.MAX_PRIMARY_INDICE) {
-                    if (wordToTranslate.isAccelerated()) {
+                    if (wordToTranslate.getIsAccelerated()) {
                         wordToTranslate.setPrimaryIndice(Word.MAX_PRIMARY_INDICE);
                     } else {
                         wordToTranslate.setPrimaryIndice(wordToTranslate.getPrimaryIndice() + 1);
@@ -138,7 +138,7 @@ public class Card implements Cloneable
         
         // We set if the "wordToTranslate" is accelerated or not
         if ( ! answerIsOk) {
-            wordToTranslate.setAccelerated(false);
+            wordToTranslate.setIsAccelerated(false);
         }
         //--------------------------------------------------------------------
         
@@ -237,24 +237,24 @@ public class Card implements Cloneable
         
         contentValues.put("word_english", this.wordEnglish.getContent());
         contentValues.put("word_french", this.wordFrench.getContent());
-        if (this.wordEnglish.isActive()) {
+        if (this.wordEnglish.getIsActive()) {
             contentValues.put("is_active_english", 1);
         } else {
             contentValues.put("is_active_english", 0);
         }
-        if (this.wordFrench.isActive()) {
+        if (this.wordFrench.getIsActive()) {
             contentValues.put("is_active_french", 1);
         } else {
             contentValues.put("is_active_french", 0);
         }
         contentValues.put("id_status_english", this.wordEnglish.getStatus().getId());
         contentValues.put("id_status_french", this.wordFrench.getStatus().getId());
-        if (this.wordEnglish.isAccelerated()) {
+        if (this.wordEnglish.getIsAccelerated()) {
             contentValues.put("is_accelerated_english", 1);
         } else {
             contentValues.put("is_accelerated_english", 0);
         }
-        if (this.wordFrench.isAccelerated()) {
+        if (this.wordFrench.getIsAccelerated()) {
             contentValues.put("is_accelerated_french", 1);
         } else {
             contentValues.put("is_accelerated_french", 0);

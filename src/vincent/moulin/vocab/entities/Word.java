@@ -62,10 +62,10 @@ public abstract class Word implements Cloneable
         this.content = content;
     }
     
-    public boolean isActive() {
+    public boolean getIsActive() {
         return isActive;
     }
-    public void setActive(boolean isActive) {
+    public void setIsActive(boolean isActive) {
         this.isActive = isActive;
     }
     
@@ -82,10 +82,10 @@ public abstract class Word implements Cloneable
         this.status = Status.getByName(statusName);
     }
     
-    public boolean isAccelerated() {
+    public boolean getIsAccelerated() {
         return isAccelerated;
     }
-    public void setAccelerated(boolean isAccelerated) {
+    public void setIsAccelerated(boolean isAccelerated) {
         this.isAccelerated = isAccelerated;
     }
     
