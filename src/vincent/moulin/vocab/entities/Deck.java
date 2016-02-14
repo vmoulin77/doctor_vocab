@@ -1,5 +1,5 @@
 /**
- * Copyright 2013, 2015 Vincent MOULIN
+ * Copyright 2013, 2016 Vincent MOULIN
  * 
  * This file is part of Doctor Vocab.
  * 
@@ -150,7 +150,7 @@ public class Deck
         if (nbInitialWords == 0) {
             // We set p2_threshold to the maximum of a combined indice
             p2_threshold = Word.MAX_COMBINED_INDICE;
-        } else if (random.nextInt(10) == 0) {
+        } else if (random.nextInt(2) == 0) {
             // We set p2_threshold to the maximum of a combined indice of an eligible word
             // The goal is to guarantee that all the eligible known words will be reviewed within a reasonable time
             p2_threshold = Word.MAX_COMBINED_INDICE_ELIGIBLE_WORD;
@@ -178,7 +178,7 @@ public class Deck
             cursor.close();
 
             if ((p2_weightOfLearningWords < 99)
-                && (random.nextInt(10) == 0)
+                && (random.nextInt(5) == 0)
             ) {
                 // The phase 2 is skipped
                 // The goal is to select sometimes a new word even when there are a lot of eligible known words

@@ -1,5 +1,5 @@
 /**
- * Copyright 2013, 2015 Vincent MOULIN
+ * Copyright 2013, 2016 Vincent MOULIN
  * 
  * This file is part of Doctor Vocab.
  * 
@@ -34,7 +34,7 @@ public final class DatabaseHelper extends SQLiteOpenHelper
     private static DatabaseHelper instance = null;
     
     private static final String DATABASE_NAME = "doctor_vocab";
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 7;
     
     private static final String CREATE_TABLE_LANGUAGE =
         "CREATE TABLE language ("
@@ -375,7 +375,7 @@ public final class DatabaseHelper extends SQLiteOpenHelper
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion <= 3) {
+        if (oldVersion != 4) {
             db.execSQL("DROP TABLE IF EXISTS dico;");
             db.execSQL("DROP TABLE IF EXISTS stat_snap;");
             db.execSQL("DROP TABLE IF EXISTS pack;");
@@ -386,9 +386,47 @@ public final class DatabaseHelper extends SQLiteOpenHelper
             db.execSQL("DROP TABLE IF EXISTS language;");
             
             onCreate(db);
-        } else if (oldVersion == 4) {
-            String query;
+        } else {
+            String query, idCard = "";
             ContentValues contentValues;
+            int[] recycledIds = {
+                  81,
+                2174,
+                2465,
+                2466,
+                2475,
+                2618,
+                2705,
+                2738,
+                3099,
+                3131,
+                3274,
+                3557,
+                3867,
+                3877,
+                3889,
+                4002,
+                4016,
+                4184,
+                4389,
+                4442,
+                4650,
+                4720,
+                4844,
+                4856,
+                4860,
+                4878,
+                4939,
+                4952,
+                5117,
+                5136,
+                5165,
+                5262,
+                5291,
+                5327
+            };
+            
+            //--------------------------------------------------------------------
             
             contentValues = new ContentValues();
             contentValues.put("id", 2);
@@ -443,6 +481,61 @@ public final class DatabaseHelper extends SQLiteOpenHelper
             db.delete("frequency", "id = 0", null);
             
             db.delete("status", "id = 0", null);
+
+            //--------------------------------------------------------------------
+
+            try {
+                XmlPullParser xpp = this.context.getResources().getXml(R.xml.db_card);
+
+                contentValues = new ContentValues();
+                while (xpp.getEventType() != XmlPullParser.END_DOCUMENT) {
+                    if (xpp.getEventType() == XmlPullParser.START_TAG) {
+                        if (xpp.getName().equals("e1")) {
+                            idCard = xpp.nextText();
+                        } else if (xpp.getName().equals("e2")) {
+                            contentValues.put("word_english", xpp.nextText());
+                        } else if (xpp.getName().equals("e3")) {
+                            contentValues.put("word_french", xpp.nextText());
+                        } else if (xpp.getName().equals("e4")) {
+                            contentValues.put("is_active_english", xpp.nextText());
+                        } else if (xpp.getName().equals("e5")) {
+                            contentValues.put("is_active_french", xpp.nextText());
+                        }
+                    }
+                    
+                    if ((xpp.getEventType() == XmlPullParser.END_TAG)
+                        && (xpp.getName().equals("card"))
+                    ) {
+                        db.update("card", contentValues, "id = ?", new String[]{idCard});
+                        contentValues = new ContentValues();
+                    }
+                    
+                    xpp.next();
+                }
+                
+                xpp = null;
+            } catch (Exception e) {
+                this.displayInitializationErrorMsg();
+            }
+            
+            //--------------------------------------------------------------------
+
+            for (int recycledId : recycledIds) {
+                contentValues = new ContentValues();
+                
+                contentValues.put("id_status_english",              1);
+                contentValues.put("id_status_french",               1);
+                contentValues.put("is_accelerated_english",         1);
+                contentValues.put("is_accelerated_french",          1);
+                contentValues.put("primary_indice_english",         1);
+                contentValues.put("primary_indice_french",          1);
+                contentValues.put("secondary_indice_english",       1);
+                contentValues.put("secondary_indice_french",        1);
+                contentValues.put("timestamp_last_answer_english",  0);
+                contentValues.put("timestamp_last_answer_french",   0);
+                
+                db.update("card", contentValues, "id = ?", new String[]{String.valueOf(recycledId)});
+            }
         }
     }
 }
