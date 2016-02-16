@@ -303,7 +303,7 @@ public final class DatabaseHelper extends SQLiteOpenHelper
                   +     "0,"
                   +     "0"
                   + ")";
-            
+
             sqliteStatement = db.compileStatement(query);
             
             while (xpp.getEventType() != XmlPullParser.END_DOCUMENT) {

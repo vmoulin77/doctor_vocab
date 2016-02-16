@@ -41,10 +41,10 @@ public final class TimeHelper
                 break;
                 
             case Constants.MONTHSTAMP:
-                Calendar calendarNow = Calendar.getInstance();
+                Calendar calendar = Calendar.getInstance();
                 
-                calendarNow.setTimeInMillis(timestamp * 1000);
-                retour = (12 * (calendarNow.get(Calendar.YEAR) - 1970)) + calendarNow.get(Calendar.MONTH);
+                calendar.setTimeInMillis(timestamp * 1000);
+                retour = (12 * (calendar.get(Calendar.YEAR) - 1970)) + calendar.get(Calendar.MONTH);
                 break;
                 
             default:

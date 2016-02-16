@@ -130,9 +130,8 @@ public class StatSnap
         DatabaseHelper dbh = DatabaseHelper.getInstance(MyApplication.getContext());
         String query;
         Cursor cursor;
-        SparseIntArray retourPart = new SparseIntArray();
         SparseArray<SparseIntArray> retour = new SparseArray<SparseIntArray>();
-        
+
         query = "SELECT "
               +     "id_frequency, " //0
               +     "id_status, " //1
@@ -141,11 +140,13 @@ public class StatSnap
               + "WHERE id_language = " + Language.getIdOf(langName);
         
         cursor = dbh.getReadableDatabase().rawQuery(query, null);
-        
+
+        for (Frequency frequency : Frequency.all()) {
+            retour.put(frequency.getId(), new SparseIntArray());
+        }
+
         while (cursor.moveToNext()) {
-            retourPart.put(cursor.getInt(1), cursor.getInt(2));
-            
-            retour.put(cursor.getInt(0), retourPart);
+            retour.get(cursor.getInt(0)).put(cursor.getInt(1), cursor.getInt(2));
         }
         cursor.close();
 
@@ -183,7 +184,7 @@ public class StatSnap
             idStatus        = cursor.getInt(2);
             langName        = Language.getNameOf(cursor.getInt(3));
             validityPeriod  = cursor.getLong(4);
-            
+
             if (idFrequency == Frequency.getIdOf("daily")) {
                 currentPeriod = daystamp;
             } else if (idFrequency == Frequency.getIdOf("weekly")) {

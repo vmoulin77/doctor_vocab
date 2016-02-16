@@ -11,6 +11,8 @@
 
 package vincent.moulin.vocab.entities;
 
+import java.util.Arrays;
+
 import vincent.moulin.vocab.libraries.enumdata.EnumDataItem;
 
 /**
@@ -47,7 +49,8 @@ public final class Status extends EnumDataItem implements Cloneable
     }
     
     public static Status[] all() {
-        return (Status[]) enumDataLoader.getAll(tableName, fields);
+        EnumDataItem[] enumDataItems = enumDataLoader.getAll(tableName, fields);
+        return Arrays.copyOf(enumDataItems, enumDataItems.length, Status[].class);
     }
 
     public static int getIdOf(String name) {

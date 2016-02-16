@@ -11,6 +11,8 @@
 
 package vincent.moulin.vocab.entities;
 
+import java.util.Arrays;
+
 import vincent.moulin.vocab.libraries.enumdata.EnumDataItem;
 
 /**
@@ -35,7 +37,8 @@ public final class Language extends EnumDataItem
     }
     
     public static Language[] all() {
-        return (Language[]) enumDataLoader.getAll(tableName, fields);
+        EnumDataItem[] enumDataItems = enumDataLoader.getAll(tableName, fields);
+        return Arrays.copyOf(enumDataItems, enumDataItems.length, Language[].class);
     }
 
     public static int getIdOf(String name) {
