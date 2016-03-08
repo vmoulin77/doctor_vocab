@@ -12,9 +12,8 @@
 package vincent.moulin.vocab.entities;
 
 import vincent.moulin.vocab.MyApplication;
-import vincent.moulin.vocab.constants.Constants;
 import vincent.moulin.vocab.helpers.DatabaseHelper;
-import vincent.moulin.vocab.utilities.TimestampNow;
+import vincent.moulin.vocab.utilities.CalendarNow;
 import android.database.Cursor;
 
 /**
@@ -211,7 +210,7 @@ public abstract class Word implements Cloneable
         String query;
         Cursor cursor;
         long timestampPack, timestampLastAnswer,
-            rawTimestampNow = TimestampNow.getInstance().getValue(Constants.TIMESTAMP_RAW_VALUE);
+            rawTimestampNow = CalendarNow.getInstance().getRawTimestamp();
         int[] levelsForLastAnswer = {
               4,
               5,

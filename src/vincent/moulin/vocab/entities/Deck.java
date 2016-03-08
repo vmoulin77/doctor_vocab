@@ -12,12 +12,12 @@
 package vincent.moulin.vocab.entities;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Random;
 
 import vincent.moulin.vocab.MyApplication;
-import vincent.moulin.vocab.constants.Constants;
 import vincent.moulin.vocab.helpers.DatabaseHelper;
-import vincent.moulin.vocab.utilities.TimestampNow;
+import vincent.moulin.vocab.utilities.CalendarNow;
 import android.database.Cursor;
 import android.util.SparseIntArray;
 
@@ -79,9 +79,9 @@ public class Deck
         DatabaseHelper dbh = DatabaseHelper.getInstance(MyApplication.getContext());
         String query;
         Cursor cursor;
-        Random random = new Random();
+        Random random = new Random(Calendar.getInstance().getTimeInMillis());
         int nbInitialWords;
-        long rawTimestampNow = TimestampNow.getInstance().getValue(Constants.TIMESTAMP_RAW_VALUE);
+        long rawTimestampNow = CalendarNow.getInstance().getRawTimestamp();
         Card retour = null;
         
         // Variables for the phase 1
@@ -90,7 +90,8 @@ public class Deck
         ArrayList<Integer> p1_eligibleIds = new ArrayList<Integer>();
         
         // Variables for the phase 2
-        int p2_threshold, p2_combinedIndice, p2_weightOfLearningWords = 0;
+        boolean p2_phaseIsSkipped = false;
+        int p2_combinedIndice, p2_threshold = Word.MAX_COMBINED_INDICE_ELIGIBLE_WORD, p2_weightOfLearningWords = 0;
         long p2_timestampDiff;
         ArrayList<Integer> p2_eligibleIds = new ArrayList<Integer>();
         
@@ -150,10 +151,6 @@ public class Deck
         if (nbInitialWords == 0) {
             // We set p2_threshold to the maximum of a combined indice
             p2_threshold = Word.MAX_COMBINED_INDICE;
-        } else if (random.nextInt(2) == 0) {
-            // We set p2_threshold to the maximum of a combined indice of an eligible word
-            // The goal is to guarantee that all the eligible known words will be reviewed within a reasonable time
-            p2_threshold = Word.MAX_COMBINED_INDICE_ELIGIBLE_WORD;
         } else {
             // The higher the weight of words in learning is, the higher the probability to select a known word (ie with the "known" status) is
             // The lower the weight of words in learning is, the higher the probability to select a new word (ie with the "initial" status) is
@@ -170,27 +167,19 @@ public class Deck
             while (cursor.moveToNext()) {
                 p2_weightOfLearningWords += cursor.getInt(1) * (11 - cursor.getInt(0));
                 
-                if (p2_weightOfLearningWords >= 99) {
-                    p2_weightOfLearningWords = 99;
+                if (p2_weightOfLearningWords >= 500) {
+                    p2_weightOfLearningWords = 500;
                     break;
                 }
             }
             cursor.close();
-
-            if ((p2_weightOfLearningWords < 99)
-                && (random.nextInt(5) == 0)
-            ) {
-                // The phase 2 is skipped
-                // The goal is to select sometimes a new word even when there are a lot of eligible known words
-                // (unless there are already a lot of words in learning)
-                p2_threshold = 0;
-            } else {
-                p2_threshold = random.nextInt((p2_weightOfLearningWords / 10) + 1) + 1;
+            
+            if (random.nextInt(10) >= (5 + (p2_weightOfLearningWords / 100))) {
+                p2_phaseIsSkipped = true;
             }
         }
-        //END: Setting of the threshold "p2_threshold"
-
-        if (p2_threshold != 0) {
+        
+        if ( ! p2_phaseIsSkipped) {
             query = "SELECT "
                   +     "id, "
                   +     "primary_indice_" + startingLangName + ", "

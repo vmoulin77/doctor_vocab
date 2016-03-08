@@ -14,11 +14,10 @@ package vincent.moulin.vocab.menus;
 import vincent.moulin.vocab.MyApplication;
 import vincent.moulin.vocab.R;
 import vincent.moulin.vocab.activities.TrainingActivity;
-import vincent.moulin.vocab.constants.Constants;
 import vincent.moulin.vocab.entities.Status;
 import vincent.moulin.vocab.entities.Word;
 import vincent.moulin.vocab.helpers.DatabaseHelper;
-import vincent.moulin.vocab.utilities.TimestampNow;
+import vincent.moulin.vocab.utilities.CalendarNow;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.database.Cursor;
@@ -45,13 +44,13 @@ public class TrainingMenuManager
         } else {
             switch (item.getItemId()) {
                 case R.id.advice_option:
-                    TimestampNow.getInstance().reinitialize();
+                    CalendarNow.getInstance().reinitialize();
                     
                     String adviceContent;
                     long timestampDiff;
                     int nbEligibleLearningWords = 0, nbEligibleKnownWords = 0;
                     String[] grammar, singular = {"word", "has"}, plural = {"words", "have"};
-                    long rawTimestampNow = TimestampNow.getInstance().getValue(Constants.TIMESTAMP_RAW_VALUE);
+                    long rawTimestampNow = CalendarNow.getInstance().getRawTimestamp();
                     
                     //the number of eligible words in learning
                     query = "SELECT "

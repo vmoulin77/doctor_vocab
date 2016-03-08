@@ -17,7 +17,7 @@ import vincent.moulin.vocab.entities.Frequency;
 import vincent.moulin.vocab.entities.StatSnap;
 import vincent.moulin.vocab.entities.Status;
 import vincent.moulin.vocab.menus.DefaultMenuManager;
-import vincent.moulin.vocab.utilities.TimestampNow;
+import vincent.moulin.vocab.utilities.CalendarNow;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -46,7 +46,7 @@ public class StatActivity extends Activity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        TimestampNow.getInstance().reinitialize();
+        CalendarNow.getInstance().reinitialize();
         
         SparseIntArray statistics;
         SparseArray<SparseIntArray> statSnaps;

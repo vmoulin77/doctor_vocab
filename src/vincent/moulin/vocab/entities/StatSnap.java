@@ -12,10 +12,8 @@
 package vincent.moulin.vocab.entities;
 
 import vincent.moulin.vocab.MyApplication;
-import vincent.moulin.vocab.constants.Constants;
 import vincent.moulin.vocab.helpers.DatabaseHelper;
-import vincent.moulin.vocab.helpers.TimeHelper;
-import vincent.moulin.vocab.utilities.TimestampNow;
+import vincent.moulin.vocab.utilities.CalendarNow;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.util.SparseArray;
@@ -162,12 +160,11 @@ public class StatSnap
         Cursor cursor, cursor2;
         int idStatSnap, idFrequency, idStatus, nbWords;
         long validityPeriod, currentPeriod = 0,
-            offsettedTimestampNow = TimestampNow.getInstance().getValue(Constants.TIMESTAMP_OFFSETTED_VALUE),
-            daystamp = TimeHelper.convertTimestamp(offsettedTimestampNow, Constants.DAYSTAMP),
-            weekstamp = TimeHelper.convertTimestamp(offsettedTimestampNow, Constants.WEEKSTAMP),
-            monthstamp = TimeHelper.convertTimestamp(offsettedTimestampNow, Constants.MONTHSTAMP);
+            daystamp = CalendarNow.getInstance().getDaystamp(),
+            weekstamp = CalendarNow.getInstance().getWeekstamp(),
+            monthstamp = CalendarNow.getInstance().getMonthstamp();
         ContentValues contentValues;
-        
+
         query = "SELECT "
               +     "id, " //0
               +     "id_frequency, " //1

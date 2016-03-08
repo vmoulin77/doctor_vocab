@@ -19,7 +19,7 @@ import vincent.moulin.vocab.entities.Pack;
 import vincent.moulin.vocab.entities.StatSnap;
 import vincent.moulin.vocab.entities.Word;
 import vincent.moulin.vocab.menus.TrainingMenuManager;
-import vincent.moulin.vocab.utilities.TimestampNow;
+import vincent.moulin.vocab.utilities.CalendarNow;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -82,7 +82,7 @@ public class TrainingActivity extends Activity
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        TimestampNow.getInstance().reinitialize();
+        CalendarNow.getInstance().reinitialize();
         
         TextView textView;
         
@@ -148,7 +148,7 @@ public class TrainingActivity extends Activity
     }
     
     private void answerProcess(boolean answerIsOk) {
-        TimestampNow.getInstance().reinitialize();
+        CalendarNow.getInstance().reinitialize();
         
         StatSnap.updateAllStatSnaps();
         

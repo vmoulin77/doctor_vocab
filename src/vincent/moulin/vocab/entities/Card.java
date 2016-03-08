@@ -12,9 +12,8 @@
 package vincent.moulin.vocab.entities;
 
 import vincent.moulin.vocab.MyApplication;
-import vincent.moulin.vocab.constants.Constants;
 import vincent.moulin.vocab.helpers.DatabaseHelper;
-import vincent.moulin.vocab.utilities.TimestampNow;
+import vincent.moulin.vocab.utilities.CalendarNow;
 import android.content.ContentValues;
 import android.database.Cursor;
 
@@ -88,7 +87,7 @@ public class Card implements Cloneable
      */
     public void manageAnswer(String startingLangName, boolean answerIsOk) {
         Pack linkedPack;
-        long rawTimestampNow = TimestampNow.getInstance().getValue(Constants.TIMESTAMP_RAW_VALUE);
+        long rawTimestampNow = CalendarNow.getInstance().getRawTimestamp();
         Word wordToTranslate = this.getWordByLangName(startingLangName);
         
         // Calculation of the new status, the new primary indice and the new secondary indice
@@ -96,12 +95,11 @@ public class Card implements Cloneable
             if (answerIsOk) {
                 wordToTranslate.setStatus("known");
                 wordToTranslate.setPrimaryIndice(3);
-                wordToTranslate.setSecondaryIndice(1);
             } else {
                 wordToTranslate.setStatus("learning");
                 wordToTranslate.setPrimaryIndice(1);
-                wordToTranslate.setSecondaryIndice(1);
             }
+            wordToTranslate.setSecondaryIndice(1);
         } else if (wordToTranslate.getStatus().getName().equals("known")) {
             if (answerIsOk) {
                 if (wordToTranslate.getPrimaryIndice() != Word.MAX_PRIMARY_INDICE) {
