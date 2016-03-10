@@ -173,7 +173,7 @@ public class Deck
                 }
             }
             cursor.close();
-            
+
             if (random.nextInt(10) >= (5 + (p2_weightOfLearningWords / 100))) {
                 p2_phaseIsSkipped = true;
             }

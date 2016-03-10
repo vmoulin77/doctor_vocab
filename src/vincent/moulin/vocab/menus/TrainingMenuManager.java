@@ -125,9 +125,9 @@ public class TrainingMenuManager
                     return true;
                     
                 case R.id.cancellation_option:
-                    trainingActivity.getPrevCardBeforeAnswering().updateCardInDatabase();
+                    trainingActivity.getPrevCardBeforeAnswering().save();
                     if (trainingActivity.getPrevPackBeforeAnswering() != null) {
-                        trainingActivity.getPrevPackBeforeAnswering().updatePackInDatabase();
+                        trainingActivity.getPrevPackBeforeAnswering().save();
                     }
                     
                     trainingActivity.setCurrentCard(trainingActivity.getPrevCardBeforeAnswering());

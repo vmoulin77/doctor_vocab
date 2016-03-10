@@ -18,10 +18,4 @@ package vincent.moulin.vocab.constants;
  */
 public final class Constants
 {
-    public static final int TIMESTAMP_RAW_VALUE = 0;
-    public static final int TIMESTAMP_OFFSETTED_VALUE = 1;
-    
-    public static final int DAYSTAMP = 0;
-    public static final int WEEKSTAMP = 1;
-    public static final int MONTHSTAMP = 2;
 }

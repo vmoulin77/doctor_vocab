@@ -130,10 +130,10 @@ public class Pack
     }
     
     /**
-     * Update the current pack in the database.
+     * Update the current Pack in the database.
      * @return the number of rows affected
      */
-    public int updatePackInDatabase() {
+    public int save() {
         DatabaseHelper dbh = DatabaseHelper.getInstance(MyApplication.getContext());
         ContentValues contentValues = new ContentValues();
         

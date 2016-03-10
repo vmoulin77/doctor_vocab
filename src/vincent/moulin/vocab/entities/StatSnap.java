@@ -106,7 +106,7 @@ public class StatSnap
      * Update the current StatSnap in the database.
      * @return the number of rows affected
      */
-    public int updateStatSnapInDatabase() {
+    public int save() {
         DatabaseHelper dbh = DatabaseHelper.getInstance(MyApplication.getContext());
         ContentValues contentValues = new ContentValues();
         
@@ -154,15 +154,15 @@ public class StatSnap
     /**
      * Update all the StatSnaps in the database.
      */
-    public static void updateAllStatSnaps() {
+    public static void updateAll() {
         DatabaseHelper dbh = DatabaseHelper.getInstance(MyApplication.getContext());
         String query, query2, langName;
         Cursor cursor, cursor2;
         int idStatSnap, idFrequency, idStatus, nbWords;
         long validityPeriod, currentPeriod = 0,
-            daystamp = CalendarNow.getInstance().getDaystamp(),
-            weekstamp = CalendarNow.getInstance().getWeekstamp(),
-            monthstamp = CalendarNow.getInstance().getMonthstamp();
+            daystampNow = CalendarNow.getInstance().getDaystamp(),
+            weekstampNow = CalendarNow.getInstance().getWeekstamp(),
+            monthstampNow = CalendarNow.getInstance().getMonthstamp();
         ContentValues contentValues;
 
         query = "SELECT "
@@ -183,11 +183,11 @@ public class StatSnap
             validityPeriod  = cursor.getLong(4);
 
             if (idFrequency == Frequency.getIdOf("daily")) {
-                currentPeriod = daystamp;
+                currentPeriod = daystampNow;
             } else if (idFrequency == Frequency.getIdOf("weekly")) {
-                currentPeriod = weekstamp;
+                currentPeriod = weekstampNow;
             } else {
-                currentPeriod = monthstamp;
+                currentPeriod = monthstampNow;
             }
             
             if (validityPeriod != currentPeriod) {

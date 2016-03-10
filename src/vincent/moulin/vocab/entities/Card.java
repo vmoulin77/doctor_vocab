@@ -152,13 +152,13 @@ public class Card implements Cloneable
             }
             linkedPack.setTimestampLastAnswer(rawTimestampNow);
             
-            linkedPack.updatePackInDatabase();
+            linkedPack.save();
         } else {
             wordToTranslate.setTimestampLastAnswer(rawTimestampNow);
         }
         //--------------------------------------------------------------------
 
-        this.updateCardInDatabase();
+        this.save();
     }
     
     /**
@@ -229,7 +229,7 @@ public class Card implements Cloneable
      * Update the current Card in the database.
      * @return the number of rows affected
      */
-    public int updateCardInDatabase() {
+    public int save() {
         DatabaseHelper dbh = DatabaseHelper.getInstance(MyApplication.getContext());
         ContentValues contentValues = new ContentValues();
         

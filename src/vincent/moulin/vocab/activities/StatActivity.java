@@ -59,7 +59,7 @@ public class StatActivity extends Activity
         
         this.startingLangName = sharedPreferences.getString("STARTING_LANG_NAME", null);
         
-        StatSnap.updateAllStatSnaps();
+        StatSnap.updateAll();
         
         super.onCreate(savedInstanceState);
         setContentView(R.layout.stat_activity);

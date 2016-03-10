@@ -150,7 +150,7 @@ public class TrainingActivity extends Activity
     private void answerProcess(boolean answerIsOk) {
         CalendarNow.getInstance().reinitialize();
         
-        StatSnap.updateAllStatSnaps();
+        StatSnap.updateAll();
         
         this.cancellationOptionIsEnabled = true;
         
