@@ -1,5 +1,5 @@
 /**
- * Copyright 2013, 2016 Vincent MOULIN
+ * Copyright (c) 2013-2016 Vincent MOULIN
  * 
  * This file is part of Doctor Vocab.
  * 
@@ -165,8 +165,8 @@ public class TrainingActivity extends Activity
                         .makeText(this, R.string.congratulation_toast_content, Toast.LENGTH_SHORT)
                         .show();
                 } else {
-                    this.prevPackBeforeAnswering = Pack.getByIdLangAndIndice(
-                        Language.getIdOf(this.startingLangName),
+                    this.prevPackBeforeAnswering = Pack.findByIdLangAndIndice(
+                        Language.findId(this.startingLangName),
                         wordToTranslate.getSecondaryIndice() + 1
                     );
                 }

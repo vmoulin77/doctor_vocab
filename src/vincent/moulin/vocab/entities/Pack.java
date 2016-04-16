@@ -1,5 +1,5 @@
 /**
- * Copyright 2013, 2016 Vincent MOULIN
+ * Copyright (c) 2013-2016 Vincent MOULIN
  * 
  * This file is part of Doctor Vocab.
  * 
@@ -54,10 +54,10 @@ public class Pack
         this.language = language;
     }
     public void setLanguage(int idLanguage) {
-        this.language = Language.getById(idLanguage);
+        this.language = Language.find(idLanguage);
     }
     public void setLanguage(String languageName) {
-        this.language = Language.getByName(languageName);
+        this.language = Language.findByName(languageName);
     }
     
     public int getIndice() {
@@ -89,12 +89,12 @@ public class Pack
     }
     
     /**
-     * Get from the database the full Pack object whose Language id is "idLanguage" and indice is "indice".
-     * @param idLanguage the Language id of the Pack we want to get
-     * @param indice the indice of the pack we want to get
-     * @return the full Pack object whose Language id is "idLanguage" and indice is "indice"
+     * Find the Pack whose Language id is "idLang" and indice is "indice".
+     * @param idLang the Language id
+     * @param indice the indice
+     * @return the Pack whose Language id is "idLang" and indice is "indice"
      */
-    public static Pack getByIdLangAndIndice(int idLanguage, int indice) {
+    public static Pack findByIdLangAndIndice(int idLang, int indice) {
         DatabaseHelper dbh = DatabaseHelper.getInstance(MyApplication.getContext());
         String query;
         Cursor cursor;
@@ -105,7 +105,7 @@ public class Pack
               +     "timestamp_pack, " //1
               +     "timestamp_last_answer " //2
               + "FROM pack "
-              + "WHERE id_language = " + idLanguage + " "
+              + "WHERE id_language = " + idLang + " "
               + "AND indice = " + indice;
         
         cursor = dbh.getReadableDatabase().rawQuery(query, null);
@@ -117,7 +117,7 @@ public class Pack
             
             retour = new Pack(
                 cursor.getInt(0),
-                Language.getById(idLanguage),
+                Language.find(idLang),
                 indice,
                 cursor.getLong(1),
                 cursor.getLong(2)

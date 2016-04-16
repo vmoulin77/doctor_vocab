@@ -1,5 +1,5 @@
 /**
- * Copyright 2013, 2016 Vincent MOULIN
+ * Copyright (c) 2013-2016 Vincent MOULIN
  * 
  * This file is part of Doctor Vocab.
  * 
@@ -77,6 +77,112 @@ public class Card implements Cloneable
         } else {
             return this.wordFrench;
         }
+    }
+    
+    /**
+     * Find the Card whose id is "id".
+     * @param id the id
+     * @return the Card whose id is "id"
+     */
+    public static Card find(int id) {
+        DatabaseHelper dbh = DatabaseHelper.getInstance(MyApplication.getContext());
+        String query;
+        Cursor cursor;
+        Card retour;
+        
+        query = "SELECT "
+              +     "word_english, " //0
+              +     "word_french, " //1
+              +     "is_active_english, " //2
+              +     "is_active_french, " //3
+              +     "id_status_english, " //4
+              +     "id_status_french, " //5
+              +     "is_accelerated_english, " //6
+              +     "is_accelerated_french, " //7
+              +     "primary_indice_english, " //8
+              +     "primary_indice_french, " //9
+              +     "secondary_indice_english, " //10
+              +     "secondary_indice_french, " //11
+              +     "timestamp_last_answer_english, " //12
+              +     "timestamp_last_answer_french " //13
+              + "FROM card "
+              + "WHERE id = " + id;
+        
+        cursor = dbh.getReadableDatabase().rawQuery(query, null);
+        
+        if (cursor.getCount() == 0) {
+            retour = null;
+        } else {
+            cursor.moveToFirst();
+            
+            retour = new Card(
+                id,
+                new WordEnglish(
+                    cursor.getString(0),
+                    (cursor.getInt(2) != 0),
+                    Status.find(cursor.getInt(4)),
+                    (cursor.getInt(6) != 0),
+                    cursor.getInt(8),
+                    cursor.getInt(10),
+                    cursor.getLong(12)
+                ),
+                new WordFrench(
+                    cursor.getString(1),
+                    (cursor.getInt(3) != 0),
+                    Status.find(cursor.getInt(5)),
+                    (cursor.getInt(7) != 0),
+                    cursor.getInt(9),
+                    cursor.getInt(11),
+                    cursor.getLong(13)
+                )
+            );
+        }
+
+        cursor.close();
+
+        return retour;
+    }
+    
+    /**
+     * Update the current Card in the database.
+     * @return the number of rows affected
+     */
+    public int save() {
+        DatabaseHelper dbh = DatabaseHelper.getInstance(MyApplication.getContext());
+        ContentValues contentValues = new ContentValues();
+        
+        contentValues.put("word_english", this.wordEnglish.getContent());
+        contentValues.put("word_french", this.wordFrench.getContent());
+        if (this.wordEnglish.getIsActive()) {
+            contentValues.put("is_active_english", 1);
+        } else {
+            contentValues.put("is_active_english", 0);
+        }
+        if (this.wordFrench.getIsActive()) {
+            contentValues.put("is_active_french", 1);
+        } else {
+            contentValues.put("is_active_french", 0);
+        }
+        contentValues.put("id_status_english", this.wordEnglish.getStatus().getId());
+        contentValues.put("id_status_french", this.wordFrench.getStatus().getId());
+        if (this.wordEnglish.getIsAccelerated()) {
+            contentValues.put("is_accelerated_english", 1);
+        } else {
+            contentValues.put("is_accelerated_english", 0);
+        }
+        if (this.wordFrench.getIsAccelerated()) {
+            contentValues.put("is_accelerated_french", 1);
+        } else {
+            contentValues.put("is_accelerated_french", 0);
+        }
+        contentValues.put("primary_indice_english", this.wordEnglish.getPrimaryIndice());
+        contentValues.put("primary_indice_french", this.wordFrench.getPrimaryIndice());
+        contentValues.put("secondary_indice_english", this.wordEnglish.getSecondaryIndice());
+        contentValues.put("secondary_indice_french", this.wordFrench.getSecondaryIndice());
+        contentValues.put("timestamp_last_answer_english", this.wordEnglish.getTimestampLastAnswer());
+        contentValues.put("timestamp_last_answer_french", this.wordFrench.getTimestampLastAnswer());
+        
+        return dbh.getWritableDatabase().update("card", contentValues, "id = ?", new String[]{String.valueOf(this.id)});
     }
     
     /**
@@ -159,111 +265,5 @@ public class Card implements Cloneable
         //--------------------------------------------------------------------
 
         this.save();
-    }
-    
-    /**
-     * Get from the database the Card object whose id is "id".
-     * @param id the id of the Card we want to get
-     * @return the Card object whose id is "id"
-     */
-    public static Card getById(int id) {
-        DatabaseHelper dbh = DatabaseHelper.getInstance(MyApplication.getContext());
-        String query;
-        Cursor cursor;
-        Card retour;
-        
-        query = "SELECT "
-              +     "word_english, " //0
-              +     "word_french, " //1
-              +     "is_active_english, " //2
-              +     "is_active_french, " //3
-              +     "id_status_english, " //4
-              +     "id_status_french, " //5
-              +     "is_accelerated_english, " //6
-              +     "is_accelerated_french, " //7
-              +     "primary_indice_english, " //8
-              +     "primary_indice_french, " //9
-              +     "secondary_indice_english, " //10
-              +     "secondary_indice_french, " //11
-              +     "timestamp_last_answer_english, " //12
-              +     "timestamp_last_answer_french " //13
-              + "FROM card "
-              + "WHERE id = " + id;
-        
-        cursor = dbh.getReadableDatabase().rawQuery(query, null);
-        
-        if (cursor.getCount() == 0) {
-            retour = null;
-        } else {
-            cursor.moveToFirst();
-            
-            retour = new Card(
-                id,
-                new WordEnglish(
-                    cursor.getString(0),
-                    (cursor.getInt(2) != 0),
-                    Status.getById(cursor.getInt(4)),
-                    (cursor.getInt(6) != 0),
-                    cursor.getInt(8),
-                    cursor.getInt(10),
-                    cursor.getLong(12)
-                ),
-                new WordFrench(
-                    cursor.getString(1),
-                    (cursor.getInt(3) != 0),
-                    Status.getById(cursor.getInt(5)),
-                    (cursor.getInt(7) != 0),
-                    cursor.getInt(9),
-                    cursor.getInt(11),
-                    cursor.getLong(13)
-                )
-            );
-        }
-
-        cursor.close();
-
-        return retour;
-    }
-    
-    /**
-     * Update the current Card in the database.
-     * @return the number of rows affected
-     */
-    public int save() {
-        DatabaseHelper dbh = DatabaseHelper.getInstance(MyApplication.getContext());
-        ContentValues contentValues = new ContentValues();
-        
-        contentValues.put("word_english", this.wordEnglish.getContent());
-        contentValues.put("word_french", this.wordFrench.getContent());
-        if (this.wordEnglish.getIsActive()) {
-            contentValues.put("is_active_english", 1);
-        } else {
-            contentValues.put("is_active_english", 0);
-        }
-        if (this.wordFrench.getIsActive()) {
-            contentValues.put("is_active_french", 1);
-        } else {
-            contentValues.put("is_active_french", 0);
-        }
-        contentValues.put("id_status_english", this.wordEnglish.getStatus().getId());
-        contentValues.put("id_status_french", this.wordFrench.getStatus().getId());
-        if (this.wordEnglish.getIsAccelerated()) {
-            contentValues.put("is_accelerated_english", 1);
-        } else {
-            contentValues.put("is_accelerated_english", 0);
-        }
-        if (this.wordFrench.getIsAccelerated()) {
-            contentValues.put("is_accelerated_french", 1);
-        } else {
-            contentValues.put("is_accelerated_french", 0);
-        }
-        contentValues.put("primary_indice_english", this.wordEnglish.getPrimaryIndice());
-        contentValues.put("primary_indice_french", this.wordFrench.getPrimaryIndice());
-        contentValues.put("secondary_indice_english", this.wordEnglish.getSecondaryIndice());
-        contentValues.put("secondary_indice_french", this.wordFrench.getSecondaryIndice());
-        contentValues.put("timestamp_last_answer_english", this.wordEnglish.getTimestampLastAnswer());
-        contentValues.put("timestamp_last_answer_french", this.wordFrench.getTimestampLastAnswer());
-        
-        return dbh.getWritableDatabase().update("card", contentValues, "id = ?", new String[]{String.valueOf(this.id)});
     }
 }

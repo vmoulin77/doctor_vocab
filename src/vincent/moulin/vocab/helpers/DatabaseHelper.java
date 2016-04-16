@@ -1,5 +1,5 @@
 /**
- * Copyright 2013, 2016 Vincent MOULIN
+ * Copyright (c) 2013-2016 Vincent MOULIN
  * 
  * This file is part of Doctor Vocab.
  * 
@@ -34,7 +34,7 @@ public final class DatabaseHelper extends SQLiteOpenHelper
     private static DatabaseHelper instance = null;
     
     private static final String DATABASE_NAME = "doctor_vocab";
-    private static final int DATABASE_VERSION = 7;
+    private static final int DATABASE_VERSION = 8;
     
     private static final String CREATE_TABLE_LANGUAGE =
         "CREATE TABLE language ("
@@ -375,7 +375,7 @@ public final class DatabaseHelper extends SQLiteOpenHelper
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion != 4) {
+        if (oldVersion < 7) {
             db.execSQL("DROP TABLE IF EXISTS dico;");
             db.execSQL("DROP TABLE IF EXISTS stat_snap;");
             db.execSQL("DROP TABLE IF EXISTS pack;");
@@ -387,101 +387,16 @@ public final class DatabaseHelper extends SQLiteOpenHelper
             
             onCreate(db);
         } else {
-            String query, idCard = "";
             ContentValues contentValues;
-            int[] recycledIds = {
-                  81,
-                2174,
-                2465,
-                2466,
-                2475,
-                2618,
-                2705,
-                2738,
-                3099,
-                3131,
-                3274,
-                3557,
-                3867,
-                3877,
-                3889,
-                4002,
-                4016,
-                4184,
-                4389,
-                4442,
-                4650,
-                4720,
-                4844,
-                4856,
-                4860,
-                4878,
-                4939,
-                4952,
-                5117,
-                5136,
-                5165,
-                5262,
-                5291,
-                5327
-            };
+            String idCard = "";
             
             //--------------------------------------------------------------------
             
             contentValues = new ContentValues();
-            contentValues.put("id", 2);
-            contentValues.put("name", "french");
-            db.insert("language", null, contentValues);
-            contentValues = new ContentValues();
-            contentValues.put("name", "english");
-            db.update("language", contentValues, "id = 1", null);
+            contentValues.put("is_active_english",  0);
+            contentValues.put("is_active_french",   0);
+            db.update("card", contentValues, null, null);
             
-            contentValues = new ContentValues();
-            contentValues.put("id", 3);
-            contentValues.put("name", "monthly");
-            db.insert("frequency", null, contentValues);
-            contentValues = new ContentValues();
-            contentValues.put("name", "weekly");
-            db.update("frequency", contentValues, "id = 2", null);
-            contentValues = new ContentValues();
-            contentValues.put("name", "daily");
-            db.update("frequency", contentValues, "id = 1", null);
-            
-            contentValues = new ContentValues();
-            contentValues.put("id", 3);
-            contentValues.put("name", "known");
-            contentValues.put("color", "#006D00");
-            db.insert("status", null, contentValues);
-            contentValues = new ContentValues();
-            contentValues.put("name", "learning");
-            contentValues.put("color", "#B40000");
-            db.update("status", contentValues, "id = 2", null);
-            contentValues = new ContentValues();
-            contentValues.put("name", "initial");
-            contentValues.put("color", "#000000");
-            db.update("status", contentValues, "id = 1", null);
-            
-            query = "UPDATE card SET id_status_english = id_status_english + 1";
-            db.execSQL(query);
-            query = "UPDATE card SET id_status_french = id_status_french + 1";
-            db.execSQL(query);
-            
-            query = "UPDATE pack SET id_language = id_language + 1";
-            db.execSQL(query);
-            
-            query = "UPDATE stat_snap SET id_frequency = id_frequency + 1";
-            db.execSQL(query);
-            query = "UPDATE stat_snap SET id_status = id_status + 1";
-            db.execSQL(query);
-            query = "UPDATE stat_snap SET id_language = id_language + 1";
-            db.execSQL(query);
-            
-            db.delete("language", "id = 0", null);
-            
-            db.delete("frequency", "id = 0", null);
-            
-            db.delete("status", "id = 0", null);
-
             //--------------------------------------------------------------------
 
             try {
@@ -506,7 +421,22 @@ public final class DatabaseHelper extends SQLiteOpenHelper
                     if ((xpp.getEventType() == XmlPullParser.END_TAG)
                         && (xpp.getName().equals("card"))
                     ) {
-                        db.update("card", contentValues, "id = ?", new String[]{idCard});
+                        if (db.update("card", contentValues, "id = ?", new String[]{idCard}) == 0) {
+                            contentValues.put("id",                             idCard);
+                            contentValues.put("id_status_english",              1);
+                            contentValues.put("id_status_french",               1);
+                            contentValues.put("is_accelerated_english",         1);
+                            contentValues.put("is_accelerated_french",          1);
+                            contentValues.put("primary_indice_english",         1);
+                            contentValues.put("primary_indice_french",          1);
+                            contentValues.put("secondary_indice_english",       1);
+                            contentValues.put("secondary_indice_french",        1);
+                            contentValues.put("timestamp_last_answer_english",  0);
+                            contentValues.put("timestamp_last_answer_french",   0);
+                            
+                            db.insert("card", null, contentValues);
+                        }
+
                         contentValues = new ContentValues();
                     }
                     
@@ -520,22 +450,7 @@ public final class DatabaseHelper extends SQLiteOpenHelper
             
             //--------------------------------------------------------------------
 
-            for (int recycledId : recycledIds) {
-                contentValues = new ContentValues();
-                
-                contentValues.put("id_status_english",              1);
-                contentValues.put("id_status_french",               1);
-                contentValues.put("is_accelerated_english",         1);
-                contentValues.put("is_accelerated_french",          1);
-                contentValues.put("primary_indice_english",         1);
-                contentValues.put("primary_indice_french",          1);
-                contentValues.put("secondary_indice_english",       1);
-                contentValues.put("secondary_indice_french",        1);
-                contentValues.put("timestamp_last_answer_english",  0);
-                contentValues.put("timestamp_last_answer_french",   0);
-                
-                db.update("card", contentValues, "id = ?", new String[]{String.valueOf(recycledId)});
-            }
+            db.delete("card", "is_active_english = 0 AND is_active_french = 0", null);
         }
     }
 }

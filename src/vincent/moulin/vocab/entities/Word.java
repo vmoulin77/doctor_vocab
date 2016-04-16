@@ -1,5 +1,5 @@
 /**
- * Copyright 2013, 2016 Vincent MOULIN
+ * Copyright (c) 2013-2016 Vincent MOULIN
  * 
  * This file is part of Doctor Vocab.
  * 
@@ -75,10 +75,10 @@ public abstract class Word implements Cloneable
         this.status = status;
     }
     public void setStatus(int idStatus) {
-        this.status = Status.getById(idStatus);
+        this.status = Status.find(idStatus);
     }
     public void setStatus(String statusName) {
-        this.status = Status.getByName(statusName);
+        this.status = Status.findByName(statusName);
     }
     
     public boolean getIsAccelerated() {
@@ -198,7 +198,7 @@ public abstract class Word implements Cloneable
      * @return the Pack object linked to the current Word
      */
     public Pack retrievePack() {
-        return Pack.getByIdLangAndIndice(this.getLanguage().getId(), this.secondaryIndice);
+        return Pack.findByIdLangAndIndice(this.getLanguage().getId(), this.secondaryIndice);
     }
 
     /**

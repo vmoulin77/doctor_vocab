@@ -1,5 +1,5 @@
 /**
- * Copyright 2013, 2016 Vincent MOULIN
+ * Copyright (c) 2013-2016 Vincent MOULIN
  * 
  * This file is part of Doctor Vocab.
  * 
@@ -107,7 +107,7 @@ public class Deck
                 +     "timestamp_last_answer_" + startingLangName + " "
                 + "FROM card "
                 + "WHERE is_active_" + startingLangName + " = 1 "
-                + "AND id_status_" + startingLangName + " = " + Status.getIdOf("learning") + " "
+                + "AND id_status_" + startingLangName + " = " + Status.findId("learning") + " "
                 + "ORDER BY secondary_indice_" + startingLangName + ", timestamp_last_answer_" + startingLangName;
           
         cursor = dbh.getReadableDatabase().rawQuery(query, null);
@@ -129,7 +129,7 @@ public class Deck
         cursor.close();
         
         if ( ! p1_eligibleIds.isEmpty()) {
-            return Card.getById(p1_eligibleIds.get(random.nextInt(p1_eligibleIds.size())));
+            return Card.find(p1_eligibleIds.get(random.nextInt(p1_eligibleIds.size())));
         }
         //END: 1st phase of the algorithm -------------------------------------
 
@@ -141,7 +141,7 @@ public class Deck
         query = "SELECT COUNT(*) "
               + "FROM card "
               + "WHERE is_active_" + startingLangName + " = 1 "
-              + "AND id_status_" + startingLangName + " = " + Status.getIdOf("initial");
+              + "AND id_status_" + startingLangName + " = " + Status.findId("initial");
 
         cursor = dbh.getReadableDatabase().rawQuery(query, null);
         cursor.moveToFirst();
@@ -160,7 +160,7 @@ public class Deck
                   +     "COUNT(*) "
                   + "FROM card "
                   + "WHERE is_active_" + startingLangName + " = 1 "
-                  + "AND id_status_" + startingLangName + " = " + Status.getIdOf("learning") + " "
+                  + "AND id_status_" + startingLangName + " = " + Status.findId("learning") + " "
                   + "GROUP BY secondary_indice_" + startingLangName;
     
             cursor = dbh.getReadableDatabase().rawQuery(query, null);
@@ -174,7 +174,7 @@ public class Deck
             }
             cursor.close();
 
-            if (random.nextInt(10) >= (5 + (p2_weightOfLearningWords / 100))) {
+            if (random.nextInt(1000) >= (500 + p2_weightOfLearningWords)) {
                 p2_phaseIsSkipped = true;
             }
         }
@@ -186,7 +186,7 @@ public class Deck
                   +     "timestamp_last_answer_" + startingLangName + " "
                   + "FROM card "
                   + "WHERE is_active_" + startingLangName + " = 1 "
-                  + "AND id_status_" + startingLangName + " = " + Status.getIdOf("known");
+                  + "AND id_status_" + startingLangName + " = " + Status.findId("known");
               
             cursor = dbh.getReadableDatabase().rawQuery(query, null);
               
@@ -205,7 +205,7 @@ public class Deck
             cursor.close();
             
             if ( ! p2_eligibleIds.isEmpty()) {
-                return Card.getById(p2_eligibleIds.get(random.nextInt(p2_eligibleIds.size())));
+                return Card.find(p2_eligibleIds.get(random.nextInt(p2_eligibleIds.size())));
             }
         }
         //END: 2nd phase of the algorithm -------------------------------------
@@ -220,12 +220,12 @@ public class Deck
             query = "SELECT id "
                   + "FROM card "
                   + "WHERE is_active_" + startingLangName + " = 1 "
-                  + "AND id_status_" + startingLangName + " = " + Status.getIdOf("initial") + " "
+                  + "AND id_status_" + startingLangName + " = " + Status.findId("initial") + " "
                   + "LIMIT " + p3_randomPosition + ", 1";
 
             cursor = dbh.getReadableDatabase().rawQuery(query, null);
             cursor.moveToFirst();
-            retour = Card.getById(cursor.getInt(0));
+            retour = Card.find(cursor.getInt(0));
             cursor.close();
 
             return retour;
@@ -247,7 +247,7 @@ public class Deck
 
         if (cursor.getCount() > 0) {
             cursor.moveToPosition(random.nextInt(cursor.getCount()));
-            retour = Card.getById(cursor.getInt(0));
+            retour = Card.find(cursor.getInt(0));
         }
 
         cursor.close();

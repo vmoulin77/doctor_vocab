@@ -1,5 +1,5 @@
 /**
- * Copyright 2013, 2016 Vincent MOULIN
+ * Copyright (c) 2013-2016 Vincent MOULIN
  * 
  * This file is part of Doctor Vocab.
  * 
@@ -28,24 +28,24 @@ public final class Language extends EnumDataItem
         super(id, name);
     }
     
-    public static Language getById(int id) {
+    public static Language find(int id) {
         return (Language) enumDataLoader.getById(tableName, fields, id);
     }
     
-    public static Language getByName(String name) {
+    public static Language findByName(String name) {
         return (Language) enumDataLoader.getByName(tableName, fields, name);
     }
     
-    public static Language[] all() {
+    public static Language[] findAll() {
         EnumDataItem[] enumDataItems = enumDataLoader.getAll(tableName, fields);
         return Arrays.copyOf(enumDataItems, enumDataItems.length, Language[].class);
     }
 
-    public static int getIdOf(String name) {
-        return getByName(name).getId();
+    public static int findId(String name) {
+        return findByName(name).getId();
     }
     
-    public static String getNameOf(int id) {
-        return getById(id).getName();
+    public static String findName(int id) {
+        return find(id).getName();
     }
 }

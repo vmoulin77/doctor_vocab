@@ -1,5 +1,5 @@
 /**
- * Copyright 2013, 2016 Vincent MOULIN
+ * Copyright (c) 2013-2016 Vincent MOULIN
  * 
  * This file is part of Doctor Vocab.
  * 
@@ -56,10 +56,10 @@ public class StatSnap
         this.frequency = frequency;
     }
     public void setFrequency(int idFrequency) {
-        this.frequency = Frequency.getById(idFrequency);
+        this.frequency = Frequency.find(idFrequency);
     }
     public void setFrequency(String frequencyName) {
-        this.frequency = Frequency.getByName(frequencyName);
+        this.frequency = Frequency.findByName(frequencyName);
     }
     
     public Status getStatus() {
@@ -69,10 +69,10 @@ public class StatSnap
         this.status = status;
     }
     public void setStatus(int idStatus) {
-        this.status = Status.getById(idStatus);
+        this.status = Status.find(idStatus);
     }
     public void setStatus(String statusName) {
-        this.status = Status.getByName(statusName);
+        this.status = Status.findByName(statusName);
     }
     
     public Language getLanguage() {
@@ -82,10 +82,10 @@ public class StatSnap
         this.language = language;
     }
     public void setLanguage(int idLanguage) {
-        this.language = Language.getById(idLanguage);
+        this.language = Language.find(idLanguage);
     }
     public void setLanguage(String languageName) {
-        this.language = Language.getByName(languageName);
+        this.language = Language.findByName(languageName);
     }
     
     public long getValidityPeriod() {
@@ -100,6 +100,38 @@ public class StatSnap
     }
     public void setNbWords(int nbWords) {
         this.nbWords = nbWords;
+    }
+    
+    /**
+     * Find all the StatSnaps corresponding to the given "langName".
+     * @param langName the Language name
+     * @return the StatSnaps
+     */
+    public static SparseArray<SparseIntArray> findAllByLangName(String langName) {
+        DatabaseHelper dbh = DatabaseHelper.getInstance(MyApplication.getContext());
+        String query;
+        Cursor cursor;
+        SparseArray<SparseIntArray> retour = new SparseArray<SparseIntArray>();
+
+        query = "SELECT "
+              +     "id_frequency, " //0
+              +     "id_status, " //1
+              +     "nb_words " //2
+              + "FROM stat_snap "
+              + "WHERE id_language = " + Language.findId(langName);
+        
+        cursor = dbh.getReadableDatabase().rawQuery(query, null);
+
+        for (Frequency frequency : Frequency.findAll()) {
+            retour.put(frequency.getId(), new SparseIntArray());
+        }
+
+        while (cursor.moveToNext()) {
+            retour.get(cursor.getInt(0)).put(cursor.getInt(1), cursor.getInt(2));
+        }
+        cursor.close();
+
+        return retour;
     }
     
     /**
@@ -118,39 +150,7 @@ public class StatSnap
         
         return dbh.getWritableDatabase().update("stat_snap", contentValues, "id = ?", new String[]{String.valueOf(this.id)});
     }
-    
-    /**
-     * Get all the StatSnaps for the given "langName".
-     * @param langName the language name for which the StatSnaps are got
-     * @return the StatSnaps
-     */
-    public static SparseArray<SparseIntArray> getAllStatSnapsForLangName(String langName) {
-        DatabaseHelper dbh = DatabaseHelper.getInstance(MyApplication.getContext());
-        String query;
-        Cursor cursor;
-        SparseArray<SparseIntArray> retour = new SparseArray<SparseIntArray>();
 
-        query = "SELECT "
-              +     "id_frequency, " //0
-              +     "id_status, " //1
-              +     "nb_words " //2
-              + "FROM stat_snap "
-              + "WHERE id_language = " + Language.getIdOf(langName);
-        
-        cursor = dbh.getReadableDatabase().rawQuery(query, null);
-
-        for (Frequency frequency : Frequency.all()) {
-            retour.put(frequency.getId(), new SparseIntArray());
-        }
-
-        while (cursor.moveToNext()) {
-            retour.get(cursor.getInt(0)).put(cursor.getInt(1), cursor.getInt(2));
-        }
-        cursor.close();
-
-        return retour;
-    }
-    
     /**
      * Update all the StatSnaps in the database.
      */
@@ -179,12 +179,12 @@ public class StatSnap
             idStatSnap      = cursor.getInt(0);
             idFrequency     = cursor.getInt(1);
             idStatus        = cursor.getInt(2);
-            langName        = Language.getNameOf(cursor.getInt(3));
+            langName        = Language.findName(cursor.getInt(3));
             validityPeriod  = cursor.getLong(4);
 
-            if (idFrequency == Frequency.getIdOf("daily")) {
+            if (idFrequency == Frequency.findId("daily")) {
                 currentPeriod = daystampNow;
-            } else if (idFrequency == Frequency.getIdOf("weekly")) {
+            } else if (idFrequency == Frequency.findId("weekly")) {
                 currentPeriod = weekstampNow;
             } else {
                 currentPeriod = monthstampNow;

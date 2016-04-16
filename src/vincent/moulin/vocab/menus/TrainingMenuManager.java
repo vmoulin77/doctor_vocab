@@ -1,5 +1,5 @@
 /**
- * Copyright 2013, 2016 Vincent MOULIN
+ * Copyright (c) 2013-2016 Vincent MOULIN
  * 
  * This file is part of Doctor Vocab.
  * 
@@ -58,7 +58,7 @@ public class TrainingMenuManager
                           +     "timestamp_last_answer_" + startingLangName + " "
                           + "FROM card "
                           + "WHERE is_active_" + startingLangName + " = 1 "
-                          + "AND id_status_" + startingLangName + " = " + Status.getIdOf("learning");
+                          + "AND id_status_" + startingLangName + " = " + Status.findId("learning");
                     
                     cursor = dbh.getReadableDatabase().rawQuery(query, null);
                     while (cursor.moveToNext()) {
@@ -76,7 +76,7 @@ public class TrainingMenuManager
                           +     "timestamp_last_answer_" + startingLangName + " "
                           + "FROM card "
                           + "WHERE is_active_" + startingLangName + " = 1 "
-                          + "AND id_status_" + startingLangName + " = " + Status.getIdOf("known");
+                          + "AND id_status_" + startingLangName + " = " + Status.findId("known");
                         
                     cursor = dbh.getReadableDatabase().rawQuery(query, null);
                     while (cursor.moveToNext()) {

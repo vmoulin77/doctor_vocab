@@ -1,5 +1,5 @@
 /**
- * Copyright 2013, 2016 Vincent MOULIN
+ * Copyright (c) 2013-2016 Vincent MOULIN
  * 
  * This file is part of Doctor Vocab.
  * 
@@ -28,24 +28,24 @@ public final class Frequency extends EnumDataItem
         super(id, name);
     }
     
-    public static Frequency getById(int id) {
+    public static Frequency find(int id) {
         return (Frequency) enumDataLoader.getById(tableName, fields, id);
     }
     
-    public static Frequency getByName(String name) {
+    public static Frequency findByName(String name) {
         return (Frequency) enumDataLoader.getByName(tableName, fields, name);
     }
     
-    public static Frequency[] all() {
+    public static Frequency[] findAll() {
         EnumDataItem[] enumDataItems = enumDataLoader.getAll(tableName, fields);
         return Arrays.copyOf(enumDataItems, enumDataItems.length, Frequency[].class);
     }
 
-    public static int getIdOf(String name) {
-        return getByName(name).getId();
+    public static int findId(String name) {
+        return findByName(name).getId();
     }
     
-    public static String getNameOf(int id) {
-        return getById(id).getName();
+    public static String findName(int id) {
+        return find(id).getName();
     }
 }

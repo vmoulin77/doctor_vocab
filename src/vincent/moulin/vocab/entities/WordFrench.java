@@ -1,5 +1,5 @@
 /**
- * Copyright 2013, 2016 Vincent MOULIN
+ * Copyright (c) 2013-2016 Vincent MOULIN
  * 
  * This file is part of Doctor Vocab.
  * 
@@ -42,6 +42,6 @@ public class WordFrench extends Word
      * {@inheritDoc}
      */
     public Language getLanguage() {
-        return Language.getByName("french");
+        return Language.findByName("french");
     }
 }

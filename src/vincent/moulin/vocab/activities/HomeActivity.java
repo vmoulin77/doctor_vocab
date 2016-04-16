@@ -1,5 +1,5 @@
 /**
- * Copyright 2013, 2016 Vincent MOULIN
+ * Copyright (c) 2013-2016 Vincent MOULIN
  * 
  * This file is part of Doctor Vocab.
  * 
@@ -34,7 +34,7 @@ public class HomeActivity extends Activity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Trigger the initialization of the database
-        Card.getById(0);
+        Card.find(0);
         //-----------------------------------------------------
         
         super.onCreate(savedInstanceState);

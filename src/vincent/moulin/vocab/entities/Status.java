@@ -1,5 +1,5 @@
 /**
- * Copyright 2013, 2016 Vincent MOULIN
+ * Copyright (c) 2013-2016 Vincent MOULIN
  * 
  * This file is part of Doctor Vocab.
  * 
@@ -40,32 +40,32 @@ public final class Status extends EnumDataItem implements Cloneable
         return (Status) super.clone();
     }
     
-    public static Status getById(int id) {
+    public static Status find(int id) {
         return (Status) enumDataLoader.getById(tableName, fields, id);
     }
     
-    public static Status getByName(String name) {
+    public static Status findByName(String name) {
         return (Status) enumDataLoader.getByName(tableName, fields, name);
     }
     
-    public static Status[] all() {
+    public static Status[] findAll() {
         EnumDataItem[] enumDataItems = enumDataLoader.getAll(tableName, fields);
         return Arrays.copyOf(enumDataItems, enumDataItems.length, Status[].class);
     }
 
-    public static int getIdOf(String name) {
-        return getByName(name).getId();
+    public static int findId(String name) {
+        return findByName(name).getId();
     }
     
-    public static String getNameOf(int id) {
-        return getById(id).getName();
+    public static String findName(int id) {
+        return find(id).getName();
     }
     
-    public static String getColorOf(String name) {
-        return getByName(name).getColor();
+    public static String findColor(int id) {
+        return find(id).getColor();
     }
     
-    public static String getColorOf(int id) {
-        return getById(id).getColor();
+    public static String findColorByName(String name) {
+        return findByName(name).getColor();
     }
 }
