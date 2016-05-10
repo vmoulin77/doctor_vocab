@@ -32,14 +32,16 @@ public class StatSnap
     private Language language;
     private long validityPeriod;
     private int nbWords;
+    private long timestampLastUpdate;
     
-    public StatSnap(int id, Frequency frequency, Status status, Language language, long validityPeriod, int nbWords) {
+    public StatSnap(int id, Frequency frequency, Status status, Language language, long validityPeriod, int nbWords, long timestampLastUpdate) {
         this.id = id;
         this.frequency = frequency;
         this.status = status;
         this.language = language;
         this.validityPeriod = validityPeriod;
         this.nbWords = nbWords;
+        this.timestampLastUpdate = timestampLastUpdate;
     }
     
     public int getId() {
@@ -102,12 +104,20 @@ public class StatSnap
         this.nbWords = nbWords;
     }
     
+    public long getTimestampLastUpdate() {
+        return timestampLastUpdate;
+    }
+    public void setTimestampLastUpdate(long timestampLastUpdate) {
+        this.timestampLastUpdate = timestampLastUpdate;
+    }
+    
     /**
-     * Find all the StatSnaps corresponding to the given "langName".
+     * Retrieve all the StatSnaps corresponding to the given "langName".
+     * The returned StatSnaps are grouped in a multidimensional array.
      * @param langName the Language name
      * @return the StatSnaps
      */
-    public static SparseArray<SparseIntArray> findAllByLangName(String langName) {
+    public static SparseArray<SparseIntArray> retrieveGroupedStatSnapsForLangName(String langName) {
         DatabaseHelper dbh = DatabaseHelper.getInstance(MyApplication.getContext());
         String query;
         Cursor cursor;
@@ -147,6 +157,7 @@ public class StatSnap
         contentValues.put("id_language", this.language.getId());
         contentValues.put("validity_period", this.validityPeriod);
         contentValues.put("nb_words", this.nbWords);
+        contentValues.put("timestamp_last_update", this.timestampLastUpdate);
         
         return dbh.getWritableDatabase().update("stat_snap", contentValues, "id = ?", new String[]{String.valueOf(this.id)});
     }
@@ -159,10 +170,11 @@ public class StatSnap
         String query, query2, langName;
         Cursor cursor, cursor2;
         int idStatSnap, idFrequency, idStatus, nbWords;
+        CalendarNow calendarNow = CalendarNow.getInstance();
         long validityPeriod, currentPeriod = 0,
-            daystampNow = CalendarNow.getInstance().getDaystamp(),
-            weekstampNow = CalendarNow.getInstance().getWeekstamp(),
-            monthstampNow = CalendarNow.getInstance().getMonthstamp();
+            daystampNow = calendarNow.getDaystamp(),
+            weekstampNow = calendarNow.getWeekstamp(),
+            monthstampNow = calendarNow.getMonthstamp();
         ContentValues contentValues;
 
         query = "SELECT "
@@ -203,6 +215,7 @@ public class StatSnap
                 contentValues = new ContentValues();
                 contentValues.put("validity_period", currentPeriod);
                 contentValues.put("nb_words", nbWords);
+                contentValues.put("timestamp_last_update", calendarNow.getRawTimestamp());
                 dbh.getWritableDatabase().update("stat_snap", contentValues, "id = ?", new String[]{String.valueOf(idStatSnap)});
             }
         }

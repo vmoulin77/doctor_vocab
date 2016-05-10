@@ -34,7 +34,7 @@ public final class DatabaseHelper extends SQLiteOpenHelper
     private static DatabaseHelper instance = null;
     
     private static final String DATABASE_NAME = "doctor_vocab";
-    private static final int DATABASE_VERSION = 8;
+    private static final int DATABASE_VERSION = 9;
     
     private static final String CREATE_TABLE_LANGUAGE =
         "CREATE TABLE language ("
@@ -94,6 +94,7 @@ public final class DatabaseHelper extends SQLiteOpenHelper
         +     "id_language INTEGER,"
         +     "validity_period INTEGER,"
         +     "nb_words INTEGER,"
+        +     "timestamp_last_update INTEGER,"
         + "FOREIGN KEY(id_frequency) REFERENCES frequency(id),"
         + "FOREIGN KEY(id_status) REFERENCES status(id),"
         + "FOREIGN KEY(id_language) REFERENCES language(id)"
@@ -364,6 +365,7 @@ public final class DatabaseHelper extends SQLiteOpenHelper
                     contentValues.put("id_language", idLanguage);
                     contentValues.put("validity_period", 0);
                     contentValues.put("nb_words", 0);
+                    contentValues.put("timestamp_last_update", 0);
                     db.insert("stat_snap", null, contentValues);
                     
                     idStatSnap++;
@@ -375,7 +377,7 @@ public final class DatabaseHelper extends SQLiteOpenHelper
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion < 7) {
+        if (oldVersion <= 6) {
             db.execSQL("DROP TABLE IF EXISTS dico;");
             db.execSQL("DROP TABLE IF EXISTS stat_snap;");
             db.execSQL("DROP TABLE IF EXISTS pack;");
@@ -389,6 +391,16 @@ public final class DatabaseHelper extends SQLiteOpenHelper
         } else {
             ContentValues contentValues;
             String idCard = "";
+            
+            //--------------------------------------------------------------------
+            
+            if (oldVersion <= 8) {
+                db.execSQL("ALTER TABLE stat_snap ADD COLUMN timestamp_last_update INTEGER");
+                
+                contentValues = new ContentValues();
+                contentValues.put("timestamp_last_update",  0);
+                db.update("stat_snap", contentValues, null, null);
+            }
             
             //--------------------------------------------------------------------
             

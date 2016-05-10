@@ -14,12 +14,14 @@ package vincent.moulin.vocab.menus;
 import vincent.moulin.vocab.MyApplication;
 import vincent.moulin.vocab.R;
 import vincent.moulin.vocab.activities.TrainingActivity;
+import vincent.moulin.vocab.entities.Language;
 import vincent.moulin.vocab.entities.Status;
 import vincent.moulin.vocab.entities.Word;
 import vincent.moulin.vocab.helpers.DatabaseHelper;
 import vincent.moulin.vocab.utilities.CalendarNow;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.text.Html;
 import android.view.MenuItem;
@@ -125,16 +127,50 @@ public class TrainingMenuManager
                     return true;
                     
                 case R.id.cancellation_option:
+                    int statusIdBeforeAnswering = trainingActivity.getPrevCardBeforeAnswering().getWordByLangName(startingLangName).getStatus().getId(),
+                        statusIdAfterAnswering = trainingActivity.getPrevCardAfterAnswering().getWordByLangName(startingLangName).getStatus().getId(),
+                        newNbWords;
+                    long timestampLastAnswer = trainingActivity.getTimestampLastAnswer();
+                    ContentValues contentValues;
+
+                    if (statusIdAfterAnswering != statusIdBeforeAnswering) {
+                        query = "SELECT "
+                              +     "id, " //0
+                              +     "id_frequency, " //1
+                              +     "id_status, " //2
+                              +     "nb_words, " //3
+                              +     "timestamp_last_update " //4
+                              + "FROM stat_snap "
+                              + "WHERE id_language = " + Language.findId(startingLangName);
+    
+                        cursor = dbh.getReadableDatabase().rawQuery(query, null);
+
+                        while (cursor.moveToNext()) {
+                            if (cursor.getLong(4) > timestampLastAnswer) {
+                                contentValues = new ContentValues();
+                                
+                                newNbWords = cursor.getInt(3);
+                                if (cursor.getInt(2) == statusIdAfterAnswering) {
+                                    newNbWords -= 1;
+                                }
+                                if (cursor.getInt(2) == statusIdBeforeAnswering) {
+                                    newNbWords += 1;
+                                }
+                                contentValues.put("nb_words", newNbWords);
+
+                                dbh.getWritableDatabase().update("stat_snap", contentValues, "id = ?", new String[]{cursor.getString(0)});
+                            }
+                        }
+                        cursor.close();
+                    }
+
                     trainingActivity.getPrevCardBeforeAnswering().save();
                     if (trainingActivity.getPrevPackBeforeAnswering() != null) {
                         trainingActivity.getPrevPackBeforeAnswering().save();
                     }
-                    
                     trainingActivity.setCurrentCard(trainingActivity.getPrevCardBeforeAnswering());
                     
-                    trainingActivity.setPrevCardBeforeAnswering(null);
-                    trainingActivity.setPrevPackBeforeAnswering(null);
-                    trainingActivity.setCancellationOptionIsEnabled(false);
+                    trainingActivity.disableCancellationOption();
                     
                     trainingActivity.displayWord();
                     

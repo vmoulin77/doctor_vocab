@@ -90,7 +90,7 @@ public class StatActivity extends Activity
         //END: The statistics part
         
         // The statSnaps part
-        statSnaps = StatSnap.findAllByLangName(this.startingLangName);
+        statSnaps = StatSnap.retrieveGroupedStatSnapsForLangName(this.startingLangName);
         
         textView = (TextView) findViewById(R.id.initial_daily_delta_data);
         textView.setText(convertDeltaToString(statistics.get(Status.findId("initial")) - statSnaps.get(Frequency.findId("daily")).get(Status.findId("initial"))));

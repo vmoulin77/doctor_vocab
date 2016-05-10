@@ -13,6 +13,8 @@ package vincent.moulin.vocab.utilities;
 
 import java.util.Calendar;
 
+import vincent.moulin.vocab.helpers.TimeHelper;
+
 /**
  * The CalendarNow class is a singleton that represents the current date and time
  * 
@@ -35,13 +37,21 @@ public final class CalendarNow
         
         return instance;
     }
+    
+    /**
+     * Get the calendar attribute.
+     * @return the calendar attribute
+     */
+    public Calendar getCalendar() {
+        return this.calendar;
+    }
 
     /**
      * Get the value of the raw timestamp equivalent to the calendar attribute.
      * @return the value of the raw timestamp equivalent to the calendar attribute
      */
     public long getRawTimestamp() {
-        return this.calendar.getTimeInMillis() / 1000;
+        return TimeHelper.calendarToTimestamp(this.calendar, TimeHelper.TIMESTAMP_RAW);
     }
     
     /**
@@ -50,7 +60,7 @@ public final class CalendarNow
      * @return the value of the offsetted timestamp equivalent to the calendar attribute
      */
     public long getOffsettedTimestamp() {
-        return (this.calendar.getTimeInMillis() + this.calendar.get(Calendar.ZONE_OFFSET) + this.calendar.get(Calendar.DST_OFFSET)) / 1000;
+        return TimeHelper.calendarToTimestamp(this.calendar, TimeHelper.TIMESTAMP_OFFSETTED);
     }
     
     /**
@@ -58,7 +68,7 @@ public final class CalendarNow
      * @return the value of the daystamp equivalent to the calendar attribute
      */
     public long getDaystamp() {
-        return this.getOffsettedTimestamp() / (24*60*60);
+        return TimeHelper.calendarToDaystamp(this.calendar);
     }
     
     /**
@@ -66,7 +76,7 @@ public final class CalendarNow
      * @return the value of the weekstamp equivalent to the calendar attribute
      */
     public long getWeekstamp() {
-        return (this.getOffsettedTimestamp() + 3*24*60*60) / (7*24*60*60);
+        return TimeHelper.calendarToWeekstamp(this.calendar);
     }
 
     /**
@@ -74,7 +84,7 @@ public final class CalendarNow
      * @return the value of the monthstamp equivalent to the calendar attribute
      */
     public long getMonthstamp() {
-        return (12 * (this.calendar.get(Calendar.YEAR) - 1970)) + this.calendar.get(Calendar.MONTH);
+        return TimeHelper.calendarToMonthstamp(this.calendar);
     }
     
     /**

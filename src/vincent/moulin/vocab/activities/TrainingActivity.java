@@ -40,10 +40,11 @@ import android.widget.Toast;
  */
 public class TrainingActivity extends Activity
 {
-    private Card currentCard, prevCardBeforeAnswering = null;
-    private Pack prevPackBeforeAnswering = null;
+    private Card currentCard, prevCardBeforeAnswering, prevCardAfterAnswering;
+    private Pack prevPackBeforeAnswering;
+    private long timestampLastAnswer;
     private String startingLangName;
-    private boolean cancellationOptionIsEnabled = false;
+    private boolean cancellationOptionIsEnabled;
 
     public Card getCurrentCard() {
         return currentCard;
@@ -59,11 +60,25 @@ public class TrainingActivity extends Activity
         this.prevCardBeforeAnswering = prevCardBeforeAnswering;
     }
     
+    public Card getPrevCardAfterAnswering() {
+        return prevCardAfterAnswering;
+    }
+    public void setPrevCardAfterAnswering(Card prevCardAfterAnswering) {
+        this.prevCardAfterAnswering = prevCardAfterAnswering;
+    }
+    
     public Pack getPrevPackBeforeAnswering() {
         return prevPackBeforeAnswering;
     }
     public void setPrevPackBeforeAnswering(Pack prevPackBeforeAnswering) {
         this.prevPackBeforeAnswering = prevPackBeforeAnswering;
+    }
+    
+    public long getTimestampLastAnswer() {
+        return timestampLastAnswer;
+    }
+    public void setTimestampLastAnswer(long timestampLastAnswer) {
+        this.timestampLastAnswer = timestampLastAnswer;
     }
 
     public String getStartingLangName() {
@@ -82,10 +97,12 @@ public class TrainingActivity extends Activity
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        CalendarNow.getInstance().reinitialize();
-        
         TextView textView;
         
+        this.disableCancellationOption();
+        
+        CalendarNow.getInstance().reinitialize();
+
         SharedPreferences sharedPreferences = this.getSharedPreferences("vincent.moulin.vocab", MODE_PRIVATE);
         
         this.startingLangName = sharedPreferences.getString("STARTING_LANG_NAME", null);
@@ -103,16 +120,7 @@ public class TrainingActivity extends Activity
         this.currentCard = Deck.algoSelectWord(this.startingLangName);
         this.displayWord();
     }
-    
-    @Override
-    public void onPause() {
-        super.onPause();
-        
-        this.prevCardBeforeAnswering = null;
-        this.prevPackBeforeAnswering = null;
-        this.cancellationOptionIsEnabled = false;
-    }
-    
+
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.findItem(R.id.cancellation_option).setEnabled(this.cancellationOptionIsEnabled);
@@ -130,6 +138,14 @@ public class TrainingActivity extends Activity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         return TrainingMenuManager.onOptionsItemSelected(item, this);
+    }
+    
+    public void disableCancellationOption() {
+        this.prevCardBeforeAnswering = null;
+        this.prevCardAfterAnswering = null;
+        this.prevPackBeforeAnswering = null;
+        this.timestampLastAnswer = 0;
+        this.cancellationOptionIsEnabled = false;
     }
     
     public void displayWord() {
@@ -154,6 +170,8 @@ public class TrainingActivity extends Activity
         
         this.cancellationOptionIsEnabled = true;
         
+        this.timestampLastAnswer = CalendarNow.getInstance().getRawTimestamp();
+        
         this.prevPackBeforeAnswering = null;
 
         if (answerIsOk) {
@@ -174,14 +192,14 @@ public class TrainingActivity extends Activity
         }
 
         try {
-            this.prevCardBeforeAnswering = (Card) this.currentCard.clone();
+            this.prevCardBeforeAnswering = this.currentCard.clone();
         } catch (CloneNotSupportedException e) {
-            this.prevCardBeforeAnswering = null;
-            this.prevPackBeforeAnswering = null;
-            this.cancellationOptionIsEnabled = false;
+            this.disableCancellationOption();
         }
 
         this.currentCard.manageAnswer(this.startingLangName, answerIsOk);
+        
+        this.prevCardAfterAnswering = this.currentCard;
 
         this.currentCard = Deck.algoSelectWord(this.startingLangName);
         this.displayWord();
