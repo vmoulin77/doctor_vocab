@@ -17,7 +17,7 @@ import java.util.Random;
 
 import vincent.moulin.vocab.MyApplication;
 import vincent.moulin.vocab.helpers.DatabaseHelper;
-import vincent.moulin.vocab.utilities.CalendarNow;
+import vincent.moulin.vocab.utilities.Now;
 import android.database.Cursor;
 import android.util.SparseIntArray;
 
@@ -81,7 +81,7 @@ public class Deck
         Cursor cursor;
         Random random = new Random(Calendar.getInstance().getTimeInMillis());
         int nbInitialWords;
-        long rawTimestampNow = CalendarNow.getInstance().getRawTimestamp();
+        long rawTimestampNow = Now.getInstance().getRawTimestamp();
         Card retour = null;
         
         // Variables for the phase 1

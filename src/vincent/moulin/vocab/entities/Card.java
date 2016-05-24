@@ -13,7 +13,7 @@ package vincent.moulin.vocab.entities;
 
 import vincent.moulin.vocab.MyApplication;
 import vincent.moulin.vocab.helpers.DatabaseHelper;
-import vincent.moulin.vocab.utilities.CalendarNow;
+import vincent.moulin.vocab.utilities.Now;
 import android.content.ContentValues;
 import android.database.Cursor;
 
@@ -193,7 +193,7 @@ public class Card implements Cloneable
      */
     public void manageAnswer(String startingLangName, boolean answerIsOk) {
         Pack linkedPack;
-        long rawTimestampNow = CalendarNow.getInstance().getRawTimestamp();
+        long rawTimestampNow = Now.getInstance().getRawTimestamp();
         Word wordToTranslate = this.getWordByLangName(startingLangName);
         
         // Calculation of the new status, the new primary indice and the new secondary indice

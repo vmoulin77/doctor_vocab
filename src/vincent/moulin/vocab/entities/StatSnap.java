@@ -13,7 +13,7 @@ package vincent.moulin.vocab.entities;
 
 import vincent.moulin.vocab.MyApplication;
 import vincent.moulin.vocab.helpers.DatabaseHelper;
-import vincent.moulin.vocab.utilities.CalendarNow;
+import vincent.moulin.vocab.utilities.Now;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.util.SparseArray;
@@ -170,11 +170,11 @@ public class StatSnap
         String query, query2, langName;
         Cursor cursor, cursor2;
         int idStatSnap, idFrequency, idStatus, nbWords;
-        CalendarNow calendarNow = CalendarNow.getInstance();
+        Now now = Now.getInstance();
         long validityPeriod, currentPeriod = 0,
-            daystampNow = calendarNow.getDaystamp(),
-            weekstampNow = calendarNow.getWeekstamp(),
-            monthstampNow = calendarNow.getMonthstamp();
+            daystampNow = now.getDaystamp(),
+            weekstampNow = now.getWeekstamp(),
+            monthstampNow = now.getMonthstamp();
         ContentValues contentValues;
 
         query = "SELECT "
@@ -215,7 +215,7 @@ public class StatSnap
                 contentValues = new ContentValues();
                 contentValues.put("validity_period", currentPeriod);
                 contentValues.put("nb_words", nbWords);
-                contentValues.put("timestamp_last_update", calendarNow.getRawTimestamp());
+                contentValues.put("timestamp_last_update", now.getRawTimestamp());
                 dbh.getWritableDatabase().update("stat_snap", contentValues, "id = ?", new String[]{String.valueOf(idStatSnap)});
             }
         }

@@ -16,23 +16,23 @@ import java.util.Calendar;
 import vincent.moulin.vocab.helpers.TimeHelper;
 
 /**
- * The CalendarNow class is a singleton that represents the current date and time
+ * The Now class is a singleton that represents the current date and time
  * 
  * @author Vincent MOULIN
  */
-public final class CalendarNow
+public final class Now
 {
-    private static CalendarNow instance = null;
+    private static Now instance = null;
     
     private Calendar calendar;
     
-    private CalendarNow() {
-        reinitialize();
+    private Now() {
+        this.reset();
     }
     
-    public static CalendarNow getInstance() {
+    public static Now getInstance() {
         if (instance == null) {
-            instance = new CalendarNow();
+            instance = new Now();
         }
         
         return instance;
@@ -88,9 +88,9 @@ public final class CalendarNow
     }
     
     /**
-     * Reinitialize the value of the calendar attribute.
+     * Reset the value of the calendar attribute.
      */
-    public void reinitialize() {
+    public void reset() {
         this.calendar = Calendar.getInstance();
     }
 }

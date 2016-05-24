@@ -13,7 +13,7 @@ package vincent.moulin.vocab.entities;
 
 import vincent.moulin.vocab.MyApplication;
 import vincent.moulin.vocab.helpers.DatabaseHelper;
-import vincent.moulin.vocab.utilities.CalendarNow;
+import vincent.moulin.vocab.utilities.Now;
 import android.database.Cursor;
 
 /**
@@ -210,7 +210,7 @@ public abstract class Word implements Cloneable
         String query;
         Cursor cursor;
         long timestampPack, timestampLastAnswer,
-            rawTimestampNow = CalendarNow.getInstance().getRawTimestamp();
+            rawTimestampNow = Now.getInstance().getRawTimestamp();
         int[] levelsForLastAnswer = {
               4,
               5,
