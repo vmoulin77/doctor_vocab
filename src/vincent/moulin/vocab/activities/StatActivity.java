@@ -38,7 +38,7 @@ public class StatActivity extends Activity
     private String startingLangName;
     
     public String getStartingLangName() {
-        return startingLangName;
+        return this.startingLangName;
     }
     public void setStartingLangName(String startingLangName) {
         this.startingLangName = startingLangName;
@@ -62,24 +62,24 @@ public class StatActivity extends Activity
         StatSnap.updateAll();
         
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.stat_activity);
+        this.setContentView(R.layout.stat_activity);
         
         // The statistics part
         statistics = Deck.calcStatForLangName(this.startingLangName);
         
-        textView = (TextView) findViewById(R.id.stat_initial_data);
+        textView = (TextView) this.findViewById(R.id.stat_initial_data);
         textView.setText(String.valueOf(statistics.get(Status.findId("initial"))));
         textView.setTextColor(initialStatusColor);
         
-        textView = (TextView) findViewById(R.id.stat_learning_data);
+        textView = (TextView) this.findViewById(R.id.stat_learning_data);
         textView.setText(String.valueOf(statistics.get(Status.findId("learning"))));
         textView.setTextColor(learningStatusColor);
         
-        textView = (TextView) findViewById(R.id.stat_known_data);
+        textView = (TextView) this.findViewById(R.id.stat_known_data);
         textView.setText(String.valueOf(statistics.get(Status.findId("known"))));
         textView.setTextColor(knownStatusColor);
         
-        textView = (TextView) findViewById(R.id.stat_total_data);
+        textView = (TextView) this.findViewById(R.id.stat_total_data);
         textView.setText(
             String.valueOf(
                 statistics.get(Status.findId("initial"))
@@ -92,42 +92,42 @@ public class StatActivity extends Activity
         // The statSnaps part
         statSnaps = StatSnap.retrieveGroupedStatSnapsForLangName(this.startingLangName);
         
-        textView = (TextView) findViewById(R.id.initial_daily_delta_data);
+        textView = (TextView) this.findViewById(R.id.initial_daily_delta_data);
         textView.setText(convertDeltaToString(statistics.get(Status.findId("initial")) - statSnaps.get(Frequency.findId("daily")).get(Status.findId("initial"))));
         textView.setTextColor(initialStatusColor);
-        textView = (TextView) findViewById(R.id.learning_daily_delta_data);
+        textView = (TextView) this.findViewById(R.id.learning_daily_delta_data);
         textView.setText(convertDeltaToString(statistics.get(Status.findId("learning")) - statSnaps.get(Frequency.findId("daily")).get(Status.findId("learning"))));
         textView.setTextColor(learningStatusColor);
-        textView = (TextView) findViewById(R.id.known_daily_delta_data);
+        textView = (TextView) this.findViewById(R.id.known_daily_delta_data);
         textView.setText(convertDeltaToString(statistics.get(Status.findId("known")) - statSnaps.get(Frequency.findId("daily")).get(Status.findId("known"))));
         textView.setTextColor(knownStatusColor);
         
-        textView = (TextView) findViewById(R.id.initial_weekly_delta_data);
+        textView = (TextView) this.findViewById(R.id.initial_weekly_delta_data);
         textView.setText(convertDeltaToString(statistics.get(Status.findId("initial")) - statSnaps.get(Frequency.findId("weekly")).get(Status.findId("initial"))));
         textView.setTextColor(initialStatusColor);
-        textView = (TextView) findViewById(R.id.learning_weekly_delta_data);
+        textView = (TextView) this.findViewById(R.id.learning_weekly_delta_data);
         textView.setText(convertDeltaToString(statistics.get(Status.findId("learning")) - statSnaps.get(Frequency.findId("weekly")).get(Status.findId("learning"))));
         textView.setTextColor(learningStatusColor);
-        textView = (TextView) findViewById(R.id.known_weekly_delta_data);
+        textView = (TextView) this.findViewById(R.id.known_weekly_delta_data);
         textView.setText(convertDeltaToString(statistics.get(Status.findId("known")) - statSnaps.get(Frequency.findId("weekly")).get(Status.findId("known"))));
         textView.setTextColor(knownStatusColor);
         
-        textView = (TextView) findViewById(R.id.initial_monthly_delta_data);
+        textView = (TextView) this.findViewById(R.id.initial_monthly_delta_data);
         textView.setText(convertDeltaToString(statistics.get(Status.findId("initial")) - statSnaps.get(Frequency.findId("monthly")).get(Status.findId("initial"))));
         textView.setTextColor(initialStatusColor);
-        textView = (TextView) findViewById(R.id.learning_monthly_delta_data);
+        textView = (TextView) this.findViewById(R.id.learning_monthly_delta_data);
         textView.setText(convertDeltaToString(statistics.get(Status.findId("learning")) - statSnaps.get(Frequency.findId("monthly")).get(Status.findId("learning"))));
         textView.setTextColor(learningStatusColor);
-        textView = (TextView) findViewById(R.id.known_monthly_delta_data);
+        textView = (TextView) this.findViewById(R.id.known_monthly_delta_data);
         textView.setText(convertDeltaToString(statistics.get(Status.findId("known")) - statSnaps.get(Frequency.findId("monthly")).get(Status.findId("known"))));
         textView.setTextColor(knownStatusColor);
         //END: The statSnaps part
         
         // The caption part
-        textView = (TextView) findViewById(R.id.caption_learning_label);
+        textView = (TextView) this.findViewById(R.id.caption_learning_label);
         textView.setTextColor(learningStatusColor);
         
-        textView = (TextView) findViewById(R.id.caption_known_label);
+        textView = (TextView) this.findViewById(R.id.caption_known_label);
         textView.setTextColor(knownStatusColor);
         //END: The caption part
     }
@@ -135,7 +135,7 @@ public class StatActivity extends Activity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.basic, menu);
+        this.getMenuInflater().inflate(R.menu.basic, menu);
         return true;
     }
     
@@ -149,7 +149,7 @@ public class StatActivity extends Activity
      * The result will always include a sign except for the number zero.
      * @return the delta converted to String
      */
-    private String convertDeltaToString(int delta) {
+    private static String convertDeltaToString(int delta) {
         String sign = "";
         
         if (delta > 0) {

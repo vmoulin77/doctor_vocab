@@ -35,7 +35,7 @@ public class Deck
     }
 
     public Card[] getCards() {
-        return cards;
+        return this.cards;
     }
     public void setCards(Card[] cards) {
         this.cards = cards;

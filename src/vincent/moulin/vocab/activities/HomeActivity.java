@@ -38,13 +38,13 @@ public class HomeActivity extends Activity
         //-----------------------------------------------------
         
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.home_activity);
+        this.setContentView(R.layout.home_activity);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.basic, menu);
+        this.getMenuInflater().inflate(R.menu.basic, menu);
         return true;
     }
     
@@ -56,18 +56,20 @@ public class HomeActivity extends Activity
     public void startTrainingFrToEn(View v) {
         SharedPreferences sharedPreferences = this.getSharedPreferences("vincent.moulin.vocab", MODE_PRIVATE);
         Editor editor = sharedPreferences.edit();
+        
         editor.putString("STARTING_LANG_NAME", "french");
         editor.commit();
         
-        startActivity(new Intent(this, TrainingActivity.class));
+        this.startActivity(new Intent(this, TrainingActivity.class));
     }
     
     public void startTrainingEnToFr(View v) {
         SharedPreferences sharedPreferences = this.getSharedPreferences("vincent.moulin.vocab", MODE_PRIVATE);
         Editor editor = sharedPreferences.edit();
+        
         editor.putString("STARTING_LANG_NAME", "english");
         editor.commit();
         
-        startActivity(new Intent(this, TrainingActivity.class));
+        this.startActivity(new Intent(this, TrainingActivity.class));
     }
 }

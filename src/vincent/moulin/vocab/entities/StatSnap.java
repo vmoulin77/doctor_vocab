@@ -45,14 +45,14 @@ public class StatSnap
     }
     
     public int getId() {
-        return id;
+        return this.id;
     }
     public void setId(int id) {
         this.id = id;
     }
     
     public Frequency getFrequency() {
-        return frequency;
+        return this.frequency;
     }
     public void setFrequency(Frequency frequency) {
         this.frequency = frequency;
@@ -65,7 +65,7 @@ public class StatSnap
     }
     
     public Status getStatus() {
-        return status;
+        return this.status;
     }
     public void setStatus(Status status) {
         this.status = status;
@@ -78,7 +78,7 @@ public class StatSnap
     }
     
     public Language getLanguage() {
-        return language;
+        return this.language;
     }
     public void setLanguage(Language language) {
         this.language = language;
@@ -91,21 +91,21 @@ public class StatSnap
     }
     
     public long getValidityPeriod() {
-        return validityPeriod;
+        return this.validityPeriod;
     }
     public void setValidityPeriod(long validityPeriod) {
         this.validityPeriod = validityPeriod;
     }
     
     public int getNbWords() {
-        return nbWords;
+        return this.nbWords;
     }
     public void setNbWords(int nbWords) {
         this.nbWords = nbWords;
     }
     
     public long getTimestampLastUpdate() {
-        return timestampLastUpdate;
+        return this.timestampLastUpdate;
     }
     public void setTimestampLastUpdate(long timestampLastUpdate) {
         this.timestampLastUpdate = timestampLastUpdate;

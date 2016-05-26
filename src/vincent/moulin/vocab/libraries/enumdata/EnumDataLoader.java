@@ -52,7 +52,7 @@ public final class EnumDataLoader
         EnumDataItem[] enumDataItems;
         int enumDataItemsCounter = 0;
 
-        if ( ! enumData.containsKey(tableName)) {
+        if ( ! this.enumData.containsKey(tableName)) {
             query = "SELECT " + TextUtils.join(",", fields) + " "
                   + "FROM " + tableName;
             
@@ -64,7 +64,7 @@ public final class EnumDataLoader
             }
             cursor.close();
             
-            enumData.put(tableName, enumDataItems);
+            this.enumData.put(tableName, enumDataItems);
         }
     }
     
@@ -76,9 +76,9 @@ public final class EnumDataLoader
      * @return the EnumDataItem object corresponding to the row of the table "tableName" where the id field equals "id"
      */
     public EnumDataItem getById(String tableName, String[] fields, int id) {
-        loadEnumData(tableName, fields);
+        this.loadEnumData(tableName, fields);
         
-        for (EnumDataItem enumDataItem : enumData.get(tableName)) {
+        for (EnumDataItem enumDataItem : this.enumData.get(tableName)) {
             if (enumDataItem.getId() == id) {
                 return enumDataItem;
             }
@@ -95,9 +95,9 @@ public final class EnumDataLoader
      * @return the EnumDataItem object corresponding to the row of the table "tableName" where the name field equals "name"
      */
     public EnumDataItem getByName(String tableName, String[] fields, String name) {
-        loadEnumData(tableName, fields);
+        this.loadEnumData(tableName, fields);
         
-        for (EnumDataItem enumDataItem : enumData.get(tableName)) {
+        for (EnumDataItem enumDataItem : this.enumData.get(tableName)) {
             if (enumDataItem.getName().equals(name)) {
                 return enumDataItem;
             }
@@ -113,8 +113,8 @@ public final class EnumDataLoader
      * @return all the EnumDataItem objects corresponding to the table "tableName"
      */
     public EnumDataItem[] getAll(String tableName, String[] fields) {
-        loadEnumData(tableName, fields);
+        this.loadEnumData(tableName, fields);
         
-        return enumData.get(tableName);
+        return this.enumData.get(tableName);
     }
 }

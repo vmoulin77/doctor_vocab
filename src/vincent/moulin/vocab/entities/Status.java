@@ -33,7 +33,7 @@ public final class Status extends EnumDataItem implements Cloneable
     }
 
     public String getColor() {
-        return color;
+        return this.color;
     }
     
     public Status clone() throws CloneNotSupportedException {

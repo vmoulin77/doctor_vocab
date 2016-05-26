@@ -41,14 +41,14 @@ public class Pack
     }
     
     public int getId() {
-        return id;
+        return this.id;
     }
     public void setId(int id) {
         this.id = id;
     }
     
     public Language getLanguage() {
-        return language;
+        return this.language;
     }
     public void setLanguage(Language language) {
         this.language = language;
@@ -61,28 +61,28 @@ public class Pack
     }
     
     public int getIndice() {
-        return indice;
+        return this.indice;
     }
     public void setIndice(int indice) {
         this.indice = indice;
     }
     
     public long getTimestampPack() {
-        return timestampPack;
+        return this.timestampPack;
     }
     public void setTimestampPack(long timestampPack) {
         this.timestampPack = timestampPack;
     }
     
     public long getTimestampLastAnswer() {
-        return timestampLastAnswer;
+        return this.timestampLastAnswer;
     }
     public void setTimestampLastAnswer(long timestampLastAnswer) {
         this.timestampLastAnswer = timestampLastAnswer;
     }
     
     public Card[] getCards() {
-        return cards;
+        return this.cards;
     }
     public void setCards(Card[] cards) {
         this.cards = cards;

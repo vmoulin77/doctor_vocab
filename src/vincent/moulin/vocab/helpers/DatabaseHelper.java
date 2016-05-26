@@ -387,7 +387,7 @@ public final class DatabaseHelper extends SQLiteOpenHelper
             db.execSQL("DROP TABLE IF EXISTS status;");
             db.execSQL("DROP TABLE IF EXISTS language;");
             
-            onCreate(db);
+            this.onCreate(db);
         } else {
             ContentValues contentValues;
             String idCard = "";

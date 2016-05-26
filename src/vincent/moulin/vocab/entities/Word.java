@@ -55,21 +55,21 @@ public abstract class Word implements Cloneable
     }
     
     public String getContent() {
-        return content;
+        return this.content;
     }
     public void setContent(String content) {
         this.content = content;
     }
     
     public boolean getIsActive() {
-        return isActive;
+        return this.isActive;
     }
     public void setIsActive(boolean isActive) {
         this.isActive = isActive;
     }
     
     public Status getStatus() {
-        return status;
+        return this.status;
     }
     public void setStatus(Status status) {
         this.status = status;
@@ -82,28 +82,28 @@ public abstract class Word implements Cloneable
     }
     
     public boolean getIsAccelerated() {
-        return isAccelerated;
+        return this.isAccelerated;
     }
     public void setIsAccelerated(boolean isAccelerated) {
         this.isAccelerated = isAccelerated;
     }
     
     public int getPrimaryIndice() {
-        return primaryIndice;
+        return this.primaryIndice;
     }
     public void setPrimaryIndice(int primaryIndice) {
         this.primaryIndice = primaryIndice;
     }
     
     public int getSecondaryIndice() {
-        return secondaryIndice;
+        return this.secondaryIndice;
     }
     public void setSecondaryIndice(int secondaryIndice) {
         this.secondaryIndice = secondaryIndice;
     }
     
     public long getTimestampLastAnswer() {
-        return timestampLastAnswer;
+        return this.timestampLastAnswer;
     }
     public void setTimestampLastAnswer(long timestampLastAnswer) {
         this.timestampLastAnswer = timestampLastAnswer;

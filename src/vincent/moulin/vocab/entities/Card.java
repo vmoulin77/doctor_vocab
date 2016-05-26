@@ -37,21 +37,21 @@ public class Card implements Cloneable
     }
     
     public int getId() {
-        return id;
+        return this.id;
     }
     public void setId(int id) {
         this.id = id;
     }
     
     public WordEnglish getWordEnglish() {
-        return wordEnglish;
+        return this.wordEnglish;
     }
     public void setWordEnglish(WordEnglish wordEnglish) {
         this.wordEnglish = wordEnglish;
     }
     
     public WordFrench getWordFrench() {
-        return wordFrench;
+        return this.wordFrench;
     }
     public void setWordFrench(WordFrench wordFrench) {
         this.wordFrench = wordFrench;
