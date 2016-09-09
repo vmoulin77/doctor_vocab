@@ -34,7 +34,14 @@ public final class DatabaseHelper extends SQLiteOpenHelper
     private static DatabaseHelper instance = null;
     
     private static final String DATABASE_NAME = "doctor_vocab";
-    private static final int DATABASE_VERSION = 9;
+    private static final int DATABASE_VERSION = 10;
+    
+    private static final String CREATE_TABLE_MISC =
+        "CREATE TABLE misc ("
+        +     "id INTEGER PRIMARY KEY,"
+        +     "misc_key TEXT,"
+        +     "misc_value TEXT"
+        + ")";
     
     private static final String CREATE_TABLE_LANGUAGE =
         "CREATE TABLE language ("
@@ -133,12 +140,55 @@ public final class DatabaseHelper extends SQLiteOpenHelper
             statuses     = new HashMap<String, String>(),
             frequencies  = new HashMap<String, String>();
         
+        db.execSQL(CREATE_TABLE_MISC);
         db.execSQL(CREATE_TABLE_LANGUAGE);
         db.execSQL(CREATE_TABLE_STATUS);
         db.execSQL(CREATE_TABLE_FREQUENCY);
         db.execSQL(CREATE_TABLE_CARD);
         db.execSQL(CREATE_TABLE_PACK);
         db.execSQL(CREATE_TABLE_STAT_SNAP);
+        
+        // Filling the "misc" table
+        try {
+            XmlPullParser xpp = this.context.getResources().getXml(R.xml.db_misc);
+            
+            query = "INSERT INTO misc ("
+                  +     "id,"
+                  +     "misc_key,"
+                  +     "misc_value"
+                  + ") VALUES ("
+                  +     "?,"
+                  +     "?,"
+                  +     "?"
+                  + ")";
+            sqliteStatement = db.compileStatement(query);
+            
+            while (xpp.getEventType() != XmlPullParser.END_DOCUMENT) {
+                if (xpp.getEventType() == XmlPullParser.START_TAG) {
+                    if (xpp.getName().equals("id")) {
+                        sqliteStatement.bindString(1, xpp.nextText());
+                    } else if (xpp.getName().equals("misc_key")) {
+                        sqliteStatement.bindString(2, xpp.nextText());
+                    } else if (xpp.getName().equals("misc_value")) {
+                        sqliteStatement.bindString(3, xpp.nextText());
+                    }
+                }
+                
+                if ((xpp.getEventType() == XmlPullParser.END_TAG)
+                    && (xpp.getName().equals("misc"))
+                ) {
+                    sqliteStatement.executeInsert();
+                }
+                
+                xpp.next();
+            }
+            
+            sqliteStatement.close();
+            xpp = null;
+        } catch (Exception e) {
+            this.displayInitializationErrorMsg();
+        }
+        //END: Filling the "misc" table
         
         // Filling the "language" table
         try {
@@ -377,7 +427,10 @@ public final class DatabaseHelper extends SQLiteOpenHelper
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion <= 6) {
+        String query;
+        SQLiteStatement sqliteStatement;
+        
+        if (oldVersion <= 8) {
             db.execSQL("DROP TABLE IF EXISTS dico;");
             db.execSQL("DROP TABLE IF EXISTS stat_snap;");
             db.execSQL("DROP TABLE IF EXISTS pack;");
@@ -386,83 +439,53 @@ public final class DatabaseHelper extends SQLiteOpenHelper
             db.execSQL("DROP TABLE IF EXISTS frequency;");
             db.execSQL("DROP TABLE IF EXISTS status;");
             db.execSQL("DROP TABLE IF EXISTS language;");
+            db.execSQL("DROP TABLE IF EXISTS misc;");
             
             this.onCreate(db);
         } else {
-            ContentValues contentValues;
-            String idCard = "";
+            db.execSQL(CREATE_TABLE_MISC);
             
-            //--------------------------------------------------------------------
-            
-            if (oldVersion <= 8) {
-                db.execSQL("ALTER TABLE stat_snap ADD COLUMN timestamp_last_update INTEGER");
-                
-                contentValues = new ContentValues();
-                contentValues.put("timestamp_last_update",  0);
-                db.update("stat_snap", contentValues, null, null);
-            }
-            
-            //--------------------------------------------------------------------
-            
-            contentValues = new ContentValues();
-            contentValues.put("is_active_english",  0);
-            contentValues.put("is_active_french",   0);
-            db.update("card", contentValues, null, null);
-            
-            //--------------------------------------------------------------------
-
+            // Filling the "misc" table
             try {
-                XmlPullParser xpp = this.context.getResources().getXml(R.xml.db_card);
-
-                contentValues = new ContentValues();
+                XmlPullParser xpp = this.context.getResources().getXml(R.xml.db_misc);
+                
+                query = "INSERT INTO misc ("
+                      +     "id,"
+                      +     "misc_key,"
+                      +     "misc_value"
+                      + ") VALUES ("
+                      +     "?,"
+                      +     "?,"
+                      +     "?"
+                      + ")";
+                sqliteStatement = db.compileStatement(query);
+                
                 while (xpp.getEventType() != XmlPullParser.END_DOCUMENT) {
                     if (xpp.getEventType() == XmlPullParser.START_TAG) {
-                        if (xpp.getName().equals("e1")) {
-                            idCard = xpp.nextText();
-                        } else if (xpp.getName().equals("e2")) {
-                            contentValues.put("word_english", xpp.nextText());
-                        } else if (xpp.getName().equals("e3")) {
-                            contentValues.put("word_french", xpp.nextText());
-                        } else if (xpp.getName().equals("e4")) {
-                            contentValues.put("is_active_english", xpp.nextText());
-                        } else if (xpp.getName().equals("e5")) {
-                            contentValues.put("is_active_french", xpp.nextText());
+                        if (xpp.getName().equals("id")) {
+                            sqliteStatement.bindString(1, xpp.nextText());
+                        } else if (xpp.getName().equals("misc_key")) {
+                            sqliteStatement.bindString(2, xpp.nextText());
+                        } else if (xpp.getName().equals("misc_value")) {
+                            sqliteStatement.bindString(3, xpp.nextText());
                         }
                     }
                     
                     if ((xpp.getEventType() == XmlPullParser.END_TAG)
-                        && (xpp.getName().equals("card"))
+                        && (xpp.getName().equals("misc"))
                     ) {
-                        if (db.update("card", contentValues, "id = ?", new String[]{idCard}) == 0) {
-                            contentValues.put("id",                             idCard);
-                            contentValues.put("id_status_english",              1);
-                            contentValues.put("id_status_french",               1);
-                            contentValues.put("is_accelerated_english",         1);
-                            contentValues.put("is_accelerated_french",          1);
-                            contentValues.put("primary_indice_english",         1);
-                            contentValues.put("primary_indice_french",          1);
-                            contentValues.put("secondary_indice_english",       1);
-                            contentValues.put("secondary_indice_french",        1);
-                            contentValues.put("timestamp_last_answer_english",  0);
-                            contentValues.put("timestamp_last_answer_french",   0);
-                            
-                            db.insert("card", null, contentValues);
-                        }
-
-                        contentValues = new ContentValues();
+                        sqliteStatement.executeInsert();
                     }
                     
                     xpp.next();
                 }
                 
+                sqliteStatement.close();
                 xpp = null;
             } catch (Exception e) {
                 this.displayInitializationErrorMsg();
             }
-            
-            //--------------------------------------------------------------------
-
-            db.delete("card", "is_active_english = 0 AND is_active_french = 0", null);
+            //END: Filling the "misc" table
         }
     }
 }

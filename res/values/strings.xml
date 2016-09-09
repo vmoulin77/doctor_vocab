@@ -45,4 +45,8 @@
     <string name="caption_learning_def_content">Mots en cours\nd\'apprentissage</string>
     <string name="caption_initial_def_content">Mots jamais étudiés</string>
     <string name="closure_button_content">OK</string>
+    <string name="app_rating_popup_content">If you enjoy using Doctor Vocab, please take a moment to rate it.\nThanks for your support&#160;!</string>
+    <string name="app_rating_popup_button_ok">Rate Doctor Vocab</string>
+    <string name="app_rating_popup_button_nok">No, thanks</string>
+    <string name="app_rating_popup_button_later">Remind me later</string>
 </resources>

@@ -13,6 +13,7 @@ package vincent.moulin.vocab.activities;
 
 import vincent.moulin.vocab.R;
 import vincent.moulin.vocab.entities.Card;
+import vincent.moulin.vocab.libraries.apprater.AppRater;
 import vincent.moulin.vocab.menus.DefaultMenuManager;
 import android.app.Activity;
 import android.content.Intent;
@@ -39,6 +40,8 @@ public class HomeActivity extends Activity
         
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.home_activity);
+        
+        AppRater.process(this);
     }
 
     @Override

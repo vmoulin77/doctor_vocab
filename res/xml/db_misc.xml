@@ -1,0 +1,8 @@
+<?xml version ="1.0" encoding="utf-8" ?>
+<table>
+    <misc>
+        <id>1</id>
+        <misc_key>app_rating_popup_already_answered</misc_key>
+        <misc_value>0</misc_value>
+    </misc>
+</table>
