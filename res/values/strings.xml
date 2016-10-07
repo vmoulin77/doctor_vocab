@@ -11,7 +11,6 @@
     <string name="stat_activity_title">Statistiques</string>
     <string name="phonetic_rules_activity_title">Règles phonétiques</string>
     
-    <string name="initialization_error_msg">An error occurred while initializing the database.\nPlease try reinstalling Doctor Vocab.</string>
     <string name="about_app_content">Doctor Vocab has been developed by:\nVincent MOULIN\nPHP &amp; ANDROID Developer\ndoctor.vocab@gmail.com\n\nCopyright &#169; 2013-2016 Vincent MOULIN\n\nDoctor Vocab is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.</string>
     <string name="phonetic_rules_text1_content">Les symboles [ \' ] et [ , ] indiquent respectivement un accent primaire et un accent secondaire sur la syllabe suivante.</string>
     <string name="phonetic_rules_text2_content">Le symbole [ : ] indique un allongement de la lettre précédente.</string>
@@ -45,8 +44,10 @@
     <string name="caption_learning_def_content">Mots en cours\nd\'apprentissage</string>
     <string name="caption_initial_def_content">Mots jamais étudiés</string>
     <string name="closure_button_content">OK</string>
-    <string name="app_rating_popup_content">If you enjoy using Doctor Vocab, please take a moment to rate it.\nThanks for your support&#160;!</string>
-    <string name="app_rating_popup_button_ok">Rate Doctor Vocab</string>
-    <string name="app_rating_popup_button_nok">No, thanks</string>
-    <string name="app_rating_popup_button_later">Remind me later</string>
+    <string name="error_popup_title">Error</string>
+    <string name="app_rating_main_popup_content">If you enjoy using Doctor Vocab, please take a moment to rate it.\nThanks for your support&#160;!</string>
+    <string name="app_rating_main_popup_button_ok">Rate Doctor Vocab</string>
+    <string name="app_rating_main_popup_button_nok">No, thanks</string>
+    <string name="app_rating_main_popup_button_later">Remind me later</string>
+    <string name="app_rating_error_popup_content">Google Play Store is not installed on your device.</string>
 </resources>

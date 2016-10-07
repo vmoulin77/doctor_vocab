@@ -72,9 +72,9 @@ public class Deck
     /**
      * The algorithm which selects the word to translate.
      * @param startingLangName the starting language name
-     * @return the selected Card object
+     * @return the selected TrainingCard object
      */
-    public static Card algoSelectWord(String startingLangName) {
+    public static TrainingCard algoSRS(String startingLangName) {
         // Common variables
         DatabaseHelper dbh = DatabaseHelper.getInstance(MyApplication.getContext());
         String query;
@@ -82,18 +82,17 @@ public class Deck
         Random random = new Random(Calendar.getInstance().getTimeInMillis());
         int nbInitialWords;
         long rawTimestampNow = Now.getInstance().getRawTimestamp();
-        Card retour = null;
+        TrainingCard retour = null;
         
         // Variables for the phase 1
         int p1_secondaryIndice = 0;
         long p1_timestampLastAnswer = 0;
-        ArrayList<Integer> p1_eligibleIds = new ArrayList<Integer>();
+        ArrayList<Integer> p1_preselectedIds = new ArrayList<Integer>();
         
         // Variables for the phase 2
-        boolean p2_phaseIsSkipped = false;
-        int p2_combinedIndice, p2_threshold = Word.MAX_COMBINED_INDICE_ELIGIBLE_WORD, p2_weightOfLearningWords = 0;
+        int p2_combinedIndice, p2_threshold = Side.MAX_COMBINED_INDICE_ELIGIBLE_WORD, p2_weightOfLearningWords = 0;
         long p2_timestampDiff;
-        ArrayList<Integer> p2_eligibleIds = new ArrayList<Integer>();
+        ArrayList<Integer> p2_preselectedIds = new ArrayList<Integer>();
         
         // Variables for the phase 3
         int p3_randomPosition;
@@ -113,31 +112,86 @@ public class Deck
         cursor = dbh.getReadableDatabase().rawQuery(query, null);
           
         while (cursor.moveToNext()) {
-            if (( ! p1_eligibleIds.isEmpty())
+            if (( ! p1_preselectedIds.isEmpty())
                 && ((cursor.getInt(1) > p1_secondaryIndice)
                     || (cursor.getLong(2) > p1_timestampLastAnswer))
             ) {
                 break;
             }
             
-            if (Word.learningWordIsEligible(cursor.getInt(1), rawTimestampNow - cursor.getLong(2))) {
-                p1_eligibleIds.add(cursor.getInt(0));
+            if (Side.learningWordIsEligible(cursor.getInt(1), rawTimestampNow - cursor.getLong(2))) {
+                p1_preselectedIds.add(cursor.getInt(0));
                 p1_secondaryIndice = cursor.getInt(1);
                 p1_timestampLastAnswer = cursor.getLong(2);
             }
         }
         cursor.close();
         
-        if ( ! p1_eligibleIds.isEmpty()) {
-            return Card.find(p1_eligibleIds.get(random.nextInt(p1_eligibleIds.size())));
+        if ( ! p1_preselectedIds.isEmpty()) {
+            return TrainingCard.find(p1_preselectedIds.get(random.nextInt(p1_preselectedIds.size())), startingLangName, true);
         }
         //END: 1st phase of the algorithm -------------------------------------
-
+        
         // 2nd phase of the algorithm :
-        // If no eligible Word at phase 1, we check if a Word with status "known" is eligible
-        // (if there is no more Word with status "initial", we check if a Word with status "known" exists without considering the eligibility)
+        // If no eligible Word at phase 1 and if phase 2 is not skipped, we check if a Word with status "known" is eligible
         //
-        // We set the threshold "p2_threshold"
+        // The higher the weight of words in learning is, the higher the probability to select a known word (ie with the "known" status) is
+        // The lower the weight of words in learning is, the higher the probability to select a new word (ie with the "initial" status) is
+        // The goal is to avoid to have too many words in learning at the same time
+        query = "SELECT "
+              +     "secondary_indice_" + startingLangName + ", "
+              +     "COUNT(*) "
+              + "FROM card "
+              + "WHERE is_active_" + startingLangName + " = 1 "
+              + "AND id_status_" + startingLangName + " = " + Status.findId("learning") + " "
+              + "GROUP BY secondary_indice_" + startingLangName;
+
+        cursor = dbh.getReadableDatabase().rawQuery(query, null);
+        while (cursor.moveToNext()) {
+            p2_weightOfLearningWords += cursor.getInt(1) * (11 - cursor.getInt(0));
+            
+            if (p2_weightOfLearningWords >= 500) {
+                p2_weightOfLearningWords = 500;
+                break;
+            }
+        }
+        cursor.close();
+
+        if (random.nextInt(1000) < (500 + p2_weightOfLearningWords)) {
+            query = "SELECT "
+                  +     "id, "
+                  +     "primary_indice_" + startingLangName + ", "
+                  +     "timestamp_last_answer_" + startingLangName + " "
+                  + "FROM card "
+                  + "WHERE is_active_" + startingLangName + " = 1 "
+                  + "AND id_status_" + startingLangName + " = " + Status.findId("known");
+                
+            cursor = dbh.getReadableDatabase().rawQuery(query, null);
+            
+            while (cursor.moveToNext()) {
+                p2_timestampDiff = rawTimestampNow - cursor.getLong(2);
+                p2_combinedIndice = Side.calcCombinedIndice(cursor.getInt(1), p2_timestampDiff);
+                
+                if (p2_combinedIndice == p2_threshold) {
+                    p2_preselectedIds.add(cursor.getInt(0));
+                } else if (p2_combinedIndice < p2_threshold) {
+                    p2_preselectedIds = new ArrayList<Integer>();
+                    p2_preselectedIds.add(cursor.getInt(0));
+                    p2_threshold = p2_combinedIndice;
+                }
+            }
+            cursor.close();
+            
+            if ( ! p2_preselectedIds.isEmpty()) {
+                return TrainingCard.find(p2_preselectedIds.get(random.nextInt(p2_preselectedIds.size())), startingLangName, true);
+            }
+        }
+        //END: 2nd phase of the algorithm -------------------------------------
+
+        // 3rd phase of the algorithm :
+        // If no eligible Word at phase 2 or phase 2 has been skipped
+        // and if there is at least one Word with status "initial" left in the Deck,
+        // we randomly select one of them
         query = "SELECT COUNT(*) "
               + "FROM card "
               + "WHERE is_active_" + startingLangName + " = 1 "
@@ -147,73 +201,7 @@ public class Deck
         cursor.moveToFirst();
         nbInitialWords = cursor.getInt(0);
         cursor.close();
-
-        if (nbInitialWords == 0) {
-            // We set p2_threshold to the maximum of a combined indice
-            p2_threshold = Word.MAX_COMBINED_INDICE;
-        } else {
-            // The higher the weight of words in learning is, the higher the probability to select a known word (ie with the "known" status) is
-            // The lower the weight of words in learning is, the higher the probability to select a new word (ie with the "initial" status) is
-            // The goal is to avoid to have too many words in learning at the same time
-            query = "SELECT "
-                  +     "secondary_indice_" + startingLangName + ", "
-                  +     "COUNT(*) "
-                  + "FROM card "
-                  + "WHERE is_active_" + startingLangName + " = 1 "
-                  + "AND id_status_" + startingLangName + " = " + Status.findId("learning") + " "
-                  + "GROUP BY secondary_indice_" + startingLangName;
-    
-            cursor = dbh.getReadableDatabase().rawQuery(query, null);
-            while (cursor.moveToNext()) {
-                p2_weightOfLearningWords += cursor.getInt(1) * (11 - cursor.getInt(0));
-                
-                if (p2_weightOfLearningWords >= 500) {
-                    p2_weightOfLearningWords = 500;
-                    break;
-                }
-            }
-            cursor.close();
-
-            if (random.nextInt(1000) >= (500 + p2_weightOfLearningWords)) {
-                p2_phaseIsSkipped = true;
-            }
-        }
         
-        if ( ! p2_phaseIsSkipped) {
-            query = "SELECT "
-                  +     "id, "
-                  +     "primary_indice_" + startingLangName + ", "
-                  +     "timestamp_last_answer_" + startingLangName + " "
-                  + "FROM card "
-                  + "WHERE is_active_" + startingLangName + " = 1 "
-                  + "AND id_status_" + startingLangName + " = " + Status.findId("known");
-              
-            cursor = dbh.getReadableDatabase().rawQuery(query, null);
-              
-            while (cursor.moveToNext()) {
-                p2_timestampDiff = rawTimestampNow - cursor.getLong(2);
-                p2_combinedIndice = Word.calcCombinedIndice(cursor.getInt(1), p2_timestampDiff);
-                  
-                if (p2_combinedIndice == p2_threshold) {
-                    p2_eligibleIds.add(cursor.getInt(0));
-                } else if (p2_combinedIndice < p2_threshold) {
-                    p2_eligibleIds = new ArrayList<Integer>();
-                    p2_eligibleIds.add(cursor.getInt(0));
-                    p2_threshold = p2_combinedIndice;
-                }
-            }
-            cursor.close();
-            
-            if ( ! p2_eligibleIds.isEmpty()) {
-                return Card.find(p2_eligibleIds.get(random.nextInt(p2_eligibleIds.size())));
-            }
-        }
-        //END: 2nd phase of the algorithm -------------------------------------
-
-        // 3rd phase of the algorithm :
-        // If no eligible Word at phase 2 or phase 2 has been skipped
-        // and if there is at least one Word with status "initial" left in the Deck,
-        // we randomly select one of them
         if (nbInitialWords > 0) {
             p3_randomPosition = random.nextInt(nbInitialWords);
 
@@ -225,34 +213,63 @@ public class Deck
 
             cursor = dbh.getReadableDatabase().rawQuery(query, null);
             cursor.moveToFirst();
-            retour = Card.find(cursor.getInt(0));
+            retour = TrainingCard.find(cursor.getInt(0), startingLangName, true);
             cursor.close();
 
             return retour;
         }
         //END: 3rd phase of the algorithm -------------------------------------
-
+        
         // 4th phase of the algorithm :
-        // If no eligible Word at phase 3, we select the oldest studied Word (which necessarily has the status "learning")
+        // If no eligible Word at phase 3, we select the oldest studied Word with status "known"
         query = "SELECT id "
               + "FROM card "
               + "WHERE is_active_" + startingLangName + " = 1 "
+              + "AND id_status_" + startingLangName + " = " + Status.findId("known") + " "
               + "AND timestamp_last_answer_" + startingLangName + " = ("
               +     "SELECT MIN(timestamp_last_answer_" + startingLangName + ") "
               +     "FROM card "
-              +     "WHERE is_active_" + startingLangName + " = 1"
+              +     "WHERE is_active_" + startingLangName + " = 1 "
+              +     "AND id_status_" + startingLangName + " = " + Status.findId("known")
               + ")";
 
         cursor = dbh.getReadableDatabase().rawQuery(query, null);
 
         if (cursor.getCount() > 0) {
             cursor.moveToPosition(random.nextInt(cursor.getCount()));
-            retour = Card.find(cursor.getInt(0));
+            retour = TrainingCard.find(cursor.getInt(0), startingLangName, false);
+        }
+
+        cursor.close();
+        
+        if (retour != null) {
+            return retour;
+        }
+        //END: 4th phase of the algorithm -------------------------------------
+        
+        // 5th phase of the algorithm :
+        // If no eligible Word at phase 4, we select the oldest studied Word with status "learning"
+        query = "SELECT id "
+              + "FROM card "
+              + "WHERE is_active_" + startingLangName + " = 1 "
+              + "AND id_status_" + startingLangName + " = " + Status.findId("learning") + " "
+              + "AND timestamp_last_answer_" + startingLangName + " = ("
+              +     "SELECT MIN(timestamp_last_answer_" + startingLangName + ") "
+              +     "FROM card "
+              +     "WHERE is_active_" + startingLangName + " = 1 "
+              +     "AND id_status_" + startingLangName + " = " + Status.findId("learning")
+              + ")";
+
+        cursor = dbh.getReadableDatabase().rawQuery(query, null);
+
+        if (cursor.getCount() > 0) {
+            cursor.moveToPosition(random.nextInt(cursor.getCount()));
+            retour = TrainingCard.find(cursor.getInt(0), startingLangName, false);
         }
 
         cursor.close();
 
         return retour;
-        //END: 4th phase of the algorithm -------------------------------------
+        //END: 5th phase of the algorithm -------------------------------------
     }
 }

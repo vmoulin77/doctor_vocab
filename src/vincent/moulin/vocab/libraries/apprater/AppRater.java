@@ -93,26 +93,34 @@ public abstract class AppRater
      * @param context the context
      */
     private static void display(final Context context) {
-        AlertDialog.Builder alertDialogBuilder;
+        AlertDialog.Builder mainPopup;
         
-        alertDialogBuilder = new AlertDialog.Builder(context);
-        alertDialogBuilder.setMessage(R.string.app_rating_popup_content);
-        alertDialogBuilder.setNegativeButton(R.string.app_rating_popup_button_nok, new DialogInterface.OnClickListener() {
+        mainPopup = new AlertDialog.Builder(context);
+        mainPopup.setMessage(R.string.app_rating_main_popup_content);
+        mainPopup.setNegativeButton(R.string.app_rating_main_popup_button_nok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 doNotDisplayAgain();
             }
         });
-        alertDialogBuilder.setNeutralButton(R.string.app_rating_popup_button_later, null);
-        alertDialogBuilder.setPositiveButton(R.string.app_rating_popup_button_ok, new DialogInterface.OnClickListener() {
+        mainPopup.setNeutralButton(R.string.app_rating_main_popup_button_later, null);
+        mainPopup.setPositiveButton(R.string.app_rating_main_popup_button_ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
+                AlertDialog.Builder errorPopup;
+                
                 try {
                     context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + context.getPackageName())));
-                } catch (android.content.ActivityNotFoundException e) {}
+                } catch (android.content.ActivityNotFoundException e) {
+                    errorPopup = new AlertDialog.Builder(context);
+                    errorPopup.setTitle(R.string.error_popup_title)
+                              .setMessage(R.string.app_rating_error_popup_content)
+                              .setNeutralButton(R.string.closure_button_content, null)
+                              .show();
+                }
                 
                 doNotDisplayAgain();
             }
         });
-        alertDialogBuilder.show();
+        mainPopup.show();
     }
     
     /**

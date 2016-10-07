@@ -17,7 +17,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 
 /**
- * The Pack class represents a pack of words.
+ * The Pack class represents a pack of sides.
  * The goal of this class is to avoid to display some series of words always in the same order.
  * 
  * @author Vincent MOULIN
@@ -30,7 +30,7 @@ public class Pack
     private long timestampPack;
     private long timestampLastAnswer;
     
-    private Card[] cards;
+    private Side[] sides;
     
     public Pack(int id, Language language, int indice, long timestampPack, long timestampLastAnswer) {
         this.id = id;
@@ -81,11 +81,11 @@ public class Pack
         this.timestampLastAnswer = timestampLastAnswer;
     }
     
-    public Card[] getCards() {
-        return this.cards;
+    public Side[] getSides() {
+        return this.sides;
     }
-    public void setCards(Card[] cards) {
-        this.cards = cards;
+    public void setSides(Side[] sides) {
+        this.sides = sides;
     }
     
     /**

@@ -37,7 +37,7 @@
             android:onClick="showTraduction" />
     </RelativeLayout>
     <TextView 
-        android:id="@+id/word_to_translate"
+        android:id="@+id/question_word"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/translation_direction_and_solution"

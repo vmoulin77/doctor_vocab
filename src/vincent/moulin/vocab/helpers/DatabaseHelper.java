@@ -16,8 +16,7 @@ import java.util.HashMap;
 import org.xmlpull.v1.XmlPullParser;
 
 import vincent.moulin.vocab.R;
-import vincent.moulin.vocab.entities.Word;
-import android.app.AlertDialog;
+import vincent.moulin.vocab.entities.Side;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -122,13 +121,6 @@ public final class DatabaseHelper extends SQLiteOpenHelper
         return instance;
     }
     
-    private void displayInitializationErrorMsg() {
-        new AlertDialog.Builder(this.context)
-            .setMessage(R.string.initialization_error_msg)
-            .setNeutralButton(R.string.closure_button_content, null)
-            .show();
-    }
-
     @Override
     public void onCreate(SQLiteDatabase db) {
         ContentValues contentValues = new ContentValues();
@@ -186,7 +178,7 @@ public final class DatabaseHelper extends SQLiteOpenHelper
             sqliteStatement.close();
             xpp = null;
         } catch (Exception e) {
-            this.displayInitializationErrorMsg();
+            return;
         }
         //END: Filling the "misc" table
         
@@ -227,7 +219,7 @@ public final class DatabaseHelper extends SQLiteOpenHelper
             sqliteStatement.close();
             xpp = null;
         } catch (Exception e) {
-            this.displayInitializationErrorMsg();
+            return;
         }
         //END: Filling the "language" table
         
@@ -272,7 +264,7 @@ public final class DatabaseHelper extends SQLiteOpenHelper
             sqliteStatement.close();
             xpp = null;
         } catch (Exception e) {
-            this.displayInitializationErrorMsg();
+            return;
         }
         //END: Filling the "status" table
         
@@ -313,7 +305,7 @@ public final class DatabaseHelper extends SQLiteOpenHelper
             sqliteStatement.close();
             xpp = null;
         } catch (Exception e) {
-            this.displayInitializationErrorMsg();
+            return;
         }
         //END: Filling the "frequency" table
         
@@ -384,13 +376,13 @@ public final class DatabaseHelper extends SQLiteOpenHelper
             sqliteStatement.close();
             xpp = null;
         } catch (Exception e) {
-            this.displayInitializationErrorMsg();
+            return;
         }
         //END: Filling the "card" table
 
         // Filling the "pack" table
         for (String idLanguage : languages.values()) {
-            for (int i = 2; i <= Word.MAX_SECONDARY_INDICE; i++) {
+            for (int i = 2; i <= Side.MAX_SECONDARY_INDICE; i++) {
                 contentValues = new ContentValues();
                 contentValues.put("id", idPack);
                 contentValues.put("id_language", idLanguage);
@@ -483,7 +475,7 @@ public final class DatabaseHelper extends SQLiteOpenHelper
                 sqliteStatement.close();
                 xpp = null;
             } catch (Exception e) {
-                this.displayInitializationErrorMsg();
+                return;
             }
             //END: Filling the "misc" table
         }

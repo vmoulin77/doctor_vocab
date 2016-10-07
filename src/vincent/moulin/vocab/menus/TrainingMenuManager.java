@@ -15,8 +15,8 @@ import vincent.moulin.vocab.MyApplication;
 import vincent.moulin.vocab.R;
 import vincent.moulin.vocab.activities.TrainingActivity;
 import vincent.moulin.vocab.entities.Language;
+import vincent.moulin.vocab.entities.Side;
 import vincent.moulin.vocab.entities.Status;
-import vincent.moulin.vocab.entities.Word;
 import vincent.moulin.vocab.helpers.DatabaseHelper;
 import vincent.moulin.vocab.utilities.Now;
 import android.app.Activity;
@@ -65,7 +65,7 @@ public class TrainingMenuManager
                     cursor = dbh.getReadableDatabase().rawQuery(query, null);
                     while (cursor.moveToNext()) {
                         timestampDiff = rawTimestampNow - cursor.getLong(1);
-                        if (Word.learningWordIsEligible(cursor.getInt(0), timestampDiff)) {
+                        if (Side.learningWordIsEligible(cursor.getInt(0), timestampDiff)) {
                             nbEligibleLearningWords++;
                         }
                     }
@@ -83,7 +83,7 @@ public class TrainingMenuManager
                     cursor = dbh.getReadableDatabase().rawQuery(query, null);
                     while (cursor.moveToNext()) {
                         timestampDiff = rawTimestampNow - cursor.getLong(1);
-                        if (Word.knownWordIsEligible(cursor.getInt(0), timestampDiff)) {
+                        if (Side.knownWordIsEligible(cursor.getInt(0), timestampDiff)) {
                             nbEligibleKnownWords++;
                         }
                     }
@@ -127,8 +127,8 @@ public class TrainingMenuManager
                     return true;
                     
                 case R.id.cancellation_option:
-                    int statusIdBeforeAnswering = trainingActivity.getPrevCardBeforeAnswering().getWordByLangName(startingLangName).getStatus().getId(),
-                        statusIdAfterAnswering = trainingActivity.getPrevCardAfterAnswering().getWordByLangName(startingLangName).getStatus().getId(),
+                    int statusIdBeforeAnswering = trainingActivity.getPrevCardBeforeAnswering().getQuestionSide().getStatus().getId(),
+                        statusIdAfterAnswering = trainingActivity.getPrevCardAfterAnswering().getQuestionSide().getStatus().getId(),
                         newNbWords;
                     long timestampLastAnswer = trainingActivity.getTimestampLastAnswer();
                     ContentValues contentValues;

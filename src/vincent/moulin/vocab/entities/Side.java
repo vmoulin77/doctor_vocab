@@ -17,18 +17,18 @@ import vincent.moulin.vocab.utilities.Now;
 import android.database.Cursor;
 
 /**
- * The Word class represents a word.
+ * The Side class represents a side of a card.
  * 
  * @author Vincent MOULIN
  */
-public abstract class Word implements Cloneable
+public abstract class Side implements Cloneable
 {
     public static final int MAX_PRIMARY_INDICE = 10;
     public static final int MAX_SECONDARY_INDICE = 10;
     public static final int MAX_COMBINED_INDICE = 20;
     public static final int MAX_COMBINED_INDICE_ELIGIBLE_WORD = 10;
     
-    private String content;
+    private String word;
     private boolean isActive;
     private Status status;
     private boolean isAccelerated;
@@ -36,8 +36,8 @@ public abstract class Word implements Cloneable
     private int secondaryIndice;
     private long timestampLastAnswer;
     
-    public Word(
-        String content,
+    public Side(
+        String word,
         boolean isActive,
         Status status,
         boolean isAccelerated,
@@ -45,7 +45,7 @@ public abstract class Word implements Cloneable
         int secondaryIndice,
         long timestampLastAnswer
     ) {
-        this.content = content;
+        this.word = word;
         this.isActive = isActive;
         this.status = status;
         this.isAccelerated = isAccelerated;
@@ -54,11 +54,11 @@ public abstract class Word implements Cloneable
         this.timestampLastAnswer = timestampLastAnswer;
     }
     
-    public String getContent() {
-        return this.content;
+    public String getWord() {
+        return this.word;
     }
-    public void setContent(String content) {
-        this.content = content;
+    public void setWord(String word) {
+        this.word = word;
     }
     
     public boolean getIsActive() {
@@ -109,8 +109,8 @@ public abstract class Word implements Cloneable
         this.timestampLastAnswer = timestampLastAnswer;
     }
 
-    public Word clone() throws CloneNotSupportedException {
-        Word retour = (Word) super.clone();
+    public Side clone() throws CloneNotSupportedException {
+        Side retour = (Side) super.clone();
 
         retour.status = (Status) this.status.clone();
         
@@ -118,8 +118,8 @@ public abstract class Word implements Cloneable
     }
     
     /**
-     * Get the Language object corresponding to the current Word.
-     * @return the Language object corresponding to the current Word
+     * Get the Language object corresponding to the current Side.
+     * @return the Language object corresponding to the current Side
      */
     public abstract Language getLanguage();
     
@@ -194,16 +194,20 @@ public abstract class Word implements Cloneable
     }
     
     /**
-     * Retrieve the Pack object linked to the current Word.
-     * @return the Pack object linked to the current Word
+     * Retrieve the Pack object corresponding to the current Side (but this side doesn't necessarily belong to this Pack).
+     * @return the Pack object corresponding to the current Side
      */
     public Pack retrievePack() {
-        return Pack.findByIdLangAndIndice(this.getLanguage().getId(), this.secondaryIndice);
+        if (this.status.getName().equals("learning")) {
+            return Pack.findByIdLangAndIndice(this.getLanguage().getId(), this.secondaryIndice);
+        } else {
+            return null;
+        }
     }
 
     /**
-     * Test if the current Word belongs to the corresponding Pack.
-     * @return true if the current Word belongs to the corresponding Pack and false otherwise
+     * Test if the current Side belongs to the corresponding Pack.
+     * @return true if the current Side belongs to the corresponding Pack and false otherwise
      */
     public boolean belongsToPack() {
         DatabaseHelper dbh = DatabaseHelper.getInstance(MyApplication.getContext());

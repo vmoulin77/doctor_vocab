@@ -12,14 +12,14 @@
 package vincent.moulin.vocab.entities;
 
 /**
- * The WordEnglish class represents an English word.
+ * The FrenchSide class represents the French side of a card.
  * 
  * @author Vincent MOULIN
  */
-public class WordEnglish extends Word
+public class FrenchSide extends Side
 {
-    public WordEnglish(
-        String content,
+    public FrenchSide(
+        String word,
         boolean isActive,
         Status status,
         boolean isAccelerated,
@@ -28,7 +28,7 @@ public class WordEnglish extends Word
         long timestampLastAnswer
     ) {
         super(
-            content,
+            word,
             isActive,
             status,
             isAccelerated,
@@ -42,6 +42,6 @@ public class WordEnglish extends Word
      * {@inheritDoc}
      */
     public Language getLanguage() {
-        return Language.findByName("english");
+        return Language.findByName("french");
     }
 }

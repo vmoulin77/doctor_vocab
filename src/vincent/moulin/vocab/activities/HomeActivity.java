@@ -11,8 +11,9 @@
 
 package vincent.moulin.vocab.activities;
 
+import vincent.moulin.vocab.MyApplication;
 import vincent.moulin.vocab.R;
-import vincent.moulin.vocab.entities.Card;
+import vincent.moulin.vocab.helpers.DatabaseHelper;
 import vincent.moulin.vocab.libraries.apprater.AppRater;
 import vincent.moulin.vocab.menus.DefaultMenuManager;
 import android.app.Activity;
@@ -35,7 +36,7 @@ public class HomeActivity extends Activity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Trigger the initialization of the database
-        Card.find(0);
+        DatabaseHelper.getInstance(MyApplication.getContext());
         //-----------------------------------------------------
         
         super.onCreate(savedInstanceState);

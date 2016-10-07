@@ -12,12 +12,12 @@
 package vincent.moulin.vocab.activities;
 
 import vincent.moulin.vocab.R;
-import vincent.moulin.vocab.entities.Card;
+import vincent.moulin.vocab.entities.TrainingCard;
 import vincent.moulin.vocab.entities.Deck;
 import vincent.moulin.vocab.entities.Language;
 import vincent.moulin.vocab.entities.Pack;
 import vincent.moulin.vocab.entities.StatSnap;
-import vincent.moulin.vocab.entities.Word;
+import vincent.moulin.vocab.entities.Side;
 import vincent.moulin.vocab.menus.TrainingMenuManager;
 import vincent.moulin.vocab.utilities.Now;
 import android.app.Activity;
@@ -40,30 +40,30 @@ import android.widget.Toast;
  */
 public class TrainingActivity extends Activity
 {
-    private Card currentCard, prevCardBeforeAnswering, prevCardAfterAnswering;
+    private TrainingCard currentCard, prevCardBeforeAnswering, prevCardAfterAnswering;
     private Pack prevPackBeforeAnswering;
     private long timestampLastAnswer;
     private String startingLangName;
     private boolean cancellationOptionIsEnabled;
 
-    public Card getCurrentCard() {
+    public TrainingCard getCurrentCard() {
         return this.currentCard;
     }
-    public void setCurrentCard(Card currentCard) {
+    public void setCurrentCard(TrainingCard currentCard) {
         this.currentCard = currentCard;
     }
 
-    public Card getPrevCardBeforeAnswering() {
+    public TrainingCard getPrevCardBeforeAnswering() {
         return this.prevCardBeforeAnswering;
     }
-    public void setPrevCardBeforeAnswering(Card prevCardBeforeAnswering) {
+    public void setPrevCardBeforeAnswering(TrainingCard prevCardBeforeAnswering) {
         this.prevCardBeforeAnswering = prevCardBeforeAnswering;
     }
     
-    public Card getPrevCardAfterAnswering() {
+    public TrainingCard getPrevCardAfterAnswering() {
         return this.prevCardAfterAnswering;
     }
-    public void setPrevCardAfterAnswering(Card prevCardAfterAnswering) {
+    public void setPrevCardAfterAnswering(TrainingCard prevCardAfterAnswering) {
         this.prevCardAfterAnswering = prevCardAfterAnswering;
     }
     
@@ -117,7 +117,7 @@ public class TrainingActivity extends Activity
             textView.setText(R.string.translation_direction_fr_to_en);
         }
         
-        this.currentCard = Deck.algoSelectWord(this.startingLangName);
+        this.currentCard = Deck.algoSRS(this.startingLangName);
         this.displayWord();
     }
 
@@ -150,13 +150,12 @@ public class TrainingActivity extends Activity
     
     public void displayWord() {
         TextView textView;
-        Word wordToTranslate = this.currentCard.getWordByLangName(this.startingLangName);
         
         textView = (TextView) this.findViewById(R.id.training_header);
-        textView.setTextColor(Color.parseColor(wordToTranslate.getStatus().getColor()));
+        textView.setTextColor(Color.parseColor(this.currentCard.getQuestionSide().getStatus().getColor()));
         
-        textView = (TextView) this.findViewById(R.id.word_to_translate);
-        textView.setText(Html.fromHtml(wordToTranslate.getContent()));
+        textView = (TextView) this.findViewById(R.id.question_word);
+        textView.setText(Html.fromHtml(this.currentCard.getQuestionSide().getWord()));
     }
     
     public void statAccess(View v) {
@@ -175,17 +174,15 @@ public class TrainingActivity extends Activity
         this.prevPackBeforeAnswering = null;
 
         if (answerIsOk) {
-            Word wordToTranslate = this.currentCard.getWordByLangName(this.startingLangName);
-
-            if (wordToTranslate.getStatus().getName().equals("learning")) {
-                if (wordToTranslate.getSecondaryIndice() == Word.MAX_SECONDARY_INDICE) {
+            if (this.currentCard.getQuestionSide().getStatus().getName().equals("learning")) {
+                if (this.currentCard.getQuestionSide().getSecondaryIndice() == Side.MAX_SECONDARY_INDICE) {
                     Toast
                         .makeText(this, R.string.congratulation_toast_content, Toast.LENGTH_SHORT)
                         .show();
                 } else {
                     this.prevPackBeforeAnswering = Pack.findByIdLangAndIndice(
                         Language.findId(this.startingLangName),
-                        wordToTranslate.getSecondaryIndice() + 1
+                        this.currentCard.getQuestionSide().getSecondaryIndice() + 1
                     );
                 }
             }
@@ -201,7 +198,7 @@ public class TrainingActivity extends Activity
         
         this.prevCardAfterAnswering = this.currentCard;
 
-        this.currentCard = Deck.algoSelectWord(this.startingLangName);
+        this.currentCard = Deck.algoSRS(this.startingLangName);
         this.displayWord();
     }
     
@@ -214,16 +211,8 @@ public class TrainingActivity extends Activity
     }
     
     public void showTraduction(View v) {
-        Word solution;
-        
-        if (this.startingLangName.equals("english")) {
-            solution = this.currentCard.getWordFrench();
-        } else {
-            solution = this.currentCard.getWordEnglish();
-        }
-
         new AlertDialog.Builder(this)
-            .setMessage(Html.fromHtml(solution.getContent()))
+            .setMessage(Html.fromHtml(this.currentCard.getSolutionSide().getWord()))
             .setNeutralButton(R.string.closure_button_content, null)
             .show();
     }
