@@ -248,16 +248,14 @@ public class Deck
         //END: 4th phase of the algorithm -------------------------------------
         
         // 5th phase of the algorithm :
-        // If no eligible Word at phase 4, we select the oldest studied Word with status "learning"
+        // If no eligible Word at phase 4, we select the oldest studied Word (which necessarily has the status "learning")
         query = "SELECT id "
               + "FROM card "
               + "WHERE is_active_" + startingLangName + " = 1 "
-              + "AND id_status_" + startingLangName + " = " + Status.findId("learning") + " "
               + "AND timestamp_last_answer_" + startingLangName + " = ("
               +     "SELECT MIN(timestamp_last_answer_" + startingLangName + ") "
               +     "FROM card "
-              +     "WHERE is_active_" + startingLangName + " = 1 "
-              +     "AND id_status_" + startingLangName + " = " + Status.findId("learning")
+              +     "WHERE is_active_" + startingLangName + " = 1"
               + ")";
 
         cursor = dbh.getReadableDatabase().rawQuery(query, null);
